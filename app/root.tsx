@@ -34,7 +34,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <div className="flex">
-        <Sidebar/>
+        {/* <Sidebar/> */}
         {children}
         </div>
         <ScrollRestoration />
