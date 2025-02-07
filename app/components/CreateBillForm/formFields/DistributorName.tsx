@@ -20,7 +20,7 @@ export default function DistributorName({ form }: Pick<TForm,"form"> ) {
       render={({ field }) => (
         <FormItem>
           <FormLabel>Distributor Name</FormLabel>
-          <Select onValueChange={field.onChange}>
+          <Select defaultValue={field.value} onValueChange={field.onChange}>
             <FormControl>
               <SelectTrigger className="bg-white">
                 <SelectValue placeholder="Select distributor" />

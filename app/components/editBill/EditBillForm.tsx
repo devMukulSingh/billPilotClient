@@ -4,19 +4,24 @@ import { z } from "zod";
 import { createBillSchema } from "~/lib/schema";
 import {
   Form,
- 
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "../ui/form";
-import DistributorName from "./formFields/DistributorName";
-import DateCreated from "./formFields/Date";
-import IsPaid from "./formFields/IsPaid";
+import DistributorName from "../createBillForm/formFields/DistributorName";
+import DateCreated from "../createBillForm/formFields/Date";
+import IsPaid from "../createBillForm/formFields/IsPaid";
 import { Separator } from "../ui/separator";
-import ItemName from "./formFields/ItemName";
-import ItemRate from "./formFields/ItemRate";
-import ItemQuantity from "./formFields/ItemQuantity";
-import ItemAmount from "./formFields/ItemAmount";
+import ItemName from "../createBillForm/formFields/ItemName";
+import ItemRate from "../createBillForm/formFields/ItemRate";
+import ItemQuantity from "../createBillForm/formFields/ItemQuantity";
+import ItemAmount from "../createBillForm/formFields/ItemAmount";
 import { Button } from "../ui/button";
 import { PlusCircle, X } from "lucide-react";
-import { ITEM_INITIAL_VALUES } from "~/lib/constants";
+import { ITEM_INITIAL_VALUES, Bills } from "~/lib/constants";
+import { useParams } from "@remix-run/react";
 
 type Props = {};
 
@@ -27,15 +32,12 @@ export type TForm = {
   index: number;
 };
 
-export default function CreateBillForm({}: Props) {
+export default function EditBillForm({}: Props) {
+  const {billId} = useParams()
+  const formInitialValues = Bills.find((bill) => bill.id === billId);
   const form = useForm<TFormValues>({
     resolver: zodResolver(createBillSchema),
-    defaultValues: {
-      isPaid: false,
-      date: new Date(),
-      distributorName: "",
-      items: [ITEM_INITIAL_VALUES],
-    },
+    defaultValues: formInitialValues,
   });
   const fieldArray = useFieldArray({
     name: "items",
@@ -56,8 +58,8 @@ export default function CreateBillForm({}: Props) {
       isPaid: false,
       items: [ITEM_INITIAL_VALUES],
     });
+    // update request to the server
     console.log(data);
-    // save to db
   }
   function handleAddItem() {
     fieldArray.append(ITEM_INITIAL_VALUES);

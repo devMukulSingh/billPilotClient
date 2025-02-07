@@ -3,9 +3,11 @@ import {
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
+  getPaginationRowModel,
   Row,
   useReactTable,
 } from "@tanstack/react-table";
+import { Table as TTable } from "@tanstack/react-table"
 import React, { useState } from "react";
 
 import {
@@ -16,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import { Button } from "../ui/button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -28,16 +31,33 @@ export function DataTable<TData, TValue>({
   data,
   renderSubComponent,
 }: DataTableProps<TData, TValue>) {
+  const [pagination, setPagination] = useState({
+    pageIndex: 0, //initial page index
+    pageSize: 10, //default page size
+  });
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getRowCanExpand: () => true,
+    getPaginationRowModel: getPaginationRowModel(),
+    manualFiltering: true,
+    onPaginationChange: setPagination, //update the pagination state when internal APIs mutate the pagination state
+    state: {
+      //...
+      pagination,
+    },
+    initialState: {
+      pagination: {
+        pageIndex: 1, //custom initial page index
+        pageSize: 10, //custom default page size
+      },
+    },
   });
 
   return (
-    <div className="rounded-md border">
+    <div className="px-5 rounded-md border space-y-5">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -75,11 +95,11 @@ export function DataTable<TData, TValue>({
                   ))}
                 </TableRow>
                 {row.getIsExpanded() && (
-                  <TableRow  className="bg-white hover:bg-neutral-100">
+                  <TableRow className="bg-white hover:bg-neutral-100">
                     <TableCell align="right" colSpan={2}>
-                    {renderSubComponent({ row })}
+                      {renderSubComponent({ row })}
                     </TableCell>
-                    </TableRow>
+                  </TableRow>
                 )}
               </React.Fragment>
             ))
@@ -92,6 +112,38 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
+      <PaginationButtons table={table} />
+    </div>
+  );
+}
+
+function PaginationButtons<TData>({ table }: { table: TTable<TData> }) {
+  return (
+    <div className=" flex justify-center gap-5">
+      <Button
+        onClick={() => table.firstPage()}
+        disabled={!table.getCanPreviousPage()}
+      >
+        {"<<"}
+      </Button>
+      <Button
+        onClick={() => table.previousPage()}
+        disabled={!table.getCanPreviousPage()}
+      >
+        {"<"}
+      </Button>
+      <Button
+        onClick={() => table.nextPage()}
+        disabled={!table.getCanNextPage()}
+      >
+        {">"}
+      </Button>
+      <Button
+        onClick={() => table.lastPage()}
+        disabled={!table.getCanNextPage()}
+      >
+        {">>"}
+      </Button>
     </div>
   );
 }
