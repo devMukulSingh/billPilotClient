@@ -48,5 +48,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return <Outlet />;
 }
 export default ClerkApp(App,{
-
+  signUpForceRedirectUrl:'/create-bill',
+  signInFallbackRedirectUrl:'/create-bill',
 });
