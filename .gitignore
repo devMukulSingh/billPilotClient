@@ -3,3 +3,9 @@ node_modules
 /.cache
 /build
 .env
+
+
+
+.nx/cache
+.nx/workspace-data
+vite.config.*.timestamp*
