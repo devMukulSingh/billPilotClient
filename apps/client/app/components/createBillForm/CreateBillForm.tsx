@@ -64,12 +64,12 @@ export default function CreateBillForm({}: Props) {
   }
   return (
     <>
-      <form className="" onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className=" flex max-h-[85vh]  border-black  flex-col gap-5 px-5 pb-20 overflow-auto">
           <Form {...form}>
             <div
               className="
-        md:w-2/3 
+        lg:w-2/3 
         w-full 
         grid 
         border-2 
@@ -94,7 +94,7 @@ export default function CreateBillForm({}: Props) {
         flex-col
         gap-3
         p-5
-        md:w-2/3 
+        lg:w-2/3 
         "
             >
               <h1 className="text-2xl">Items</h1>
@@ -115,7 +115,7 @@ export default function CreateBillForm({}: Props) {
                   <ItemAmount form={form} index={index} />
                   <Button
                     variant={'destructive'}
-                    className="rounded-full size-9 self-end ml-auto"
+                    className="rounded-full  size-9 self-end ml-auto"
                     disabled={controlledFields.length === 1}
                     size={'icon'}
                     onClick={() => handleRemoveItem(index)}
@@ -135,7 +135,16 @@ export default function CreateBillForm({}: Props) {
             </div>
           </Form>
         </div>
-        <footer className="absolute  bottom-0 bg-slate-100 px-5 py-3 w-[calc(100vw-15rem)]">
+        <footer
+          className="
+        absolute  
+        bottom-0 
+        bg-slate-100 
+        px-5 py-3 
+        md:w-[calc(100vw-15rem)]
+        w-[calc(100vw-5rem)]
+        "
+        >
           <Button type="submit">Submit</Button>
         </footer>
       </form>

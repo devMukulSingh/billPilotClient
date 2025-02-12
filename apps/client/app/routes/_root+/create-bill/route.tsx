@@ -9,7 +9,8 @@ export default function CreateBill({}: Props) {
     <div
       className="
     h-screen 
-    w-[calc(100vw-15rem)] 
+    md:w-[calc(100vw-15rem)] 
+    w-[calc(100vw-5rem)] 
     bg-slate-200
     flex
     flex-col

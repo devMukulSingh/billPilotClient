@@ -1,4 +1,5 @@
 import { Link, useLocation } from '@remix-run/react';
+import { Plus, PlusCircle, ScrollText } from 'lucide-react';
 
 type Props = {};
 
@@ -9,28 +10,36 @@ export default function Navlinks({}: Props) {
       title: 'Create bill',
       link: '/create-bill',
       isActive: location.pathname === '/create-bill',
+      icon: PlusCircle,
     },
     {
       title: 'All bills',
       link: '/bills',
       isActive: location.pathname === '/bills',
+      icon: ScrollText,
     },
   ];
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex w-full flex-col gap-2">
       {navlinks.map((navlink, index) => (
         <Link
           className={`
-                    px-2
-                    py-2
-                
-                    hover:bg-violet-400
-                    ${navlink.isActive ? 'bg-violet-400' : ''}
-                    `}
+            flex
+            px-5
+            py-2
+            gap-2
+            md:justify-normal
+            justify-center
+            hover:bg-violet-400
+            ${navlink.isActive ? 'bg-violet-400' : ''}
+           `}
           to={navlink.link}
           key={index}
         >
-          {navlink.title}
+          {/* <div className=''> */}
+            <navlink.icon />
+            <h1 className="md:block hidden">{navlink.title}</h1>
+          {/* </div> */}
         </Link>
       ))}
     </div>

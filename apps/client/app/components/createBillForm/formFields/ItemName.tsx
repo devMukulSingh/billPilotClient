@@ -14,7 +14,7 @@ export default function ItemName({ form, index }: TForm) {
       name={`items.${index}.name`}
       control={form.control}
       render={({ field }) => (
-        <FormItem className="w-1/2">
+        <FormItem className="w-1/2 ">
           <FormLabel>Name</FormLabel>
           <FormControl>
             <Input className="bg-white" {...field} />

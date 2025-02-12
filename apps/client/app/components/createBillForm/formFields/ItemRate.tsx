@@ -14,7 +14,7 @@ export default function ItemRate({ form, index }: TForm) {
       name={`items.${index}.rate`}
       control={form.control}
       render={({ field }) => (
-        <FormItem className="w-[10%]">
+        <FormItem className="w-20">
           <FormLabel>Rate</FormLabel>
           <FormControl>
             <Input className="bg-white" {...field} />

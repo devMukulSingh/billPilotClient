@@ -14,7 +14,7 @@ export default function ItemQuantity({ form, index }: TForm) {
       name={`items.${index}.quantity`}
       control={form.control}
       render={({ field }) => (
-        <FormItem className="w-[10%]">
+        <FormItem className="w-20">
           <FormLabel>Quantity</FormLabel>
           <FormControl>
             <Input className="bg-white" {...field} />
