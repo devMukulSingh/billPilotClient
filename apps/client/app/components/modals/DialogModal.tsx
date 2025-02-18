@@ -14,6 +14,7 @@ const DialogModal = ({
   description = '',
   dialogContentClassName,
   innerDivClassName,
+  titleIcon
 }: TDialogModalProps) => {
   const onChange = () => {
     if (open) onClose();
@@ -22,7 +23,7 @@ const DialogModal = ({
   return (
     <Dialog open={open} onOpenChange={onChange}>
       <DialogContent className={dialogContentClassName}>
-        <DialogTitle className=""> {title} </DialogTitle>
+        <DialogTitle className="flex gap-2"> {title} </DialogTitle>
         <DialogDescription className="">{description} </DialogDescription>
         <div className={innerDivClassName}>{children}</div>
       </DialogContent>

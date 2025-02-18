@@ -14,6 +14,7 @@ import ItemAmount from './formFields/ItemAmount';
 import { Button } from '../ui/button';
 import { PlusCircle, X } from 'lucide-react';
 import { ITEM_INITIAL_VALUES } from '~/lib/constants';
+import Domain from './formFields/Domain';
 
 type Props = {};
 
@@ -69,20 +70,21 @@ export default function CreateBillForm({}: Props) {
           <Form {...form}>
             <div
               className="
-        lg:w-2/3 
-        w-full 
-        grid 
-        border-2 
-        lg:grid-cols-3 
-        md:grid-cols-2 
-        grid-cols-1 
-        gap-x-2 
-        gap-y-5
-        border-white
-        p-5
+              lg:w-3/4 
+              w-full 
+              grid 
+              border-2 
+              lg:grid-cols-3 
+              md:grid-cols-2 
+              grid-cols-1 
+              gap-x-2 
+              gap-y-5
+              border-white
+              p-5
         "
             >
               <DistributorName form={form} />
+              <Domain form={form}/>
               <DateCreated form={form} />
               <IsPaid form={form} />
             </div>
@@ -104,9 +106,9 @@ export default function CreateBillForm({}: Props) {
                 <div
                   key={index}
                   className=" 
-            flex
-            gap-x-1
-            gap-y-5
+                  flex
+                  gap-x-1
+                  gap-y-5
         "
                 >
                   <ItemName form={form} index={index} />

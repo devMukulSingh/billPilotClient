@@ -13,6 +13,10 @@ import {
   SelectValue,
 } from '~/components/ui/select';
 import { TForm } from '../CreateBillForm';
+import { Button } from '~/components/ui/button';
+import { Plus } from 'lucide-react';
+import { useState } from 'react';
+import AddDistributorForm from '../AddDistributorForm';
 
 export default function DistributorName({ form }: Pick<TForm, 'form'>) {
   const distributors = [
@@ -23,7 +27,13 @@ export default function DistributorName({ form }: Pick<TForm, 'form'>) {
       title: 'Shree',
     },
   ];
+  const [openDialog, setOpenDialog] = useState(false);
   return (
+    <>
+    {
+      openDialog &&
+      <AddDistributorForm openDialog={openDialog} setOpenDialog={setOpenDialog}/>
+    }
     <FormField
       name="distributorName"
       control={form.control}
@@ -37,16 +47,27 @@ export default function DistributorName({ form }: Pick<TForm, 'form'>) {
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {distributors.map((dist, index) => (
-                <SelectItem key={index} value={dist.title}>
-                  {dist.title}
-                </SelectItem>
-              ))}
+              {
+                distributors.map((dist, index) => (
+                  <SelectItem key={index} value={dist.title}>
+                    {dist.title}
+                  </SelectItem>
+                ))
+              }
+              <Button 
+              onClick={ () => setOpenDialog(true)}
+              variant={"outline"}
+              className='flex items-center gap-2 w-full'>
+                <Plus/>
+                Add Distributor
+              </Button>
             </SelectContent>
             <FormMessage />
           </Select>
         </FormItem>
       )}
-    />
+
+      />
+      </>
   );
 }

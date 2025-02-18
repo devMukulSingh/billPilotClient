@@ -12,6 +12,17 @@ export const createBillSchema = z.object({
     .max(30, {
       message: 'Max 30 characters allowed',
     }),
+  domain: z
+    .string({
+      required_error: 'domain name is required',
+    })
+    .trim()
+    .min(1, {
+      message: 'domain name is required',
+    })
+    .max(30, {
+      message: 'Max 30 characters allowed',
+    }),
   date: z.date({ required_error: 'Date is required' }),
   isPaid: z.boolean().default(false),
   items: z
