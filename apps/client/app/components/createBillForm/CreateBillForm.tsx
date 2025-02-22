@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useFieldArray, useForm, UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
-import { createBillSchema } from '~/lib/schema';
+import { billSchema } from '~/lib/schema';
 import { Form } from '../ui/form';
 import DistributorName from './formFields/DistributorName';
 import DateCreated from './formFields/Date';
@@ -13,10 +13,16 @@ import ItemQuantity from './formFields/ItemQuantity';
 import ItemAmount from './formFields/ItemAmount';
 import { Button } from '../ui/button';
 import { PlusCircle, X } from 'lucide-react';
-import { ITEM_INITIAL_VALUES } from '~/lib/constants';
+import { BASE_URL_SERVER, ITEM_INITIAL_VALUES } from '~/lib/constants';
 import Domain from './formFields/Domain';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { useAuth } from '@clerk/remix';
 
 type Props = {};
+
+const createBillSchema = billSchema.omit({distributor_name:true,domain_name:true})
 
 type TFormValues = z.infer<typeof createBillSchema>;
 
@@ -26,14 +32,25 @@ export type TForm = {
 };
 
 export default function CreateBillForm({}: Props) {
+  const { userId } = useAuth()
+  const { mutate,isPending } = useMutation<TFormValues,any,TFormValues>({
+    mutationKey:['post_bill'],
+    mutationFn : async(data) => {
+      return (
+        await axios.post(`${BASE_URL_SERVER}/${userId}/bill/post-bill`, data)
+      ).data;
+    },
+    onSuccess: () => toast.success("Bill added")
+  })
   const form = useForm<TFormValues>({
     resolver: zodResolver(createBillSchema),
     defaultValues: {
       isPaid: false,
       date: new Date(),
-      distributorName: '',
+      distributor_id: '',
+      domain_id:"",
       items: [ITEM_INITIAL_VALUES],
-    },
+    }, 
   });
   const fieldArray = useFieldArray({
     name: 'items',
@@ -48,13 +65,15 @@ export default function CreateBillForm({}: Props) {
     };
   });
   function onSubmit(data: TFormValues) {
-    form.reset({
-      date: new Date(),
-      distributorName: '',
-      isPaid: false,
-      items: [ITEM_INITIAL_VALUES],
-    });
-    console.log(data);
+    mutate(data);
+    // form.reset({
+    //   date: new Date(),
+    //   distributor_id: '',
+    //   isPaid: false,
+    //   domain_id:"",
+    //   items: [ITEM_INITIAL_VALUES],
+    // });
+
     // save to db
   }
   function handleAddItem() {
@@ -83,20 +102,20 @@ export default function CreateBillForm({}: Props) {
               p-5
         "
             >
+              <Domain form={form} />
               <DistributorName form={form} />
-              <Domain form={form}/>
               <DateCreated form={form} />
               <IsPaid form={form} />
             </div>
             <div
               className="
-      border-white
-        flex
-        border-2 
-        flex-col
-        gap-3
-        p-5
-        lg:w-2/3 
+              flex
+              border-2 
+              flex-col
+              gap-3
+              p-5
+              lg:w-2/3 
+              border-white
         "
             >
               <h1 className="text-2xl">Items</h1>
@@ -147,7 +166,9 @@ export default function CreateBillForm({}: Props) {
         w-[calc(100vw-5rem)]
         "
         >
-          <Button type="submit">Submit</Button>
+          <Button disabled={isPending} type="submit">
+            Submit
+          </Button>
         </footer>
       </form>
     </>

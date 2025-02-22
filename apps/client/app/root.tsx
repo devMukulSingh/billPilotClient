@@ -10,7 +10,7 @@ import { rootAuthLoader } from '@clerk/remix/ssr.server';
 import './tailwind.css';
 import { ClerkApp } from '@clerk/remix';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import  { toast,Toaster } from "react-hot-toast"
+import { toast, Toaster } from 'react-hot-toast';
 
 export const links: LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -30,13 +30,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
     defaultOptions: {
       mutations: {
         onError(error, variables, context) {
-          toast.error(error.response.data.error);
+          if (error.response.status !== 500)
+            toast.error(error.response.data.error);
+          else toast.error(`Ineternal server error`);
           console.error(error);
         },
       },
-      queries:{
-        refetchOnWindowFocus:false,
-      }
+      queries: {
+        refetchOnWindowFocus: false,
+      },
     },
   });
   return (

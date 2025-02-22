@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from 'react';
 import DialogModal from '../modals/DialogModal';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createBillSchema } from '~/lib/schema';
+import { billSchema } from '~/lib/schema';
 import { z } from 'zod';
 import {
   Form,
@@ -14,17 +14,18 @@ import {
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { PlusCircle } from 'lucide-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL_SERVER } from '~/lib/constants';
 import toast from 'react-hot-toast';
+import { useAuth } from '@clerk/remix';
 
 type Props = {
   openDialog: boolean;
   setOpenDialog: Dispatch<SetStateAction<boolean>>;
 };
 
-const schema = createBillSchema.pick({ domain: true });
+const schema = billSchema.pick({ domain_name: true });
 
 type TformValues = z.infer<typeof schema>;
 
@@ -32,15 +33,18 @@ export default function AddDomainForm({
   openDialog,
   setOpenDialog,
 }: Props) {
+  const queryClient = useQueryClient()
+  const { userId } = useAuth()
   const { mutate, isPending } = useMutation<any, any, TformValues>({
     mutationKey: ['post-domain'],
     mutationFn: async (data) => {
       return await axios.post(
-        `${BASE_URL_SERVER}/domain/post-domain`,
+        `${BASE_URL_SERVER}/${userId}/domain/post-domain`,
         data
       );
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({queryKey:['get_domains']})
       setOpenDialog(false);
       toast.success(`Domain added`, { position: 'bottom-right' });
     },
@@ -49,7 +53,6 @@ export default function AddDomainForm({
     resolver: zodResolver(schema),
   });
   function onSubmit(e:any) {
-    console.log(e);
     e.stopPropagation()
     const formData = form.getValues();
     mutate(formData);
@@ -68,7 +71,7 @@ export default function AddDomainForm({
         <Form {...form}>
           <FormField
             disabled={isPending}
-            name="domain"
+            name="domain_name"
             control={form.control}
             render={({ field }) => (
               <FormItem>

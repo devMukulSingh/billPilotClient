@@ -1,7 +1,24 @@
 import { z } from 'zod';
 
-export const createBillSchema = z.object({
-  distributorName: z
+export const billSchema = z.object({
+
+  distributor_id: z
+    .string({
+      required_error: 'Distributor Id is required',
+    })
+    .trim()
+    .min(1, {
+      message: 'Distributor Id is required',
+    }),
+  domain_id: z
+    .string({
+      required_error: 'domain Id is required',
+    })
+    .trim()
+    .min(1, {
+      message: 'domain Id is required',
+    }),
+  distributor_name: z
     .string({
       required_error: 'Distributor name is required',
     })
@@ -12,7 +29,7 @@ export const createBillSchema = z.object({
     .max(30, {
       message: 'Max 30 characters allowed',
     }),
-  domain: z
+  domain_name: z
     .string({
       required_error: 'domain name is required',
     })
@@ -53,4 +70,5 @@ export const createBillSchema = z.object({
     })
     .array()
     .min(1, { message: 'Atleast one item is required' }),
+
 });
