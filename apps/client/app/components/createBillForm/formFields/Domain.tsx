@@ -44,7 +44,6 @@ export default function Domain({ form }: Pick<TForm, 'form'>) {
         <FormItem>
           <FormLabel>Domain</FormLabel>
           <Select  onValueChange={(va) => {
-            console.log(va);
             field.onChange(va)
 
           }}>

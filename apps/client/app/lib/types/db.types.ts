@@ -30,3 +30,21 @@ export type TDistributor = {
     user_id: string
     domain_id : string,
 }
+
+export type TBill = {
+  id: string;
+  distributor : {
+    name:string
+  },
+  domain:{
+    name:string
+  }
+  date: Date;
+  is_paid: boolean;
+  bill_items: TBillItem[]
+	total_amount:number,
+  domain_id:string,
+  distributor_id:string
+
+};
+

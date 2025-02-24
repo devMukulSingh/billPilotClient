@@ -12,7 +12,7 @@ export default function ItemRate({ form, index }: TForm) {
   return (
     <FormField
       disabled
-      name={`bill_items.${index}.rate`}
+      name={`bill_items.${index}.item.rate`}
       control={form.control}
       render={({ field }) => (
         <FormItem className="w-20">

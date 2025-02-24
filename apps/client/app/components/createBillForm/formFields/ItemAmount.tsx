@@ -18,7 +18,7 @@ export default function ItemAmount({ form, index }: TForm) {
         <FormItem className="w-20">
           <FormLabel>Amount</FormLabel>
           <FormControl>
-            <Input className="bg-white" {...field} />
+            <Input disabled className="bg-white" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>

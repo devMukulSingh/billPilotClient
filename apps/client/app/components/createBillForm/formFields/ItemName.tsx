@@ -41,7 +41,7 @@ export default function ItemName({ form, index }: TForm) {
         <AddItemForm openDialog={openDialog} setOpenDialog={setOpenDialog} />
       )}
       <FormField
-        name={`bill_items.${index}.name`}
+        name={`bill_items.${index}.item_id`}
         control={form.control}
         render={({ field }) => (
           <FormItem className="w-1/2 ">
@@ -50,7 +50,7 @@ export default function ItemName({ form, index }: TForm) {
               onValueChange={(val) => {
                 field.onChange(val);
                 const rate = data?.find( item => item.id === val)?.rate;
-                form.setValue(`bill_items.${index}.rate`, (rate || 0));
+                form.setValue(`bill_items.${index}.item.rate`, (rate || 0));
               }}
               defaultValue={field.value}
             >

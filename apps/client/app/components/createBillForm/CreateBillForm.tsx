@@ -68,8 +68,9 @@ export default function CreateBillForm({}: Props) {
     };
   });
   function onSubmit(data: TFormValues) {
-    mutate(data);
     console.log(data);
+
+    mutate(data);
     // save to db
   }
   function handleAddItem() {
@@ -81,6 +82,7 @@ export default function CreateBillForm({}: Props) {
   const totalBillAmount = form
     .getValues()
     .bill_items.reduce((prev, curr) => prev + curr.amount, 0);
+        console.log(form.formState.errors);
   return (
     <>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -130,8 +132,8 @@ export default function CreateBillForm({}: Props) {
         "
                 >
                   <ItemName form={form} index={index} />
-                  <ItemRate form={form} index={index} />
                   <ItemQuantity form={form} index={index} />
+                  <ItemRate form={form} index={index} />
                   <ItemAmount form={form} index={index} />
                   <Button
                     variant={'destructive'}

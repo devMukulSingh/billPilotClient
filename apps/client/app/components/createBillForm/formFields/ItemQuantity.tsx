@@ -24,7 +24,7 @@ export default function ItemQuantity({ form, index }: TForm) {
               field.onChange(e.target.value);
               form.setValue(
                 `bill_items.${index}.amount`,
-               form.getValues().bill_items[index].rate * Number(e.target.value)
+               form.getValues().bill_items[index].item.rate * Number(e.target.value)
               );
             }} />
           </FormControl>

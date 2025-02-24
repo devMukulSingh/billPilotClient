@@ -13,17 +13,28 @@ import ItemsTable from '~/components/bills/ItemsTable';
 import { Separator } from '~/components/ui/separator';
 import { useState } from 'react';
 import DeleteDialog from '~/components/bills/DeleteDialog';
-import { TBill } from '~/lib/types/routes.types';
+import { TBill } from '~/lib/types/db.types';
 import TableActionsDropdown from '~/components/bills/TableActionsDropdown';
-import { Bills as bills } from '~/lib/constants';
+import { BASE_URL_SERVER, Bills as bills } from '~/lib/constants';
+import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '@clerk/remix';
+import axios from 'axios';
 
 type Props = {};
 
 export default function Bills({}: Props) {
   const [isOpenDialog, setIsOpenDialog] = useState(false);
+  const { userId } = useAuth();
+  const { data, isLoading } = useQuery<any, any, TBill[]>({
+    queryKey: ['get_bills'],
+    queryFn: async () => {
+      (await axios.get(`${BASE_URL_SERVER}/${userId}/bill/get-all-bills`)).data;
+    },
+  });
+    function onDelete() {}
   const columns: ColumnDef<TBill>[] = [
     {
-      accessorKey: 'distributorName',
+      accessorKey: 'distributor.name',
       header: 'Distributor',
     },
     {
@@ -36,15 +47,15 @@ export default function Bills({}: Props) {
             className: 'flex gap-3',
           }}
         >
-          {row.original.items.length}
+          {row.original?.bill_items?.length}
           {row.getIsExpanded() ? <ChevronUp /> : <ChevronDown />}
         </button>
       ),
     },
     {
-      accessorKey: 'isPaid',
+      accessorKey: 'is_paid',
       header: 'Paid',
-      cell: ({ row }) => (row.getValue('isPaid') ? 'Yes' : 'No'),
+      cell: ({ row }) => (row.getValue('is_paid') ? 'Yes' : 'No'),
     },
     {
       accessorKey: 'date',
@@ -67,7 +78,7 @@ export default function Bills({}: Props) {
     },
   ];
 
-  function onDelete() {}
+
   return (
     <>
       {isOpenDialog && (
@@ -81,21 +92,21 @@ export default function Bills({}: Props) {
       )}
       <div
         className="
-    flex
-    flex-col
-    gap-5
-    "
+        flex-col
+        gap-5
+        flex
+        "
       >
         <header className="space-y-2 p-5">
           <h1
             className="
-        sm:text-3xl 
-        text-2xl 
-        font-medium
-        text-neutral-800
-        flex
-        items-center
-        gap-2
+            sm:text-3xl 
+            text-2xl 
+            font-medium
+            text-neutral-800
+            flex
+            items-center
+            gap-2
         "
           >
             <Package />
@@ -103,11 +114,15 @@ export default function Bills({}: Props) {
           </h1>
           <Separator className="bg-white" />
         </header>
-        <DataTable
-          columns={columns}
-          data={bills}
-          renderSubComponent={ItemsTable}
-        />
+        {isLoading ? (
+          <>loading...</>
+        ) : (
+          <DataTable
+            columns={columns}
+            data={data}
+            renderSubComponent={ItemsTable}
+          />
+        )}
       </div>
     </>
   );

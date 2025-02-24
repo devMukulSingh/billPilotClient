@@ -44,21 +44,14 @@ export const billSchema = z.object({
   is_paid: z.boolean().default(false),
   bill_items: z
     .object({
-      name: z
-        .string({
-          required_error: 'Item name is required',
-        })
-        .trim()
-        .min(1, {
-          message: 'Item name is required',
-        })
-        .max(30, {
-          message: 'Max 100 characters allowed',
-        }),
-      rate: z.coerce.number({
-        required_error: 'rate is required',
-        invalid_type_error: 'Only numbers allowed',
+      item : z.object({
+        rate:z.coerce.number({required_error:"Rate is required"}),
+        // name: z.string({ required_error:"name is required"}).trim().min(1,{ message:"name is required"})
       }),
+      item_id: z.string({ required_error: 'Item is required', }).trim()
+        .min(1, {
+          message: 'Item  is required',
+        }),
       quantity: z.coerce.number({
         required_error: 'quantity is required',
         invalid_type_error: 'Only numbers allowed',
@@ -72,3 +65,19 @@ export const billSchema = z.object({
     .min(1, { message: 'Atleast one item is required' }),
 
 });
+
+// rate: z.coerce.number({
+//   required_error: 'rate is required',
+//   invalid_type_error: 'Only numbers allowed',
+// }),
+// name: z
+//   .string({
+//     required_error: 'Item name is required',
+//   })
+//   .trim()
+//   .min(1, {
+//     message: 'Item name is required',
+//   })
+//   .max(30, {
+//     message: 'Max 100 characters allowed',
+//   }),
