@@ -45,18 +45,18 @@ export default function CreateBillForm({}: Props) {
   const form = useForm<TFormValues>({
     resolver: zodResolver(createBillSchema),
     defaultValues: {
-      isPaid: false,
+      is_paid: false,
       date: new Date(),
       distributor_id: '',
-      domain_id:"",
-      items: [ITEM_INITIAL_VALUES],
-    }, 
+      domain_id: '',
+      bill_items: [ITEM_INITIAL_VALUES],
+    },
   });
   const fieldArray = useFieldArray({
-    name: 'items',
+    name: 'bill_items',
     control: form.control,
   });
-  const watchFieldsArray = form.watch('items');
+  const watchFieldsArray = form.watch('bill_items');
 
   const controlledFields = fieldArray.fields.map((field, index) => {
     return {
@@ -66,14 +66,7 @@ export default function CreateBillForm({}: Props) {
   });
   function onSubmit(data: TFormValues) {
     mutate(data);
-    // form.reset({
-    //   date: new Date(),
-    //   distributor_id: '',
-    //   isPaid: false,
-    //   domain_id:"",
-    //   items: [ITEM_INITIAL_VALUES],
-    // });
-
+    console.log(data);
     // save to db
   }
   function handleAddItem() {
@@ -158,12 +151,12 @@ export default function CreateBillForm({}: Props) {
         </div>
         <footer
           className="
-        absolute  
-        bottom-0 
-        bg-slate-100 
-        px-5 py-3 
-        md:w-[calc(100vw-15rem)]
-        w-[calc(100vw-5rem)]
+          bottom-0 
+          bg-slate-100 
+          px-5 py-3 
+          md:w-[calc(100vw-15rem)]
+          w-[calc(100vw-5rem)]
+          absolute  
         "
         >
           <Button disabled={isPending} type="submit">

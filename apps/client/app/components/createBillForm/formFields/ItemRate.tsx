@@ -11,11 +11,12 @@ import { Input } from '~/components/ui/input';
 export default function ItemRate({ form, index }: TForm) {
   return (
     <FormField
-      name={`items.${index}.rate`}
+      disabled
+      name={`bill_items.${index}.rate`}
       control={form.control}
       render={({ field }) => (
         <FormItem className="w-20">
-          <FormLabel>Rate</FormLabel>
+          <FormLabel>Rate ₹</FormLabel>
           <FormControl>
             <Input className="bg-white" {...field} />
           </FormControl>

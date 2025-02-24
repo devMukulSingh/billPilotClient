@@ -1,25 +1,20 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
-import { TBill } from '~/routes/_root+/bills/_index';
 import { DataTable } from './DataTable';
+import { TBill } from '~/lib/types/routes.types';
+import { TBillItem } from '~/lib/types/db.types';
 
 type Props = {
   row: Row<TBill>;
 };
 
-export type TItem = {
-  name: string;
-  rate: number;
-  quantity: number;
-  amount: number;
-};
 
-export const columns: ColumnDef<TItem>[] = [
+export const columns: ColumnDef<TBillItem>[] = [
   {
-    accessorKey: 'name',
+    accessorKey: 'item.name',
     header: 'Name',
   },
   {
-    accessorKey: 'rate',
+    accessorKey: 'item.rate',
     header: 'Rate',
   },
   {
@@ -32,7 +27,7 @@ export const columns: ColumnDef<TItem>[] = [
   },
 ];
 export default function ItemsTable({ row }: Props) {
-  const data = row.original.items;
+  const data = row.original.bill_items;
   return (
     <>
       <DataTable

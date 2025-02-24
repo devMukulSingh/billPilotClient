@@ -11,7 +11,7 @@ import { Input } from '~/components/ui/input';
 export default function ItemQuantity({ form, index }: TForm) {
   return (
     <FormField
-      name={`items.${index}.quantity`}
+      name={`bill_items.${index}.quantity`}
       control={form.control}
       render={({ field }) => (
         <FormItem className="w-20">

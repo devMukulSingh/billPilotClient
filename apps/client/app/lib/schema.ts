@@ -41,8 +41,8 @@ export const billSchema = z.object({
       message: 'Max 30 characters allowed',
     }),
   date: z.date({ required_error: 'Date is required' }),
-  isPaid: z.boolean().default(false),
-  items: z
+  is_paid: z.boolean().default(false),
+  bill_items: z
     .object({
       name: z
         .string({

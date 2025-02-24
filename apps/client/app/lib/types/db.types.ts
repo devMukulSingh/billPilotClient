@@ -1,4 +1,16 @@
-
+export type TBillItem = {
+  item : {
+    name: string;
+    rate: number;
+  }
+  quantity: number;
+  amount: number;
+};
+export type TItem = {
+    name:string,
+    rate:number,
+    id:string
+}
 
 export type TDomain = {
     id:string ,

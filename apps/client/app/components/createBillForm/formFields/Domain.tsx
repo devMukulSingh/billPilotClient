@@ -43,7 +43,11 @@ export default function Domain({ form }: Pick<TForm, 'form'>) {
       render={({ field }) => (
         <FormItem>
           <FormLabel>Domain</FormLabel>
-          <Select defaultValue={field.value} onValueChange={field.onChange}>
+          <Select  onValueChange={(va) => {
+            console.log(va);
+            field.onChange(va)
+
+          }}>
             <FormControl>
               <SelectTrigger className="bg-white">
                 <SelectValue placeholder="Select Domain" />
