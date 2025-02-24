@@ -9,6 +9,7 @@ import { TForm } from '../CreateBillForm';
 import { Input } from '~/components/ui/input';
 
 export default function ItemAmount({ form, index }: TForm) {
+
   return (
     <FormField
       name={`bill_items.${index}.amount`}

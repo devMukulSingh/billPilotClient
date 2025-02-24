@@ -22,7 +22,10 @@ import { useAuth } from '@clerk/remix';
 
 type Props = {};
 
-const createBillSchema = billSchema.omit({distributor_name:true,domain_name:true})
+const createBillSchema = billSchema.omit({
+  distributor_name: true,
+  domain_name: true,
+});
 
 type TFormValues = z.infer<typeof createBillSchema>;
 
@@ -32,16 +35,16 @@ export type TForm = {
 };
 
 export default function CreateBillForm({}: Props) {
-  const { userId } = useAuth()
-  const { mutate,isPending } = useMutation<TFormValues,any,TFormValues>({
-    mutationKey:['post_bill'],
-    mutationFn : async(data) => {
+  const { userId } = useAuth();
+  const { mutate, isPending } = useMutation<TFormValues, any, TFormValues>({
+    mutationKey: ['post_bill'],
+    mutationFn: async (data) => {
       return (
         await axios.post(`${BASE_URL_SERVER}/${userId}/bill/post-bill`, data)
       ).data;
     },
-    onSuccess: () => toast.success("Bill added")
-  })
+    onSuccess: () => toast.success('Bill added'),
+  });
   const form = useForm<TFormValues>({
     resolver: zodResolver(createBillSchema),
     defaultValues: {
@@ -75,6 +78,9 @@ export default function CreateBillForm({}: Props) {
   function handleRemoveItem(index: number) {
     fieldArray.remove(index);
   }
+  const totalBillAmount = form
+    .getValues()
+    .bill_items.reduce((prev, curr) => prev + curr.amount, 0);
   return (
     <>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -159,9 +165,15 @@ export default function CreateBillForm({}: Props) {
           absolute  
         "
         >
-          <Button disabled={isPending} type="submit">
-            Submit
-          </Button>
+          <div className='w-full md:w-2/3 flex justify-between'>
+            <Button disabled={isPending} type="submit">
+              Submit
+            </Button>
+            <h1 className="text-xl font-semibold">
+              Total {': ₹'}
+              {totalBillAmount}
+            </h1>
+          </div>
         </footer>
       </form>
     </>
