@@ -16,7 +16,7 @@ import { TForm } from '../CreateBillForm';
 import { Button } from '~/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
-import AddDistributorForm from '../AddDistributorForm';
+import AddDistributorForm from '../AddDistributorDialog';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL_SERVER } from '~/lib/constants';

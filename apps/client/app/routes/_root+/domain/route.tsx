@@ -70,7 +70,7 @@ function Header() {
             Manage Domains
           </h1>
         </div>
-        <Button onClick={ () => setIsOpenDomainDialog(true)}>
+        <Button variant={"outline"} onClick={ () => setIsOpenDomainDialog(true)}>
           <PlusCircle />
           Add Domain
         </Button>

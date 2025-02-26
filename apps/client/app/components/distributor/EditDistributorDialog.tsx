@@ -1,4 +1,4 @@
-import  { Dispatch, SetStateAction, useEffect } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import DialogModal from '../modals/DialogModal';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,69 +14,72 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { Plus, PlusCircle } from 'lucide-react';
+import { PlusCircle } from 'lucide-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL_SERVER } from '~/lib/constants';
 import toast from 'react-hot-toast';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { useAuth } from '@clerk/remix';
-import { TDomain } from '~/lib/types/db.types';
-
+import { TDistributor, TDomain } from '~/lib/types/db.types';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
 type Props = {
   openDialog: boolean;
   setOpenDialog: Dispatch<SetStateAction<boolean>>;
+  distributor: TDistributor;
 };
 
 const schema = billSchema.pick({ distributor_name: true,domain_id:true });
 
 type TformValues = z.infer<typeof schema>;
 
-export default function AddDistributorForm({
+export default function EditdistributorDialog({
   openDialog,
   setOpenDialog,
+  distributor,
 }: Props) {
-  const queryClient = useQueryClient()
-  const { userId } = useAuth()
-  const { data  } = useQuery<any,any,TDomain[]>({
-    queryKey:['domains'],
-    queryFn: async() => {
-      return (await axios.get(`${BASE_URL_SERVER}/${userId}/domain/get-all-domains`)).data;
-    }
-  })
+  const queryClient = useQueryClient();
+  const { userId } = useAuth();
+  const { data } = useQuery<unknown,unknown,TDomain[]>({queryKey:['get_domains']})
   const { mutate, isPending } = useMutation<any, any, TformValues>({
-    mutationKey: ['post-distributor'],
+    mutationKey: ['update-distributor'],
     mutationFn: async (data) => {
-      return await axios.post(
-        `${BASE_URL_SERVER}/${userId}/distributor/post-distributor`,
+      return await axios.put(
+        `${BASE_URL_SERVER}/${userId}/distributor/put-distributor/${distributor.id}`,
         data
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['get_distributors'],
-      });
-      toast.success(`Distributor added`, { position: 'bottom-right' });
+      queryClient.invalidateQueries({ queryKey: ['get_distributors'] });
       setOpenDialog(false);
+      toast.success(`Distributor Updated`, { position: 'bottom-right' });
     },
   });
   const form = useForm<TformValues>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      distributor_name: distributor.name,
+      domain_id:distributor.domain.id
+    },
   });
-  function onSubmit() {
-    form.handleSubmit( (data) => {
-      mutate(data)
-    })()
+  function onSubmit(e: any) {
+    e.stopPropagation();
+    const formData = form.getValues();
+    mutate(formData);
   }
-
   return (
     <DialogModal
-      title="Create distributor"
+      title="Edit distributor"
       open={openDialog}
       titleIcon={PlusCircle}
       onClose={() => setOpenDialog(false)}
     >
-      <form className="space-y-10" >
+      <form className="space-y-10">
         <Form {...form}>
           <FormField
             disabled={isPending}
@@ -84,9 +87,8 @@ export default function AddDistributorForm({
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input {...field} onKeyUp={(e) => e.stopPropagation()} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -113,7 +115,6 @@ export default function AddDistributorForm({
                         {domain.name}
                       </SelectItem>
                     ))}
-                   
                   </SelectContent>
                   <FormMessage />
                 </Select>
