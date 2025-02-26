@@ -1,4 +1,4 @@
-import { Plus, PlusCircle } from 'lucide-react';
+import {  PlusCircle } from 'lucide-react';
 import CreateBillForm from '~/components/createBillForm/CreateBillForm';
 import { Separator } from '~/components/ui/separator';
 
@@ -8,14 +8,11 @@ export default function CreateBill({}: Props) {
   return (
     <div
       className="
-    h-screen 
-    md:w-[calc(100vw-15rem)] 
-    w-[calc(100vw-5rem)] 
-    bg-slate-200
-    flex
-    flex-col
-    relative
-
+      h-full
+      w-full
+      flex
+      flex-col
+      relative
     "
     >
       <header className="flex flex-col sticky top-0 bg-inherit z-50 gap-2 p-5">

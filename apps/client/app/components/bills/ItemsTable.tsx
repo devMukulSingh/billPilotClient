@@ -1,6 +1,6 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { DataTable } from './DataTable';
-import { TBill } from '~/lib/types/routes.types';
+import { TBill } from '~/lib/types/db.types';
 import { TBillItem } from '~/lib/types/db.types';
 
 type Props = {

@@ -16,7 +16,7 @@ import { TForm } from '../CreateBillForm';
 import { Button } from '~/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
-import AddDomainForm from '../AddDomainForm';
+import AddDomainForm from '../AddDomainDialog';
 import { TDomain } from '~/lib/types/db.types';
 import { useAuth } from '@clerk/remix';
 import { useQuery } from '@tanstack/react-query';

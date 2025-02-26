@@ -36,7 +36,7 @@ export type TForm = {
 
 export default function CreateBillForm({}: Props) {
   const { userId } = useAuth();
-  const { mutate, isPending } = useMutation<TFormValues, any, TFormValues>({
+  const { mutate, isPending } = useMutation<any, any, TFormValues & {totalAmount:number}>({
     mutationKey: ['post_bill'],
     mutationFn: async (data) => {
       return (
@@ -67,22 +67,22 @@ export default function CreateBillForm({}: Props) {
       ...watchFieldsArray[index],
     };
   });
-  function onSubmit(data: TFormValues) {
-    console.log(data);
 
-    mutate(data);
-    // save to db
-  }
   function handleAddItem() {
     fieldArray.append(ITEM_INITIAL_VALUES);
   }
   function handleRemoveItem(index: number) {
     fieldArray.remove(index);
   }
-  const totalBillAmount = form
+  const totalAmount = form
     .getValues()
     .bill_items.reduce((prev, curr) => prev + curr.amount, 0);
-        console.log(form.formState.errors);
+  function onSubmit(data: TFormValues) {
+    mutate({
+      ...data,
+      totalAmount
+    });
+  }
   return (
     <>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -167,13 +167,13 @@ export default function CreateBillForm({}: Props) {
           absolute  
         "
         >
-          <div className='w-full md:w-2/3 flex justify-between'>
+          <div className="w-full md:w-2/3 flex justify-between">
             <Button disabled={isPending} type="submit">
               Submit
             </Button>
             <h1 className="text-xl font-semibold">
               Total {': ₹'}
-              {totalBillAmount}
+              {totalAmount}
             </h1>
           </div>
         </footer>

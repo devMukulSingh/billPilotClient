@@ -14,11 +14,8 @@ export type TItem = {
 
 export type TDomain = {
     id:string ,
-    created_at: string,
-    updated_at: string,
-    deleted_at: string,
     name: string,
-    user_id: string
+    created_at: string,
 }
 
 export type TDistributor = {

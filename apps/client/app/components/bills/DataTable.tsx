@@ -9,7 +9,6 @@ import {
 } from '@tanstack/react-table';
 import { Table as TTable } from '@tanstack/react-table';
 import React, { useState } from 'react';
-
 import {
   Table,
   TableBody,
@@ -19,45 +18,50 @@ import {
   TableRow,
 } from '~/components/ui/table';
 import { Button } from '../ui/button';
+import { cn } from '~/lib/utils';
 
 interface DataTableProps<TData, TValue> {
+  className?:string
   columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  data: TData[] | undefined;
   renderSubComponent: (props: { row: Row<TData> }) => React.ReactElement;
 }
 
-export function DataTable<TData, TValue>({
+export  function DataTable<TData, TValue>({
   columns,
   data,
+  className,
   renderSubComponent,
 }: DataTableProps<TData, TValue>) {
+  // console.log("rerender",data);
+
   const [pagination, setPagination] = useState({
     pageIndex: 0, //initial page index
     pageSize: 10, //default page size
   });
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
-    getRowCanExpand: () => true,
-    getPaginationRowModel: getPaginationRowModel(),
-    manualFiltering: true,
-    onPaginationChange: setPagination, //update the pagination state when internal APIs mutate the pagination state
-    state: {
-      //...
-      pagination,
-    },
-    initialState: {
-      pagination: {
-        pageIndex: 1, //custom initial page index
-        pageSize: 10, //custom default page size
+    const table = useReactTable({
+      data: data || [],
+      onStateChange() {},
+      columns,
+      getCoreRowModel: getCoreRowModel(),
+      getExpandedRowModel: getExpandedRowModel(),
+      getRowCanExpand: () => true,
+      getPaginationRowModel: getPaginationRowModel(),
+      manualFiltering: true,
+      onPaginationChange: setPagination, //update the pagination state when internal APIs mutate the pagination state
+      state: {
+        //...
+        pagination,
       },
-    },
-  });
-
+      initialState: {
+        pagination: {
+          pageIndex: 1, //custom initial page index
+          pageSize: 10, //custom default page size
+        },
+      },
+    });
   return (
-    <div className="px-5 rounded-md border space-y-5">
+    <div className={cn(className,`px-5 rounded-md flex flex-col  gap-5 `)}>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -119,7 +123,7 @@ export function DataTable<TData, TValue>({
 
 function PaginationButtons<TData>({ table }: { table: TTable<TData> }) {
   return (
-    <div className=" flex justify-center gap-5">
+    <div className=" flex justify-center gap-5 mt-auto">
       <Button
         onClick={() => table.firstPage()}
         disabled={!table.getCanPreviousPage()}

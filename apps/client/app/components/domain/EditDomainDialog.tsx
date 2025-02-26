@@ -19,54 +19,55 @@ import axios from 'axios';
 import { BASE_URL_SERVER } from '~/lib/constants';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
+import { TDomain } from '~/lib/types/db.types';
 
 type Props = {
   openDialog: boolean;
   setOpenDialog: Dispatch<SetStateAction<boolean>>;
+  domain:TDomain
 };
 
 const schema = billSchema.pick({ domain_name: true });
 
 type TformValues = z.infer<typeof schema>;
 
-export default function AddDomainForm({
-  openDialog,
-  setOpenDialog,
-}: Props) {
-  const queryClient = useQueryClient()
-  const { userId } = useAuth()
+export default function EditDomainDialog({ openDialog, setOpenDialog,domain }: Props) {
+  const queryClient = useQueryClient();
+  const { userId } = useAuth();
   const { mutate, isPending } = useMutation<any, any, TformValues>({
-    mutationKey: ['post-domain'],
+    mutationKey: ['update-domain'],
     mutationFn: async (data) => {
-      return await axios.post(
-        `${BASE_URL_SERVER}/${userId}/domain/post-domain`,
+      return await axios.put(
+        `${BASE_URL_SERVER}/${userId}/domain/put-domain/${domain.id}`,
         data
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey:['get_domains']})
+      queryClient.invalidateQueries({ queryKey: ['get_domains'] });
       setOpenDialog(false);
-      toast.success(`Domain added`, { position: 'bottom-right' });
+      toast.success(`Domain Updated`, { position: 'bottom-right' });
     },
   });
   const form = useForm<TformValues>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      domain_name: domain.name
+    },
   });
-  function onSubmit(e:any) {
-    e.stopPropagation()
+  function onSubmit(e: any) {
+    e.stopPropagation();
     const formData = form.getValues();
     mutate(formData);
   }
   return (
     <DialogModal
-      title="Create domain"
+      title="Edit domain"
       open={openDialog}
       titleIcon={PlusCircle}
       onClose={() => setOpenDialog(false)}
     >
-      <form 
-      className="space-y-10" 
-    //   onSubmit={form.handleSubmit(onSubmit)}
+      <form
+        className="space-y-10"
       >
         <Form {...form}>
           <FormField
@@ -76,7 +77,7 @@ export default function AddDomainForm({
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input {...field} onKeyUp={(e) => e.stopPropagation()}/>
+                  <Input {...field} onKeyUp={(e) => e.stopPropagation()} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

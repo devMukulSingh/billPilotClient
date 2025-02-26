@@ -15,25 +15,28 @@ export default function DropdownModal({
   dropdownOptions,
 }: TDopdownModalProps) {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
-      <DropdownMenuContent className="">
-        <DropdownMenuGroup>
-          {dropdownOptions.map((option, index) => (
-            <DropdownMenuItem
-              className={cn(
-                `flex items-center gap-2 cursor-pointer`,
-                option.className
-              )}
-              key={index}
-              onClick={option.onSelect}
-            >
-              <option.icon size={15} />
-              {option.label}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+        <DropdownMenuContent className="">
+          <DropdownMenuGroup>
+            {dropdownOptions.map((option, index) => (
+              <DropdownMenuItem
+                className={cn(
+                  `flex items-center gap-2 cursor-pointer`,
+                  option.className
+                )}
+                key={index}
+                onClick={option.onSelect}
+              >
+                <option.icon size={15} />
+                {option.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 }

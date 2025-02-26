@@ -9,6 +9,7 @@ type Props = {
   innerDivClassName?: string;
   description?: string;
   onDelete: () => void;
+  disabled:boolean
 };
 
 export default function DeleteDialog({
@@ -17,6 +18,7 @@ export default function DeleteDialog({
   title,
   description,
   onDelete,
+  disabled,
 }: Props) {
   return (
     <DialogModal
@@ -27,10 +29,12 @@ export default function DeleteDialog({
       onClose={onClose}
       description={description}
     >
-      <Button onClick={onDelete} variant={'destructive'}>
+      <Button disabled={disabled} onClick={onDelete} variant={'destructive'}>
         Delete
       </Button>
-      <Button onClick={onClose}>Cancel</Button>
+      <Button disabled={disabled} onClick={onClose}>
+        Cancel
+      </Button>
     </DialogModal>
   );
 }

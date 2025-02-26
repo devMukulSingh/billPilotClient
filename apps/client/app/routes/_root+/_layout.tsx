@@ -17,7 +17,16 @@ export default function RootLayout({}: Props) {
   return (
     <div className="flex">
       <Sidebar />
-      <Outlet />
+      <div
+        className="     
+        w-[calc(100vw-5rem)] 
+        bg-slate-200
+        md:w-[calc(100vw-15rem)] 
+        h-screen 
+      "
+      >
+        <Outlet />
+      </div>
     </div>
   );
 }

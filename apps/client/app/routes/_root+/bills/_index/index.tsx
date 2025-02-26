@@ -1,37 +1,35 @@
-import { ColumnDef, Row } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import {
   ChevronDown,
   ChevronUp,
-  Edit,
   Menu,
   Package,
-  Trash,
 } from 'lucide-react';
-import { DataTable } from '~/components/bills/DataTable';
+import {DataTable} from '~/components/bills/DataTable';
 import ItemsTable from '~/components/bills/ItemsTable';
 import { Separator } from '~/components/ui/separator';
 import { useState } from 'react';
 import DeleteDialog from '~/components/bills/DeleteDialog';
-import { TBill } from '~/lib/types/db.types';
 import TableActionsDropdown from '~/components/bills/TableActionsDropdown';
-import { BASE_URL_SERVER, Bills as bills } from '~/lib/constants';
+import { BASE_URL_SERVER } from '~/lib/constants';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@clerk/remix';
+import { ColumnDef } from '@tanstack/react-table';
 import axios from 'axios';
+import { TBill } from '~/lib/types/db.types';
 
 type Props = {};
 
 export default function Bills({}: Props) {
   const [isOpenDialog, setIsOpenDialog] = useState(false);
   const { userId } = useAuth();
-  const { data, isLoading } = useQuery<any, any, TBill[]>({
+  const { data , isLoading } = useQuery<any, any, TBill[]>({
     queryKey: ['get_bills'],
     queryFn: async () => {
-      (await axios.get(`${BASE_URL_SERVER}/${userId}/bill/get-all-bills`)).data;
+      return (await axios.get(`${BASE_URL_SERVER}/${userId}/bill/get-all-bills`)).data
     },
   });
-    function onDelete() {}
+  function onDelete() {}
   const columns: ColumnDef<TBill>[] = [
     {
       accessorKey: 'distributor.name',
@@ -78,7 +76,6 @@ export default function Bills({}: Props) {
     },
   ];
 
-
   return (
     <>
       {isOpenDialog && (
@@ -114,12 +111,12 @@ export default function Bills({}: Props) {
           </h1>
           <Separator className="bg-white" />
         </header>
-        {isLoading ? (
+        {isLoading? (
           <>loading...</>
         ) : (
           <DataTable
             columns={columns}
-            data={data}
+            data={data || []}
             renderSubComponent={ItemsTable}
           />
         )}
@@ -127,3 +124,4 @@ export default function Bills({}: Props) {
     </>
   );
 }
+//  DataTableProps<TBill, unknown>.columns: ColumnDef<TBill, unknown>[]

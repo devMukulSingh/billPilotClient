@@ -1,5 +1,5 @@
 import { Link, useLocation } from '@remix-run/react';
-import { Plus, PlusCircle, ScrollText } from 'lucide-react';
+import { Package, Plus, PlusCircle, ScrollText } from 'lucide-react';
 
 type Props = {};
 
@@ -11,6 +11,18 @@ export default function Navlinks({}: Props) {
       link: '/create-bill',
       isActive: location.pathname === '/create-bill',
       icon: PlusCircle,
+    },
+    {
+      title:"Domains",
+      link: '/domain',
+      isActive: location.pathname === '/domain',
+      icon: Package,
+    },
+    {
+      title:"Distributors",
+      link: '/distributor',
+      isActive: location.pathname === '/distributor',
+      icon: Package,
     },
     {
       title: 'All bills',
