@@ -15,7 +15,7 @@ import { Button } from '../ui/button';
 import { PlusCircle, X } from 'lucide-react';
 import { BASE_URL_SERVER, ITEM_INITIAL_VALUES } from '~/lib/constants';
 import Domain from './formFields/Domain';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
@@ -36,6 +36,7 @@ export type TForm = {
 
 export default function CreateBillForm({}: Props) {
   const { userId } = useAuth();
+  const queryClient = useQueryClient()
   const { mutate, isPending } = useMutation<any, any, TFormValues & {totalAmount:number}>({
     mutationKey: ['post_bill'],
     mutationFn: async (data) => {
@@ -43,7 +44,10 @@ export default function CreateBillForm({}: Props) {
         await axios.post(`${BASE_URL_SERVER}/${userId}/bill/post-bill`, data)
       ).data;
     },
-    onSuccess: () => toast.success('Bill added'),
+    onSuccess: () => {
+      toast.success('Bill added'),
+      queryClient.invalidateQueries({queryKey:['get_bills']})
+    }
   });
   const form = useForm<TFormValues>({
     resolver: zodResolver(createBillSchema),

@@ -29,7 +29,7 @@ export default function DeleteDialog({
       onClose={onClose}
       description={description}
     >
-      <Button disabled={disabled} onClick={onDelete} variant={'destructive'}>
+      <Button type='button' disabled={disabled} onClick={onDelete} variant={'destructive'}>
         Delete
       </Button>
       <Button disabled={disabled} onClick={onClose}>

@@ -13,22 +13,22 @@ export default function Navlinks({}: Props) {
       icon: PlusCircle,
     },
     {
-      title:"Domains",
+      title: 'All bills',
+      link: '/bills',
+      isActive: location.pathname === '/bills',
+      icon: ScrollText,
+    },
+    {
+      title: 'Domains',
       link: '/domain',
       isActive: location.pathname === '/domain',
       icon: Package,
     },
     {
-      title:"Distributors",
+      title: 'Distributors',
       link: '/distributor',
       isActive: location.pathname === '/distributor',
       icon: Package,
-    },
-    {
-      title: 'All bills',
-      link: '/bills',
-      isActive: location.pathname === '/bills',
-      icon: ScrollText,
     },
   ];
   return (

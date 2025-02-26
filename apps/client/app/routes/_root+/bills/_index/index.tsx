@@ -1,35 +1,33 @@
 import { format } from 'date-fns';
-import {
-  ChevronDown,
-  ChevronUp,
-  Menu,
-  Package,
-} from 'lucide-react';
-import {DataTable} from '~/components/bills/DataTable';
+import { ChevronDown, ChevronUp, Menu, Package } from 'lucide-react';
+import { DataTable } from '~/components/bills/DataTable';
 import ItemsTable from '~/components/bills/ItemsTable';
 import { Separator } from '~/components/ui/separator';
 import { useState } from 'react';
-import DeleteDialog from '~/components/bills/DeleteDialog';
 import TableActionsDropdown from '~/components/bills/TableActionsDropdown';
 import { BASE_URL_SERVER } from '~/lib/constants';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/remix';
 import { ColumnDef } from '@tanstack/react-table';
 import axios from 'axios';
 import { TBill } from '~/lib/types/db.types';
+import toast from 'react-hot-toast';
 
 type Props = {};
 
 export default function Bills({}: Props) {
   const [isOpenDialog, setIsOpenDialog] = useState(false);
+
   const { userId } = useAuth();
-  const { data , isLoading } = useQuery<any, any, TBill[]>({
+  const { data, isFetching } = useQuery<unknown, unknown, TBill[]>({
     queryKey: ['get_bills'],
     queryFn: async () => {
-      return (await axios.get(`${BASE_URL_SERVER}/${userId}/bill/get-all-bills`)).data
+      return (
+        await axios.get(`${BASE_URL_SERVER}/${userId}/bill/get-all-bills`)
+      ).data;
     },
   });
-  function onDelete() {}
+
   const columns: ColumnDef<TBill>[] = [
     {
       accessorKey: 'distributor.name',
@@ -66,8 +64,9 @@ export default function Bills({}: Props) {
       cell: ({ row }) => {
         return (
           <TableActionsDropdown
-            billId={row.original.id}
-            onOpenDialog={() => setIsOpenDialog(true)}
+            bill={row.original}
+            isOpenDialog={isOpenDialog}
+            setIsOpenDialog={setIsOpenDialog}
           >
             <Menu className="cursor-pointer" />
           </TableActionsDropdown>
@@ -78,15 +77,6 @@ export default function Bills({}: Props) {
 
   return (
     <>
-      {isOpenDialog && (
-        <DeleteDialog
-          onDelete={onDelete}
-          description="This action can't be undone"
-          open={isOpenDialog}
-          onClose={() => setIsOpenDialog(false)}
-          title="Are you sure?"
-        />
-      )}
       <div
         className="
         flex-col
@@ -111,7 +101,7 @@ export default function Bills({}: Props) {
           </h1>
           <Separator className="bg-white" />
         </header>
-        {isLoading? (
+        {isFetching ? (
           <>loading...</>
         ) : (
           <DataTable
