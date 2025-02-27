@@ -81,7 +81,7 @@ function Header() {
 
 function Domains() {
   const { userId } = useAuth();
-  const { data, isFetching } = useQuery<unknown, unknown, TDomain[]>({
+  const { data, isFetching,isPending } = useQuery<unknown, unknown, TDomain[]>({
     queryKey: ['get_domains'],
     queryFn: async () => {
       return (
@@ -118,7 +118,7 @@ function Domains() {
 
   return (
     <>
-      {isFetching ? (
+      {isFetching || isPending ? (
         <>loading...</>
       ) : (
         <DataTable

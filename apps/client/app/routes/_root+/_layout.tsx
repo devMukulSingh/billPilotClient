@@ -15,14 +15,14 @@ export const loader: LoaderFunction = async (args) => {
 
 export default function RootLayout({}: Props) {
   return (
-    <div className="flex">
+    <div className="flex max-h-screen ">
       <Sidebar />
       <div
         className="     
         w-[calc(100vw-5rem)] 
         bg-slate-200
         md:w-[calc(100vw-15rem)] 
-        h-screen 
+
       "
       >
         <Outlet />

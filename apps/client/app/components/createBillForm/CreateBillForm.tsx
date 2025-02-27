@@ -27,17 +27,17 @@ const createBillSchema = billSchema.omit({
   domain_name: true,
 });
 
-type TFormValues = z.infer<typeof createBillSchema>;
+export type TCreateBillFormValues = z.infer<typeof createBillSchema>;
 
 export type TForm = {
-  form: UseFormReturn<TFormValues, any, undefined>;
+  form: UseFormReturn<TCreateBillFormValues, any, undefined>;
   index: number;
 };
 
 export default function CreateBillForm({}: Props) {
   const { userId } = useAuth();
   const queryClient = useQueryClient()
-  const { mutate, isPending } = useMutation<any, any, TFormValues & {totalAmount:number}>({
+  const { mutate, isPending } = useMutation<any, any, TCreateBillFormValues & {totalAmount:number}>({
     mutationKey: ['post_bill'],
     mutationFn: async (data) => {
       return (
@@ -49,7 +49,7 @@ export default function CreateBillForm({}: Props) {
       queryClient.invalidateQueries({queryKey:['get_bills']})
     }
   });
-  const form = useForm<TFormValues>({
+  const form = useForm<TCreateBillFormValues>({
     resolver: zodResolver(createBillSchema),
     defaultValues: {
       is_paid: false,
@@ -81,7 +81,7 @@ export default function CreateBillForm({}: Props) {
   const totalAmount = form
     .getValues()
     .bill_items.reduce((prev, curr) => prev + curr.amount, 0);
-  function onSubmit(data: TFormValues) {
+  function onSubmit(data: TCreateBillFormValues) {
     mutate({
       ...data,
       totalAmount

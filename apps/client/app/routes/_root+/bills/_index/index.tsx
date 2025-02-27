@@ -19,7 +19,7 @@ export default function Bills({}: Props) {
   const [isOpenDialog, setIsOpenDialog] = useState(false);
 
   const { userId } = useAuth();
-  const { data, isFetching } = useQuery<unknown, unknown, TBill[]>({
+  const { data, isFetching,isPending } = useQuery<unknown, unknown, TBill[]>({
     queryKey: ['get_bills'],
     queryFn: async () => {
       return (
@@ -101,7 +101,7 @@ export default function Bills({}: Props) {
           </h1>
           <Separator className="bg-white" />
         </header>
-        {isFetching ? (
+        {isFetching || isPending ? (
           <>loading...</>
         ) : (
           <DataTable

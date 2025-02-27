@@ -5,8 +5,7 @@ import {
   FormMessage,
   FormControl,
 } from '~/components/ui/form';
-import { TForm } from '../CreateBillForm';
-import { Input } from '~/components/ui/input';
+import { TCreateBillFormValues, TForm } from '../CreateBillForm';
 import {
   Select,
   SelectContent,
@@ -23,6 +22,8 @@ import { PlusCircle } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import AddItemForm from '../AddItemForm';
 import { useState } from 'react';
+import { ControllerRenderProps } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 export default function ItemName({ form, index }: TForm) {
   const { userId } = useAuth();
@@ -35,6 +36,20 @@ export default function ItemName({ form, index }: TForm) {
     },
   });
   const [openDialog, setOpenDialog] = useState(false);
+  function onSelect({field,selectedValue}: {
+    selectedValue: string;
+    field: ControllerRenderProps<TCreateBillFormValues>;
+  }) {
+    field.onChange(selectedValue);
+    const rate = data?.find((item) => item.id === selectedValue)?.rate;
+    if(!rate){
+      console.error("Rate is undefined");
+      return toast.error("Something went wrong, please contact the developer.")
+    }
+    const quantity = form.getValues(`bill_items.${index}.quantity`);
+    form.setValue(`bill_items.${index}.item.rate`, rate || 0);
+    form.setValue(`bill_items.${index}.amount`, rate * quantity);
+  }
   return (
     <>
       {openDialog && (
@@ -47,11 +62,7 @@ export default function ItemName({ form, index }: TForm) {
           <FormItem className="w-1/2 ">
             <FormLabel>Name</FormLabel>
             <Select
-              onValueChange={(val) => {
-                field.onChange(val);
-                const rate = data?.find( item => item.id === val)?.rate;
-                form.setValue(`bill_items.${index}.item.rate`, (rate || 0));
-              }}
+              onValueChange={(val) => onSelect({selectedValue:val,field})}
               defaultValue={field.value}
             >
               <FormControl>

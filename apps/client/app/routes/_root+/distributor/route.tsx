@@ -81,7 +81,7 @@ function Header() {
 
 function Distributor() {
   const { userId } = useAuth();
-  const { data, isFetching } = useQuery<unknown, unknown, TDistributor[]>({
+  const { data, isFetching,isPending } = useQuery<unknown, unknown, TDistributor[]>({
     queryKey: ['get_distributors'],
     queryFn: async () => {
       return (
@@ -125,16 +125,18 @@ function Distributor() {
 
   return (
     <>
-      {isFetching ? (
-        <>loading...</>
-      ) : (
-        <DataTable
-          className="min-h-[calc(100vh-7rem)]"
-          renderSubComponent={() => <></>}
-          data={data}
-          columns={columns}
-        />
-      )}
+      {
+        (isFetching || isPending ? (
+          <>loading...</>
+        ) : (
+          <DataTable
+            className="min-h-[calc(100vh-7rem)]"
+            renderSubComponent={() => <></>}
+            data={data}
+            columns={columns}
+          />
+        ))
+      }
     </>
   );
 }
