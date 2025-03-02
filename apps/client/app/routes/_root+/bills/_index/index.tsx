@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { ChevronDown, ChevronUp, Menu, Package } from 'lucide-react';
-import { DataTable } from '~/components/bills/DataTable';
+import { DataTable } from '~/components/commons/DataTable';
 import ItemsTable from '~/components/bills/ItemsTable';
 import { Separator } from '~/components/ui/separator';
 import { useState } from 'react';
@@ -12,18 +12,24 @@ import { ColumnDef } from '@tanstack/react-table';
 import axios from 'axios';
 import { TBill } from '~/lib/types/db.types';
 import toast from 'react-hot-toast';
+import { TApiResponse } from '~/lib/types/apiResponse.types';
+import { useSearchParams } from '@remix-run/react';
 
 type Props = {};
 
 export default function Bills({}: Props) {
   const [isOpenDialog, setIsOpenDialog] = useState(false);
-
+  const [searchParams] = useSearchParams();
+  const page = Number(searchParams.get('page')) || 1;
+  const limit = 10;
   const { userId } = useAuth();
-  const { data, isFetching,isPending } = useQuery<unknown, unknown, TBill[]>({
+  const { data, isFetching, isPending } = useQuery<TApiResponse<TBill>>({
     queryKey: ['get_bills'],
     queryFn: async () => {
       return (
-        await axios.get(`${BASE_URL_SERVER}/${userId}/bill/get-all-bills`)
+        await axios.get(`${BASE_URL_SERVER}/${userId}/bill/get-all-bills`, {
+          params: { page, limit },
+        })
       ).data;
     },
   });
@@ -74,7 +80,7 @@ export default function Bills({}: Props) {
       },
     },
   ];
-
+  const totalPages = Math.ceil((data?.count || 1) / limit);
   return (
     <>
       <div
@@ -82,6 +88,7 @@ export default function Bills({}: Props) {
         flex-col
         gap-5
         flex
+        h-full border-2
         "
       >
         <header className="space-y-2 p-5">
@@ -94,6 +101,7 @@ export default function Bills({}: Props) {
             flex
             items-center
             gap-2
+            border-2
         "
           >
             <Package />
@@ -105,8 +113,10 @@ export default function Bills({}: Props) {
           <>loading...</>
         ) : (
           <DataTable
+            className="min-h-[calc(100vh-12rem)]"
             columns={columns}
-            data={data || []}
+            data={data?.data || []}
+            totalPages={totalPages}
             renderSubComponent={ItemsTable}
           />
         )}

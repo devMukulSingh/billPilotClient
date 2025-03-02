@@ -8,7 +8,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { Table as TTable } from '@tanstack/react-table';
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Table,
   TableBody,
@@ -20,17 +20,13 @@ import {
 import { Button } from '../ui/button';
 import { cn } from '~/lib/utils';
 import { useSearchParams } from '@remix-run/react';
-import { useQuery } from '@tanstack/react-query';
-import { BASE_URL_SERVER } from '~/lib/constants';
-import { useAuth } from '@clerk/remix';
-import { TDistributor } from '~/lib/types/db.types';
-import { TApiResponse } from '~/lib/types/apiResponse.types';
+
 
 interface DataTableProps<TData, TValue> {
   className?: string;
   columns: ColumnDef<TData, TValue>[];
   data: TData[] | undefined;
-  totalPages:number
+  totalPages?:number
   renderSubComponent: (props: { row: Row<TData> }) => React.ReactElement;
 }
 
@@ -62,7 +58,12 @@ export function DataTable<TData, TValue>({
     },
   });
   return (
-    <div className={cn(className, `px-5 rounded-md flex flex-col  gap-5 `)}>
+    <div
+      className={cn(
+        className,
+        `px-5 rounded-md flex flex-col  gap-5 `
+      )}
+    >
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -117,7 +118,10 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      <PaginationButtons totalPages={totalPages} table={table} />
+      {
+        totalPages  &&
+        <PaginationButtons totalPages={totalPages} table={table} />
+      }
     </div>
   );
 }

@@ -1,12 +1,11 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
-import { DataTable } from './DataTable';
+import { DataTable } from '../commons/DataTable';
 import { TBill } from '~/lib/types/db.types';
 import { TBillItem } from '~/lib/types/db.types';
 
 type Props = {
   row: Row<TBill>;
 };
-
 
 export const columns: ColumnDef<TBillItem>[] = [
   {

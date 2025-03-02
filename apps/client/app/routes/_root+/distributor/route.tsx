@@ -6,7 +6,7 @@ import axios from 'axios';
 import { format } from 'date-fns';
 import { Edit, Menu, Package, PlusCircle, Trash } from 'lucide-react';
 import React, { useState } from 'react';
-import { DataTable } from '~/components/bills/DataTable';
+import { DataTable } from '~/components/commons/DataTable';
 import AddDistributorDialog from '~/components/createBillForm/AddDistributorDialog';
 import TableActionsDropdown from '~/components/distributor/TableActionsDropdown';
 import { Button } from '~/components/ui/button';
@@ -68,7 +68,10 @@ function Header() {
             Manage distributors
           </h1>
         </div>
-        <Button variant={'outline'} onClick={() => setIsOpendistributorDialog(true)}>
+        <Button
+          variant={'outline'}
+          onClick={() => setIsOpendistributorDialog(true)}
+        >
           <PlusCircle />
           Add distributor
         </Button>
@@ -78,18 +81,18 @@ function Header() {
 }
 
 function Distributor() {
-  const [searchParams] = useSearchParams()
-  const page = searchParams.get("page") || '1';
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get('page') || '1';
   const limit = 10;
   const { userId } = useAuth();
   const { data, isFetching, isPending } = useQuery<TApiResponse<TDistributor>>({
-    queryKey: ['get_distributors',page],
+    queryKey: ['get_distributors', page],
     queryFn: async () => {
       return (
         await axios.get(
           `${BASE_URL_SERVER}/${userId}/distributor/get-all-distributors`,
           {
-            params: { page,limit },
+            params: { page, limit },
           }
         )
       ).data;
@@ -113,7 +116,6 @@ function Distributor() {
     {
       accessorKey: 'domain.name',
       header: 'Domain',
-     
     },
     {
       id: 'actions',

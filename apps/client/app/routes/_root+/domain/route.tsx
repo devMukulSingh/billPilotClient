@@ -6,7 +6,7 @@ import axios from 'axios';
 import { format } from 'date-fns';
 import { Edit, Menu, Package, PlusCircle, Trash } from 'lucide-react';
 import React, { useState } from 'react';
-import { DataTable } from '~/components/bills/DataTable';
+import { DataTable } from '~/components/commons/DataTable';
 import DeleteDialog from '~/components/bills/DeleteDialog';
 import AddDomainDialog from '~/components/createBillForm/AddDomainDialog';
 import TableActionsDropdown from '~/components/domain/TableActionsDropdown';
@@ -44,13 +44,12 @@ function Header() {
   const [isOpenDomainDialog, setIsOpenDomainDialog] = useState(false);
   return (
     <>
-    {
-      isOpenDomainDialog &&
-      <AddDomainDialog
-      openDialog={isOpenDomainDialog}
-      setOpenDialog={setIsOpenDomainDialog}
-      />
-    }
+      {isOpenDomainDialog && (
+        <AddDomainDialog
+          openDialog={isOpenDomainDialog}
+          setOpenDialog={setIsOpenDomainDialog}
+        />
+      )}
       <header
         className="
         w-full 
@@ -72,7 +71,7 @@ function Header() {
             Manage Domains
           </h1>
         </div>
-        <Button variant={"outline"} onClick={ () => setIsOpenDomainDialog(true)}>
+        <Button variant={'outline'} onClick={() => setIsOpenDomainDialog(true)}>
           <PlusCircle />
           Add Domain
         </Button>
@@ -82,15 +81,17 @@ function Header() {
 }
 
 function Domains() {
-  const [searchParams] = useSearchParams()
-  const page = searchParams.get("page") || '1'
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get('page') || '1';
   const limit = 10;
   const { userId } = useAuth();
   const { data, isFetching, isPending } = useQuery<TApiResponse<TDomain>>({
-    queryKey: ['get_domains',page],
+    queryKey: ['get_domains', page],
     queryFn: async () => {
       return (
-        await axios.get(`${BASE_URL_SERVER}/${userId}/domain/get-all-domains`,{params:{page,limit}})
+        await axios.get(`${BASE_URL_SERVER}/${userId}/domain/get-all-domains`, {
+          params: { page, limit },
+        })
       ).data;
     },
   });
