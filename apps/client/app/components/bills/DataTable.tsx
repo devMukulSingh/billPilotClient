@@ -24,12 +24,13 @@ import { useQuery } from '@tanstack/react-query';
 import { BASE_URL_SERVER } from '~/lib/constants';
 import { useAuth } from '@clerk/remix';
 import { TDistributor } from '~/lib/types/db.types';
-import { TDistributorApi } from '~/lib/types/apiResponse.types';
+import { TApiResponse } from '~/lib/types/apiResponse.types';
 
 interface DataTableProps<TData, TValue> {
   className?: string;
   columns: ColumnDef<TData, TValue>[];
   data: TData[] | undefined;
+  totalPages:number
   renderSubComponent: (props: { row: Row<TData> }) => React.ReactElement;
 }
 
@@ -38,6 +39,7 @@ export function DataTable<TData, TValue>({
   data,
   className,
   renderSubComponent,
+  totalPages
 }: DataTableProps<TData, TValue>) {
   // console.log("rerender",data);
   const [searchParams] = useSearchParams();
@@ -115,22 +117,27 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      <PaginationButtons table={table} />
+      <PaginationButtons totalPages={totalPages} table={table} />
     </div>
   );
 }
 
-function PaginationButtons<TData>({ table }: { table: TTable<TData> }) {
+function PaginationButtons<TData>({
+  table,
+  totalPages,
+}: {
+  table: TTable<TData>;
+  totalPages:number
+}) {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = Number(searchParams.get('page')) || 1;
-  const { data } = useQuery<TDistributorApi>({
-    queryKey: ['get_distributors',page.toString()],
-  });
-  const totalPages = Math.ceil((data?.count || 1) / 10 );
-  console.log(data);
+
   return (
     <div className=" flex justify-center gap-5 mt-auto">
-      <Button onClick={() => setSearchParams({page:'1'})} disabled={page === 1}>
+      <Button
+        onClick={() => setSearchParams({ page: '1' })}
+        disabled={page === 1}
+      >
         {'<<'}
       </Button>
       <Button
@@ -145,7 +152,10 @@ function PaginationButtons<TData>({ table }: { table: TTable<TData> }) {
       >
         {'>'}
       </Button>
-      <Button onClick={() => setSearchParams({ page: totalPages.toString()})} disabled={totalPages === page}>
+      <Button
+        onClick={() => setSearchParams({ page: totalPages.toString() })}
+        disabled={totalPages === page}
+      >
         {'>>'}
       </Button>
     </div>

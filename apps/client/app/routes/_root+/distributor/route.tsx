@@ -12,7 +12,7 @@ import TableActionsDropdown from '~/components/distributor/TableActionsDropdown'
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
 import { BASE_URL_SERVER } from '~/lib/constants';
-import { TDistributorApi } from '~/lib/types/apiResponse.types';
+import { TApiResponse } from '~/lib/types/apiResponse.types';
 import { TDistributor } from '~/lib/types/db.types';
 
 type Props = {};
@@ -49,10 +49,10 @@ function Header() {
       )}
       <header
         className="
-        items-center 
         w-full 
         justify-between
         flex 
+        items-center 
       "
       >
         <div className="flex gap-2 items-center ">
@@ -80,15 +80,16 @@ function Header() {
 function Distributor() {
   const [searchParams] = useSearchParams()
   const page = searchParams.get("page") || '1';
+  const limit = 10;
   const { userId } = useAuth();
-  const { data, isFetching, isPending } = useQuery<TDistributorApi>({
+  const { data, isFetching, isPending } = useQuery<TApiResponse<TDistributor>>({
     queryKey: ['get_distributors',page],
     queryFn: async () => {
       return (
         await axios.get(
           `${BASE_URL_SERVER}/${userId}/distributor/get-all-distributors`,
           {
-            params: { page },
+            params: { page,limit },
           }
         )
       ).data;
@@ -125,21 +126,20 @@ function Distributor() {
       },
     },
   ];
-
+  const totalPages = Math.ceil((data?.count || 1) / limit);
   return (
     <>
-      {
-        (isFetching || isPending ? (
-          <>loading...</>
-        ) : (
-          <DataTable
-            className="min-h-[calc(100vh-7rem)]"
-            renderSubComponent={() => <></>}
-            data={data?.distributors}
-            columns={columns}
-          />
-        ))
-      }
+      {isFetching || isPending ? (
+        <>loading...</>
+      ) : (
+        <DataTable
+          className="min-h-[calc(100vh-7rem)]"
+          totalPages={totalPages}
+          renderSubComponent={() => <></>}
+          data={data?.data}
+          columns={columns}
+        />
+      )}
     </>
   );
 }
