@@ -19,49 +19,48 @@ import {
 } from '~/components/ui/table';
 import { Button } from '../ui/button';
 import { cn } from '~/lib/utils';
+import { useSearchParams } from '@remix-run/react';
+import { useQuery } from '@tanstack/react-query';
+import { BASE_URL_SERVER } from '~/lib/constants';
+import { useAuth } from '@clerk/remix';
+import { TDistributor } from '~/lib/types/db.types';
+import { TDistributorApi } from '~/lib/types/apiResponse.types';
 
 interface DataTableProps<TData, TValue> {
-  className?:string
+  className?: string;
   columns: ColumnDef<TData, TValue>[];
   data: TData[] | undefined;
   renderSubComponent: (props: { row: Row<TData> }) => React.ReactElement;
 }
 
-export  function DataTable<TData, TValue>({
+export function DataTable<TData, TValue>({
   columns,
   data,
   className,
   renderSubComponent,
 }: DataTableProps<TData, TValue>) {
   // console.log("rerender",data);
+  const [searchParams] = useSearchParams();
+  const page = Number(searchParams.get('page')) || 1;
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0, //initial page index
-    pageSize: 10, //default page size
+  const table = useReactTable({
+    data: data || [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getRowCanExpand: () => true,
+    getPaginationRowModel: getPaginationRowModel(),
+    manualFiltering: true,
+    manualPagination: true,
+    initialState: {
+      pagination: {
+        pageIndex: 1, //custom initial page index
+        pageSize: 10, //custom default page size
+      },
+    },
   });
-    const table = useReactTable({
-      data: data || [],
-      onStateChange() {},
-      columns,
-      getCoreRowModel: getCoreRowModel(),
-      getExpandedRowModel: getExpandedRowModel(),
-      getRowCanExpand: () => true,
-      getPaginationRowModel: getPaginationRowModel(),
-      manualFiltering: true,
-      onPaginationChange: setPagination, //update the pagination state when internal APIs mutate the pagination state
-      state: {
-        //...
-        pagination,
-      },
-      initialState: {
-        pagination: {
-          pageIndex: 1, //custom initial page index
-          pageSize: 10, //custom default page size
-        },
-      },
-    });
   return (
-    <div className={cn(className,`px-5 rounded-md flex flex-col  gap-5 `)}>
+    <div className={cn(className, `px-5 rounded-md flex flex-col  gap-5 `)}>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -122,30 +121,31 @@ export  function DataTable<TData, TValue>({
 }
 
 function PaginationButtons<TData>({ table }: { table: TTable<TData> }) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = Number(searchParams.get('page')) || 1;
+  const { data } = useQuery<TDistributorApi>({
+    queryKey: ['get_distributors',page.toString()],
+  });
+  const totalPages = Math.ceil((data?.count || 1) / 10 );
+  console.log(data);
   return (
     <div className=" flex justify-center gap-5 mt-auto">
-      <Button
-        onClick={() => table.firstPage()}
-        disabled={!table.getCanPreviousPage()}
-      >
+      <Button onClick={() => setSearchParams({page:'1'})} disabled={page === 1}>
         {'<<'}
       </Button>
       <Button
-        onClick={() => table.previousPage()}
-        disabled={!table.getCanPreviousPage()}
+        onClick={() => setSearchParams({ page: `${page - 1}` })}
+        disabled={page === 1}
       >
         {'<'}
       </Button>
       <Button
-        onClick={() => table.nextPage()}
-        disabled={!table.getCanNextPage()}
+        onClick={() => setSearchParams({ page: `${page + 1}` })}
+        disabled={totalPages === page}
       >
         {'>'}
       </Button>
-      <Button
-        onClick={() => table.lastPage()}
-        disabled={!table.getCanNextPage()}
-      >
+      <Button onClick={() => setSearchParams({ page: totalPages.toString()})} disabled={totalPages === page}>
         {'>>'}
       </Button>
     </div>

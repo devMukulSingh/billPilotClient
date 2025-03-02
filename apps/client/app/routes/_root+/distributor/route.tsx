@@ -1,21 +1,19 @@
 import { useAuth } from '@clerk/remix';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useSearchParams } from '@remix-run/react';
+import { useQuery } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import axios from 'axios';
 import { format } from 'date-fns';
 import { Edit, Menu, Package, PlusCircle, Trash } from 'lucide-react';
 import React, { useState } from 'react';
 import { DataTable } from '~/components/bills/DataTable';
-import DeleteDialog from '~/components/bills/DeleteDialog';
 import AddDistributorDialog from '~/components/createBillForm/AddDistributorDialog';
 import TableActionsDropdown from '~/components/distributor/TableActionsDropdown';
-
-import DropdownModal from '~/components/modals/DopdownModal';
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
 import { BASE_URL_SERVER } from '~/lib/constants';
+import { TDistributorApi } from '~/lib/types/apiResponse.types';
 import { TDistributor } from '~/lib/types/db.types';
-import { TDropdownOptions } from '~/lib/types/modals.types';
 
 type Props = {};
 
@@ -51,20 +49,20 @@ function Header() {
       )}
       <header
         className="
-      flex 
-      items-center 
-      w-full 
-      justify-between
+        items-center 
+        w-full 
+        justify-between
+        flex 
       "
       >
         <div className="flex gap-2 items-center ">
           <Package size={30} />
           <h1
             className="
-            sm:text-3xl 
             font-semibold 
             underline-offset-1
             text-2xl
+            sm:text-3xl 
       "
           >
             Manage distributors
@@ -80,13 +78,18 @@ function Header() {
 }
 
 function Distributor() {
+  const [searchParams] = useSearchParams()
+  const page = searchParams.get("page") || '1';
   const { userId } = useAuth();
-  const { data, isFetching,isPending } = useQuery<unknown, unknown, TDistributor[]>({
-    queryKey: ['get_distributors'],
+  const { data, isFetching, isPending } = useQuery<TDistributorApi>({
+    queryKey: ['get_distributors',page],
     queryFn: async () => {
       return (
         await axios.get(
-          `${BASE_URL_SERVER}/${userId}/distributor/get-all-distributors`
+          `${BASE_URL_SERVER}/${userId}/distributor/get-all-distributors`,
+          {
+            params: { page },
+          }
         )
       ).data;
     },
@@ -132,7 +135,7 @@ function Distributor() {
           <DataTable
             className="min-h-[calc(100vh-7rem)]"
             renderSubComponent={() => <></>}
-            data={data}
+            data={data?.distributors}
             columns={columns}
           />
         ))

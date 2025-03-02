@@ -27,7 +27,8 @@ export type TDistributor = {
     created_at: string,
     updated_at: string,
     name: string,
-    user_id: string
+    user_id: string,
+    
 }
 
 export type TBill = {
