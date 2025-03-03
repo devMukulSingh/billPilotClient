@@ -41,7 +41,7 @@ export default function Bills({}: Props) {
     },
     {
       accessorKey: 'expander',
-      header: 'Items',
+      header: 'Products',
       cell: ({ row }) => (
         <button
           {...{

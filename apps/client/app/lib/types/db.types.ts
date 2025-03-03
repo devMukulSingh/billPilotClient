@@ -1,5 +1,5 @@
 export type TBillItem = {
-  item: {
+  product: {
     name: string;
     rate: number;
   }

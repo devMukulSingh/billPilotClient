@@ -9,11 +9,11 @@ type Props = {
 
 export const columns: ColumnDef<TBillItem>[] = [
   {
-    accessorKey: 'item.name',
+    accessorKey: 'product.name',
     header: 'Name',
   },
   {
-    accessorKey: 'item.rate',
+    accessorKey: 'product.rate',
     header: 'Rate',
   },
   {
