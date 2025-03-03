@@ -22,11 +22,12 @@ import { useAuth } from '@clerk/remix';
 import { useQuery } from '@tanstack/react-query';
 import { BASE_URL_SERVER } from '~/lib/constants';
 import axios from 'axios';
+import { TApiResponse } from '~/lib/types/apiResponse.types';
 
 export default function Domain({ form }: Pick<TForm, 'form'>) {
   const { userId } = useAuth()
-  const { data } = useQuery<any, any, TDomain[]>({
-    queryKey: ['get_domains'],
+  const { data } = useQuery<any, any, TApiResponse<TDomain>>({
+    queryKey: ['get_all_domains'],
     queryFn: async () => {
       return (
         (await axios.get(`${BASE_URL_SERVER}/${userId}/domain/get-all-domains`)).data
@@ -53,7 +54,7 @@ export default function Domain({ form }: Pick<TForm, 'form'>) {
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {data?.map((domain, index) => (
+              {data?.data.map((domain, index) => (
                 <SelectItem key={index} value={domain.id}>
                   {domain.name}
                 </SelectItem>

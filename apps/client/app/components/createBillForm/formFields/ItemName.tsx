@@ -17,34 +17,40 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL_SERVER } from '~/lib/constants';
 import { useAuth } from '@clerk/remix';
-import { TItem } from '~/lib/types/db.types';
+import { TProduct } from '~/lib/types/db.types';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import AddItemForm from '../AddItemForm';
 import { useState } from 'react';
 import { ControllerRenderProps } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { TApiResponse } from '~/lib/types/apiResponse.types';
 
 export default function ItemName({ form, index }: TForm) {
   const { userId } = useAuth();
-  const { data } = useQuery<any, any, TItem[]>({
-    queryKey: ['get_items'],
+  const { data } = useQuery<any, any, TApiResponse<TProduct>>({
+    queryKey: ['get_all_items'],
     queryFn: async () => {
       return (
-        await axios.get(`${BASE_URL_SERVER}/${userId}/item/get-all-items`)
+        await axios.get(
+          `${BASE_URL_SERVER}/${userId}/product/get-all-products`,
+        )
       ).data;
     },
   });
   const [openDialog, setOpenDialog] = useState(false);
-  function onSelect({field,selectedValue}: {
+  function onSelect({
+    field,
+    selectedValue,
+  }: {
     selectedValue: string;
     field: ControllerRenderProps<TCreateBillFormValues>;
   }) {
     field.onChange(selectedValue);
-    const rate = data?.find((item) => item.id === selectedValue)?.rate;
-    if(!rate){
-      console.error("Rate is undefined");
-      return toast.error("Something went wrong, please contact the developer.")
+    const rate = data?.data.find((item) => item.id === selectedValue)?.rate;
+    if (!rate) {
+      console.error('Rate is undefined');
+      return toast.error('Something went wrong, please contact the developer.');
     }
     const quantity = form.getValues(`bill_items.${index}.quantity`);
     form.setValue(`bill_items.${index}.item.rate`, rate || 0);
@@ -62,7 +68,7 @@ export default function ItemName({ form, index }: TForm) {
           <FormItem className="w-1/2 ">
             <FormLabel>Name</FormLabel>
             <Select
-              onValueChange={(val) => onSelect({selectedValue:val,field})}
+              onValueChange={(val) => onSelect({ selectedValue: val, field })}
               defaultValue={field.value}
             >
               <FormControl>
@@ -71,7 +77,7 @@ export default function ItemName({ form, index }: TForm) {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {data?.map((item, index) => (
+                {data?.data.map((item, index) => (
                   <SelectItem value={item.id} key={index}>
                     {item.name}
                   </SelectItem>

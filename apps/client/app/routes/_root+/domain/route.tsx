@@ -89,7 +89,7 @@ function Domains() {
     queryKey: ['get_domains', page],
     queryFn: async () => {
       return (
-        await axios.get(`${BASE_URL_SERVER}/${userId}/domain/get-all-domains`, {
+        await axios.get(`${BASE_URL_SERVER}/${userId}/domain/get-domains`, {
           params: { page, limit },
         })
       ).data;

@@ -90,7 +90,7 @@ function Distributor() {
     queryFn: async () => {
       return (
         await axios.get(
-          `${BASE_URL_SERVER}/${userId}/distributor/get-all-distributors`,
+          `${BASE_URL_SERVER}/${userId}/distributor/get-distributors`,
           {
             params: { page, limit },
           }

@@ -22,11 +22,12 @@ import axios from 'axios';
 import { BASE_URL_SERVER } from '~/lib/constants';
 import { useAuth } from '@clerk/remix';
 import { TDistributor } from '~/lib/types/db.types';
+import { TApiResponse } from '~/lib/types/apiResponse.types';
 
 export default function DistributorName({ form }: Pick<TForm, 'form'>) {
   const { userId  } = useAuth()
-  const { data } = useQuery<any,any,TDistributor[]>({
-    queryKey:['get_distributors'],
+  const { data } = useQuery<any,any,TApiResponse<TDistributor>>({
+    queryKey:['get_all_distributors'],
     queryFn: async() => {
       return (await axios.get(`${BASE_URL_SERVER}/${userId}/distributor/get-all-distributors`)).data;
     }
@@ -65,7 +66,7 @@ export default function DistributorName({ form }: Pick<TForm, 'form'>) {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {data?.map((dist, index) => (
+                {data?.data.map((dist, index) => (
                   <SelectItem key={index} value={dist.id}>
                     {dist.name}
                   </SelectItem>
