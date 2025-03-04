@@ -1,4 +1,4 @@
-import  { Dispatch, SetStateAction, useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import DialogModal from '../modals/DialogModal';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,7 +19,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL_SERVER } from '~/lib/constants';
 import toast from 'react-hot-toast';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
 import { useAuth } from '@clerk/remix';
 import { TDomain } from '~/lib/types/db.types';
 import DistributorName from '../formFields/DistributorName';
@@ -30,7 +36,7 @@ type Props = {
   setOpenDialog: Dispatch<SetStateAction<boolean>>;
 };
 
-const schema = billSchema.pick({ distributor_name: true,domain_id:true });
+const schema = billSchema.pick({ distributor_name: true, domain_id: true });
 
 export type TDistributorFormValues = z.infer<typeof schema>;
 
@@ -38,8 +44,8 @@ export default function AddDistributorDialog({
   openDialog,
   setOpenDialog,
 }: Props) {
-  const queryClient = useQueryClient()
-  const { userId } = useAuth()
+  const queryClient = useQueryClient();
+  const { userId } = useAuth();
 
   const { mutate, isPending } = useMutation<any, any, TDistributorFormValues>({
     mutationKey: ['post_distributor'],
@@ -61,9 +67,9 @@ export default function AddDistributorDialog({
     resolver: zodResolver(schema),
   });
   function onSubmit() {
-    form.handleSubmit( (data) => {
-      mutate(data)
-    })()
+    form.handleSubmit((data) => {
+      mutate(data);
+    })();
   }
 
   return (
@@ -73,10 +79,10 @@ export default function AddDistributorDialog({
       titleIcon={PlusCircle}
       onClose={() => setOpenDialog(false)}
     >
-      <form className="space-y-10" >
+      <form className="space-y-10">
         <Form {...form}>
-         <DistributorName form={form} isPending={isPending}/>
-         <Domain form={form} isPending={isPending}/>
+          <DistributorName form={form} isPending={isPending} />
+          <Domain form={form} isPending={isPending} />
         </Form>
         <Button disabled={isPending} type="button" onClick={onSubmit}>
           Submit

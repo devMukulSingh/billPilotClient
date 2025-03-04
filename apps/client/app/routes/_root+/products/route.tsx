@@ -7,8 +7,8 @@ import { format } from 'date-fns';
 import { Menu, PlusCircle, ShoppingBag } from 'lucide-react';
 import { useState } from 'react';
 import { DataTable } from '~/components/commons/DataTable';
-import AddProductDialog from '~/components/createBillForm/AddProductDialog';
-import AddProductForm from '~/components/createBillForm/AddProductDialog';
+import AddProductDialog from '~/components/product/AddProductDialog';
+import AddProductForm from '~/components/product/AddProductDialog';
 import TableActionsDropdown from '~/components/product/TableActionsDropdown';
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
@@ -63,7 +63,9 @@ function Header() {
           "
         >
           <ShoppingBag />
-          <h1 className="text-2xl sm:text-3xl font-semibold">Manage Products</h1>
+          <h1 className="text-2xl sm:text-3xl font-semibold">
+            Manage Products
+          </h1>
         </div>
 
         <Button onClick={() => setOpenDialog(true)} variant={'outline'}>

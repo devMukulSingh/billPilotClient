@@ -20,7 +20,7 @@ import { useAuth } from '@clerk/remix';
 import { TProduct } from '~/lib/types/db.types';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '~/components/ui/button';
-import AddProductDialog from '../AddProductDialog';
+import AddProductDialog from '../../product/AddProductDialog';
 import { useState } from 'react';
 import { ControllerRenderProps } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -32,9 +32,7 @@ export default function ProductName({ form, index }: TForm) {
     queryKey: ['get_all_products'],
     queryFn: async () => {
       return (
-        await axios.get(
-          `${BASE_URL_SERVER}/${userId}/product/get-all-products`,
-        )
+        await axios.get(`${BASE_URL_SERVER}/${userId}/product/get-all-products`)
       ).data;
     },
   });

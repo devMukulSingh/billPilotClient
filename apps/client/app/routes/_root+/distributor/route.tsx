@@ -65,7 +65,7 @@ function Header() {
             sm:text-3xl 
       "
           >
-            Manage distributors
+            Manage Distributors
           </h1>
         </div>
         <Button

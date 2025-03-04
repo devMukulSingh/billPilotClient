@@ -52,7 +52,7 @@ export default function DistributorName({ form }: Pick<TForm, 'form'>) {
         control={form.control}
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Distributor Name</FormLabel>
+            <FormLabel>Distributor </FormLabel>
             <Select
               onOpenChange={() => openSelect && setOpenSelect(false)}
               open={openSelect}

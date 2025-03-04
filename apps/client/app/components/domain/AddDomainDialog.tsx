@@ -1,17 +1,9 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import  { Dispatch, SetStateAction } from 'react';
 import DialogModal from '../modals/DialogModal';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { billSchema } from '~/lib/schema';
 import { z } from 'zod';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { PlusCircle } from 'lucide-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -65,10 +57,7 @@ export default function AddDomainDialog({
       titleIcon={PlusCircle}
       onClose={() => setOpenDialog(false)}
     >
-      <form 
-      className="space-y-10" 
-    //   onSubmit={form.handleSubmit(onSubmit)}
-      >
+      <form className="space-y-10">
         <DomainName form={form} isPending={isPending}/>
         <Button disabled={isPending} type="button" onClick={onSubmit}>
           Submit
