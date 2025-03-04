@@ -8,7 +8,7 @@ import { Edit, Menu, Package, PlusCircle, Trash } from 'lucide-react';
 import React, { useState } from 'react';
 import { DataTable } from '~/components/commons/DataTable';
 import DeleteDialog from '~/components/bills/DeleteDialog';
-import AddDomainDialog from '~/components/createBillForm/AddDomainDialog';
+import AddDomainDialog from '~/components/domain/AddDomainDialog';
 import TableActionsDropdown from '~/components/domain/TableActionsDropdown';
 import DropdownModal from '~/components/modals/DopdownModal';
 import { Button } from '~/components/ui/button';

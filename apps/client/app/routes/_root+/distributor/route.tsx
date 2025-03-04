@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import { Edit, Menu, Package, PlusCircle, Trash } from 'lucide-react';
 import React, { useState } from 'react';
 import { DataTable } from '~/components/commons/DataTable';
-import AddDistributorDialog from '~/components/createBillForm/AddDistributorDialog';
+import AddDistributorDialog from '~/components/distributor/AddDistributorDialog';
 import TableActionsDropdown from '~/components/distributor/TableActionsDropdown';
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';

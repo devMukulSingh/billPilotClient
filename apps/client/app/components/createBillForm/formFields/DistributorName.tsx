@@ -16,7 +16,7 @@ import { TForm } from '../CreateBillForm';
 import { Button } from '~/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
-import AddDistributorForm from '../AddDistributorDialog';
+import AddDistributorForm from '../../distributor/AddDistributorDialog';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL_SERVER } from '~/lib/constants';
@@ -25,16 +25,20 @@ import { TDistributor } from '~/lib/types/db.types';
 import { TApiResponse } from '~/lib/types/apiResponse.types';
 
 export default function DistributorName({ form }: Pick<TForm, 'form'>) {
-  const { userId  } = useAuth()
-  const { data } = useQuery<any,any,TApiResponse<TDistributor>>({
-    queryKey:['get_all_distributors'],
-    queryFn: async() => {
-      return (await axios.get(`${BASE_URL_SERVER}/${userId}/distributor/get-all-distributors`)).data;
-    }
-  })
-   
+  const { userId } = useAuth();
+  const { data } = useQuery<any, any, TApiResponse<TDistributor>>({
+    queryKey: ['get_all_distributors'],
+    queryFn: async () => {
+      return (
+        await axios.get(
+          `${BASE_URL_SERVER}/${userId}/distributor/get-all-distributors`
+        )
+      ).data;
+    },
+  });
+
   const [openDialog, setOpenDialog] = useState(false);
-  const [openSelect, setOpenSelect] = useState(false)
+  const [openSelect, setOpenSelect] = useState(false);
   return (
     <>
       {openDialog && (
@@ -60,9 +64,7 @@ export default function DistributorName({ form }: Pick<TForm, 'form'>) {
                   onClick={() => setOpenSelect((prev) => !prev)}
                   className="bg-white"
                 >
-                  <SelectValue
-                    placeholder="Select distributor"
-                  />
+                  <SelectValue placeholder="Select distributor" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>

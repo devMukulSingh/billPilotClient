@@ -29,13 +29,15 @@ import {
   SelectValue,
 } from '../ui/select';
 import { TApiResponse } from '~/lib/types/apiResponse.types';
+import DistributorName from '../formFields/DistributorName';
+import Domain from '../formFields/Domain';
 type Props = {
   openDialog: boolean;
   setOpenDialog: Dispatch<SetStateAction<boolean>>;
   distributor: TDistributor;
 };
 
-const schema = billSchema.pick({ distributor_name: true,domain_id:true });
+const schema = billSchema.pick({ distributor_name: true, domain_id: true });
 
 type TformValues = z.infer<typeof schema>;
 
@@ -46,10 +48,6 @@ export default function EditdistributorDialog({
 }: Props) {
   const queryClient = useQueryClient();
   const { userId } = useAuth();
-  const { data } = useQuery<unknown,unknown,TApiResponse<TDomain>>({
-    queryKey:['get_all_domains'],
-    queryFn : async() =>  (await axios.get(`${BASE_URL_SERVER}/${userId}/domain/get-all-domains`)).data
-  })
   const { mutate, isPending } = useMutation<any, any, TformValues>({
     mutationKey: ['update_distributor'],
     mutationFn: async (data) => {
@@ -68,7 +66,7 @@ export default function EditdistributorDialog({
     resolver: zodResolver(schema),
     defaultValues: {
       distributor_name: distributor.name,
-      domain_id:distributor.domain.id
+      domain_id: distributor.domain.id,
     },
   });
   function onSubmit(e: any) {
@@ -85,46 +83,8 @@ export default function EditdistributorDialog({
     >
       <form className="space-y-10">
         <Form {...form}>
-          <FormField
-            disabled={isPending}
-            name="distributor_name"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input {...field} onKeyUp={(e) => e.stopPropagation()} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="domain_id"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Domain</FormLabel>
-                <Select
-                  defaultValue={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <FormControl>
-                    <SelectTrigger className="bg-white">
-                      <SelectValue placeholder="Select Domain" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {data?.data.map((domain, index) => (
-                      <SelectItem key={index} value={domain.id}>
-                        {domain.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                  <FormMessage />
-                </Select>
-              </FormItem>
-            )}
-          />
+          <DistributorName form={form} isPending={isPending} />
+          <Domain form={form} isPending={isPending} />
         </Form>
         <Button disabled={isPending} type="button" onClick={onSubmit}>
           Submit
