@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import { TApiResponse } from '~/lib/types/apiResponse.types';
 type Props = {
   openDialog: boolean;
   setOpenDialog: Dispatch<SetStateAction<boolean>>;
@@ -45,9 +46,12 @@ export default function EditdistributorDialog({
 }: Props) {
   const queryClient = useQueryClient();
   const { userId } = useAuth();
-  const { data } = useQuery<unknown,unknown,TDomain[]>({queryKey:['get_domains']})
+  const { data } = useQuery<unknown,unknown,TApiResponse<TDomain>>({
+    queryKey:['get_all_domains'],
+    queryFn : async() =>  (await axios.get(`${BASE_URL_SERVER}/${userId}/domain/get-all-domains`)).data
+  })
   const { mutate, isPending } = useMutation<any, any, TformValues>({
-    mutationKey: ['update-distributor'],
+    mutationKey: ['update_distributor'],
     mutationFn: async (data) => {
       return await axios.put(
         `${BASE_URL_SERVER}/${userId}/distributor/put-distributor/${distributor.id}`,
@@ -110,7 +114,7 @@ export default function EditdistributorDialog({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {data?.map((domain, index) => (
+                    {data?.data.map((domain, index) => (
                       <SelectItem key={index} value={domain.id}>
                         {domain.name}
                       </SelectItem>

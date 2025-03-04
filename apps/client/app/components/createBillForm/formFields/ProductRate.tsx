@@ -8,17 +8,17 @@ import {
 import { TForm } from '../CreateBillForm';
 import { Input } from '~/components/ui/input';
 
-export default function ItemAmount({ form, index }: TForm) {
-
+export default function ProductRate({ form, index }: TForm) {
   return (
     <FormField
-      name={`bill_items.${index}.amount`}
+      disabled
+      name={`bill_items.${index}.product.rate`}
       control={form.control}
       render={({ field }) => (
         <FormItem className="w-20">
-          <FormLabel>Amount</FormLabel>
+          <FormLabel>Rate ₹</FormLabel>
           <FormControl>
-            <Input disabled className="bg-white" {...field} />
+            <Input className="bg-white" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>

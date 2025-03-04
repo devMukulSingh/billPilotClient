@@ -5,7 +5,7 @@ import SearchBar from '~/components/bills/Header';
 
 export default function BillLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="w-[calc(100vw-15rem)] bg-slate-200">
+    <div className=" bg-slate-200">
       <BillsHeader />
       <Outlet />
     </div>

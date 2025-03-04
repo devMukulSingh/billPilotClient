@@ -8,7 +8,7 @@ import {
 import { TForm } from '../CreateBillForm';
 import { Input } from '~/components/ui/input';
 
-export default function ItemQuantity({ form, index }: TForm) {
+export default function ProductQuantity({ form, index }: TForm) {
  
   return (
     <FormField
@@ -24,7 +24,8 @@ export default function ItemQuantity({ form, index }: TForm) {
               field.onChange(e.target.value);
               form.setValue(
                 `bill_items.${index}.amount`,
-               form.getValues().bill_items[index].item.rate * Number(e.target.value)
+                form.getValues().bill_items[index].product.rate *
+                  Number(e.target.value)
               );
             }} />
           </FormControl>

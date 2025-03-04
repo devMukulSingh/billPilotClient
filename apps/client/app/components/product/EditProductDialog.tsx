@@ -19,46 +19,52 @@ import axios from 'axios';
 import { BASE_URL_SERVER } from '~/lib/constants';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
+import { TProduct } from '~/lib/types/db.types';
 
 type Props = {
   openDialog: boolean;
   setOpenDialog: Dispatch<SetStateAction<boolean>>;
+  product : TProduct
 };
 
 const schema = z.object({
-    name:z.string(),
-    rate:z.coerce.number()
-})
+  name: z.string(),
+  rate: z.coerce.number(),
+});
 
 type TformValues = z.infer<typeof schema>;
 
-export default function AddItemForm({ openDialog, setOpenDialog }: Props) {
+export default function EditProductDialog({ openDialog, setOpenDialog,product }: Props) {
   const queryClient = useQueryClient();
   const { userId } = useAuth();
   const { mutate, isPending } = useMutation<any, any, TformValues>({
-    mutationKey: ['post-item'],
+    mutationKey: ['put_product'],
     mutationFn: async (data) => {
-      return await axios.post(
-        `${BASE_URL_SERVER}/${userId}/item/post-item`,
+      return await axios.put(
+        `${BASE_URL_SERVER}/${userId}/product/put-product/${product.id}`,
         data
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['get_items'] });
+      queryClient.invalidateQueries({ queryKey: ['get_products'] });
       setOpenDialog(false);
-      toast.success(`item added`, { position: 'bottom-right' });
+      toast.success(`Product updated`, { position: 'bottom-right' });
     },
   });
   const form = useForm<TformValues>({
     resolver: zodResolver(schema),
+    defaultValues: {
+        name:product.name,
+        rate:product.rate
+    }
   });
   function onSubmit() {
     form.handleSubmit((data) => mutate(data))();
   }
   return (
     <DialogModal
-      dialogContentClassName='w-[25rem]'
-      title="Create item"
+      dialogContentClassName="w-[25rem]"
+      title="Edit Product"
       open={openDialog}
       titleIcon={PlusCircle}
       onClose={() => setOpenDialog(false)}

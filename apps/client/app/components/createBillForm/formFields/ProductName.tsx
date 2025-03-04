@@ -20,16 +20,16 @@ import { useAuth } from '@clerk/remix';
 import { TProduct } from '~/lib/types/db.types';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '~/components/ui/button';
-import AddItemForm from '../AddItemForm';
+import AddProductDialog from '../AddProductDialog';
 import { useState } from 'react';
 import { ControllerRenderProps } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { TApiResponse } from '~/lib/types/apiResponse.types';
 
-export default function ItemName({ form, index }: TForm) {
+export default function ProductName({ form, index }: TForm) {
   const { userId } = useAuth();
   const { data } = useQuery<any, any, TApiResponse<TProduct>>({
-    queryKey: ['get_all_items'],
+    queryKey: ['get_all_products'],
     queryFn: async () => {
       return (
         await axios.get(
@@ -53,16 +53,19 @@ export default function ItemName({ form, index }: TForm) {
       return toast.error('Something went wrong, please contact the developer.');
     }
     const quantity = form.getValues(`bill_items.${index}.quantity`);
-    form.setValue(`bill_items.${index}.item.rate`, rate || 0);
+    form.setValue(`bill_items.${index}.product.rate`, rate || 0);
     form.setValue(`bill_items.${index}.amount`, rate * quantity);
   }
   return (
     <>
       {openDialog && (
-        <AddItemForm openDialog={openDialog} setOpenDialog={setOpenDialog} />
+        <AddProductDialog
+          openDialog={openDialog}
+          setOpenDialog={setOpenDialog}
+        />
       )}
       <FormField
-        name={`bill_items.${index}.item_id`}
+        name={`bill_items.${index}.product_id`}
         control={form.control}
         render={({ field }) => (
           <FormItem className="w-1/2 ">
@@ -73,7 +76,7 @@ export default function ItemName({ form, index }: TForm) {
             >
               <FormControl>
                 <SelectTrigger className="bg-white">
-                  <SelectValue placeholder="Select Item" />
+                  <SelectValue placeholder="Select Product" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
@@ -88,7 +91,7 @@ export default function ItemName({ form, index }: TForm) {
                   onClick={() => setOpenDialog(true)}
                 >
                   <PlusCircle />
-                  <h1>Add new Item</h1>
+                  <h1>Add new Product</h1>
                 </Button>
               </SelectContent>
               <FormMessage />

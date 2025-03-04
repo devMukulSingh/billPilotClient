@@ -36,7 +36,7 @@ export default function AddDomainDialog({
   const queryClient = useQueryClient()
   const { userId } = useAuth()
   const { mutate, isPending } = useMutation<any, any, TformValues>({
-    mutationKey: ['post-domain'],
+    mutationKey: ['post_domain'],
     mutationFn: async (data) => {
       return await axios.post(
         `${BASE_URL_SERVER}/${userId}/domain/post-domain`,

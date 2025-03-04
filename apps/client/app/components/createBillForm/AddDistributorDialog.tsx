@@ -45,7 +45,7 @@ export default function AddDistributorDialog({
     }
   })
   const { mutate, isPending } = useMutation<any, any, TformValues>({
-    mutationKey: ['post-distributor'],
+    mutationKey: ['post_distributor'],
     mutationFn: async (data) => {
       return await axios.post(
         `${BASE_URL_SERVER}/${userId}/distributor/post-distributor`,

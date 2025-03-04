@@ -34,7 +34,7 @@ export default function DomainRoute({}: Props) {
     "
     >
       <Header />
-      <Separator className="border" />
+      <Separator className="border-white border" />
       <Domains />
     </div>
   );

@@ -1,14 +1,14 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import DialogModal from '../modals/DialogModal';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { billSchema } from '~/lib/schema';
 import { z } from 'zod';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
@@ -19,63 +19,73 @@ import axios from 'axios';
 import { BASE_URL_SERVER } from '~/lib/constants';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
-import { TDomain } from '~/lib/types/db.types';
 
 type Props = {
   openDialog: boolean;
   setOpenDialog: Dispatch<SetStateAction<boolean>>;
-  domain:TDomain
 };
 
-const schema = billSchema.pick({ domain_name: true });
+const schema = z.object({
+    name:z.string(),
+    rate:z.coerce.number()
+})
 
 type TformValues = z.infer<typeof schema>;
 
-export default function EditDomainDialog({ openDialog, setOpenDialog,domain }: Props) {
+export default function AddProductDialog({ openDialog, setOpenDialog }: Props) {
   const queryClient = useQueryClient();
   const { userId } = useAuth();
   const { mutate, isPending } = useMutation<any, any, TformValues>({
-    mutationKey: ['put_domain'],
+    mutationKey: ['post_product'],
     mutationFn: async (data) => {
-      return await axios.put(
-        `${BASE_URL_SERVER}/${userId}/domain/put-domain/${domain.id}`,
+      return await axios.post(
+        `${BASE_URL_SERVER}/${userId}/product/post-product`,
         data
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['get_domains'] });
+      queryClient.invalidateQueries({  queryKey: ["get_products"] });
       setOpenDialog(false);
-      toast.success(`Domain Updated`, { position: 'bottom-right' });
+      toast.success(`product added`, { position: 'bottom-right' });
     },
   });
   const form = useForm<TformValues>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      domain_name: domain.name
-    },
   });
-  function onSubmit(e: any) {
-    e.stopPropagation();
-    const formData = form.getValues();
-    mutate(formData);
+  function onSubmit() {
+    form.handleSubmit((data) => mutate(data))();
   }
   return (
     <DialogModal
-      title="Edit domain"
+      dialogContentClassName='w-[25rem]'
+      title="Create product"
       open={openDialog}
       titleIcon={PlusCircle}
       onClose={() => setOpenDialog(false)}
     >
-      <form
-        className="space-y-10"
-      >
+      <form className="space-y-5">
         <Form {...form}>
           <FormField
             disabled={isPending}
-            name="domain_name"
+            name="name"
             control={form.control}
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input {...field} onKeyUp={(e) => e.stopPropagation()} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            disabled={isPending}
+            name="rate"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Rate ₹</FormLabel>
                 <FormControl>
                   <Input {...field} onKeyUp={(e) => e.stopPropagation()} />
                 </FormControl>
@@ -85,7 +95,7 @@ export default function EditDomainDialog({ openDialog, setOpenDialog,domain }: P
           />
         </Form>
         <Button disabled={isPending} type="button" onClick={onSubmit}>
-          Submit
+          Create
         </Button>
       </form>
     </DialogModal>

@@ -44,13 +44,13 @@ export const billSchema = z.object({
   is_paid: z.boolean().default(false),
   bill_items: z
     .object({
-      item : z.object({
+      product : z.object({
         rate:z.coerce.number({required_error:"Rate is required"}),
-        // name: z.string({ required_error:"name is required"}).trim().min(1,{ message:"name is required"})
+ 
       }),
-      item_id: z.string({ required_error: 'Item is required', }).trim()
+      product_id: z.string({ required_error: 'Item is required', }).trim()
         .min(1, {
-          message: 'Item  is required',
+          message: 'Product  is required',
         }),
       quantity: z.coerce.number({
         required_error: 'quantity is required',
@@ -62,7 +62,7 @@ export const billSchema = z.object({
       }),
     })
     .array()
-    .min(1, { message: 'Atleast one item is required' }),
+    .min(1, { message: 'Atleast one product is required' }),
 
 });
 

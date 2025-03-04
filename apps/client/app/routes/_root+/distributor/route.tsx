@@ -31,7 +31,7 @@ export default function DistributorRoute({}: Props) {
     "
     >
       <Header />
-      <Separator className="border" />
+      <Separator className="border-white border" />
       <Distributor />
     </div>
   );

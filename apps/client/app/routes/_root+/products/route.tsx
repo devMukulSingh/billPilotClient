@@ -4,8 +4,12 @@ import { useQuery } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { PlusCircle, ShoppingBag } from 'lucide-react';
+import { Menu, PlusCircle, ShoppingBag } from 'lucide-react';
+import { useState } from 'react';
 import { DataTable } from '~/components/commons/DataTable';
+import AddProductDialog from '~/components/createBillForm/AddProductDialog';
+import AddProductForm from '~/components/createBillForm/AddProductDialog';
+import TableActionsDropdown from '~/components/product/TableActionsDropdown';
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
 import { BASE_URL_SERVER } from '~/lib/constants';
@@ -34,30 +38,40 @@ export default function ProductsRoute() {
 }
 
 function Header() {
+  const [openDialog, setOpenDialog] = useState(false);
   return (
-    <header
-      className="
+    <>
+      {
+        <AddProductDialog
+          openDialog={openDialog}
+          setOpenDialog={setOpenDialog}
+        />
+      }
+      <header
+        className="
         flex 
         items-center
         justify-between
         gap-2 
       "
-    >
-      <div
-        className="      
+      >
+        <div
+          className="      
           items-center
           flex 
           gap-2 
           "
-      >
-        <ShoppingBag />
-        <h1 className="text-2xl font-semibold">Manage Products</h1>
-      </div>
-      <Button variant={'outline'}>
-        <PlusCircle />
-        Add Product
-      </Button>
-    </header>
+        >
+          <ShoppingBag />
+          <h1 className="text-2xl sm:text-3xl font-semibold">Manage Products</h1>
+        </div>
+
+        <Button onClick={() => setOpenDialog(true)} variant={'outline'}>
+          <PlusCircle />
+          Add Product
+        </Button>
+      </header>
+    </>
   );
 }
 
@@ -94,6 +108,16 @@ function ProductsTable() {
       accessorKey: 'created_at',
       header: 'Date',
       cell: ({ row }) => <> {format(row.original.created_at, 'Pp')}</>,
+    },
+    {
+      id: 'actions',
+      cell: ({ row }) => {
+        return (
+          <TableActionsDropdown product={row.original}>
+            <Menu className="cursor-pointer" />
+          </TableActionsDropdown>
+        );
+      },
     },
   ];
   return (

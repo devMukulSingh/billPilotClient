@@ -107,7 +107,7 @@ export default function Bills({}: Props) {
             <Package />
             All Bills
           </h1>
-          <Separator className="bg-white" />
+          <Separator className="border-white border" />
         </header>
         {isFetching || isPending ? (
           <>loading...</>

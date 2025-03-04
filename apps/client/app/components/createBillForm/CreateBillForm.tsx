@@ -7,10 +7,10 @@ import DistributorName from './formFields/DistributorName';
 import DateCreated from './formFields/Date';
 import IsPaid from './formFields/IsPaid';
 import { Separator } from '../ui/separator';
-import ItemName from './formFields/ItemName';
-import ItemRate from './formFields/ItemRate';
-import ItemQuantity from './formFields/ItemQuantity';
-import ItemAmount from './formFields/ItemAmount';
+import ItemName from './formFields/ProductName';
+import ItemRate from './formFields/ProductRate';
+import ItemQuantity from './formFields/ProductQuantity';
+import ItemAmount from './formFields/ProductAmount';
 import { Button } from '../ui/button';
 import { PlusCircle, X } from 'lucide-react';
 import { BASE_URL_SERVER, ITEM_INITIAL_VALUES } from '~/lib/constants';
@@ -36,8 +36,12 @@ export type TForm = {
 
 export default function CreateBillForm({}: Props) {
   const { userId } = useAuth();
-  const queryClient = useQueryClient()
-  const { mutate, isPending } = useMutation<any, any, TCreateBillFormValues & {totalAmount:number}>({
+  const queryClient = useQueryClient();
+  const { mutate, isPending } = useMutation<
+    any,
+    any,
+    TCreateBillFormValues & { totalAmount: number }
+  >({
     mutationKey: ['post_bill'],
     mutationFn: async (data) => {
       return (
@@ -46,8 +50,8 @@ export default function CreateBillForm({}: Props) {
     },
     onSuccess: () => {
       toast.success('Bill added'),
-      queryClient.invalidateQueries({queryKey:['get_bills']})
-    }
+        queryClient.invalidateQueries({ queryKey: ['get_bills','get_all_bills'] });
+    },
   });
   const form = useForm<TCreateBillFormValues>({
     resolver: zodResolver(createBillSchema),
@@ -84,7 +88,7 @@ export default function CreateBillForm({}: Props) {
   function onSubmit(data: TCreateBillFormValues) {
     mutate({
       ...data,
-      totalAmount
+      totalAmount,
     });
   }
   return (
@@ -151,12 +155,13 @@ export default function CreateBillForm({}: Props) {
                 </div>
               ))}
               <Button
+                variant={"outline"}
                 onClick={handleAddItem}
                 type="button"
                 className="items-center w-fit  "
               >
                 <PlusCircle />
-                Add new Item
+                Add Product
               </Button>
             </div>
           </Form>
