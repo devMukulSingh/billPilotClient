@@ -9,9 +9,9 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
-import { FieldsProps } from './formFields.types';
+import { DistributorFieldProps } from './formFields.types';
 
-export default function DistributorName({ form, isPending }: FieldsProps) {
+export default function DistributorName({ form, isPending }: DistributorFieldProps) {
   return (
     <FormField
       disabled={isPending}

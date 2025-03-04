@@ -52,10 +52,10 @@ function Header() {
       )}
       <header
         className="
-        w-full 
         justify-between
         flex 
         items-center 
+        w-full 
       "
       >
         <div className="flex gap-2 items-center ">

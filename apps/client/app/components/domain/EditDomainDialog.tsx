@@ -20,18 +20,23 @@ import { BASE_URL_SERVER } from '~/lib/constants';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
 import { TDomain } from '~/lib/types/db.types';
+import DomainName from '../formFields/DomainName';
 
 type Props = {
   openDialog: boolean;
   setOpenDialog: Dispatch<SetStateAction<boolean>>;
-  domain:TDomain
+  domain: TDomain;
 };
 
 const schema = billSchema.pick({ domain_name: true });
 
 type TformValues = z.infer<typeof schema>;
 
-export default function EditDomainDialog({ openDialog, setOpenDialog,domain }: Props) {
+export default function EditDomainDialog({
+  openDialog,
+  setOpenDialog,
+  domain,
+}: Props) {
   const queryClient = useQueryClient();
   const { userId } = useAuth();
   const { mutate, isPending } = useMutation<any, any, TformValues>({
@@ -51,7 +56,7 @@ export default function EditDomainDialog({ openDialog, setOpenDialog,domain }: P
   const form = useForm<TformValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      domain_name: domain.name
+      domain_name: domain.name,
     },
   });
   function onSubmit(e: any) {
@@ -66,23 +71,9 @@ export default function EditDomainDialog({ openDialog, setOpenDialog,domain }: P
       titleIcon={PlusCircle}
       onClose={() => setOpenDialog(false)}
     >
-      <form
-        className="space-y-10"
-      >
+      <form className="space-y-10">
         <Form {...form}>
-          <FormField
-            disabled={isPending}
-            name="domain_name"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input {...field} onKeyUp={(e) => e.stopPropagation()} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <DomainName form={form} isPending={isPending} />
         </Form>
         <Button disabled={isPending} type="button" onClick={onSubmit}>
           Submit

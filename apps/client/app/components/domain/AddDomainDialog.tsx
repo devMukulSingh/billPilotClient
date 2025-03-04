@@ -19,6 +19,7 @@ import axios from 'axios';
 import { BASE_URL_SERVER } from '~/lib/constants';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
+import DomainName from '../formFields/DomainName';
 
 type Props = {
   openDialog: boolean;
@@ -27,7 +28,7 @@ type Props = {
 
 const schema = billSchema.pick({ domain_name: true });
 
-type TformValues = z.infer<typeof schema>;
+export type TDomainFormValues = z.infer<typeof schema>;
 
 export default function AddDomainDialog({
   openDialog,
@@ -35,7 +36,7 @@ export default function AddDomainDialog({
 }: Props) {
   const queryClient = useQueryClient()
   const { userId } = useAuth()
-  const { mutate, isPending } = useMutation<any, any, TformValues>({
+  const { mutate, isPending } = useMutation<any, any, TDomainFormValues>({
     mutationKey: ['post_domain'],
     mutationFn: async (data) => {
       return await axios.post(
@@ -49,7 +50,7 @@ export default function AddDomainDialog({
       toast.success(`Domain added`, { position: 'bottom-right' });
     },
   });
-  const form = useForm<TformValues>({
+  const form = useForm<TDomainFormValues>({
     resolver: zodResolver(schema),
   });
   function onSubmit(e:any) {
@@ -68,21 +69,7 @@ export default function AddDomainDialog({
       className="space-y-10" 
     //   onSubmit={form.handleSubmit(onSubmit)}
       >
-        <Form {...form}>
-          <FormField
-            disabled={isPending}
-            name="domain_name"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input {...field} onKeyUp={(e) => e.stopPropagation()}/>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </Form>
+        <DomainName form={form} isPending={isPending}/>
         <Button disabled={isPending} type="button" onClick={onSubmit}>
           Submit
         </Button>
