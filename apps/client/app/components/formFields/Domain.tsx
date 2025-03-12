@@ -45,7 +45,8 @@ export default function Domain({ form, isPending }: DistributorFieldProps) {
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {data?.data.map((domain, index) => (
+              {
+              data?.data?.map((domain, index) => (
                 <SelectItem key={index} value={domain.id}>
                   {domain.name}
                 </SelectItem>

@@ -26,7 +26,7 @@ import { TApiResponse } from '~/lib/types/apiResponse.types';
 
 export default function DistributorName({ form }: Pick<TForm, 'form'>) {
   const { userId } = useAuth();
-  const { data } = useQuery<any, any, TApiResponse<TDistributor>>({
+  const { data } = useQuery<any, any, TDistributor[]>({
     queryKey: ['get_all_distributors'],
     queryFn: async () => {
       return (
@@ -68,7 +68,7 @@ export default function DistributorName({ form }: Pick<TForm, 'form'>) {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {data?.data.map((dist, index) => (
+                {data?.map((dist, index) => (
                   <SelectItem key={index} value={dist.id}>
                     {dist.name}
                   </SelectItem>

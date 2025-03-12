@@ -37,7 +37,7 @@ export default function AddDomainDialog({
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey:['get_domains']})
+      queryClient.invalidateQueries({queryKey:['get_domains','get_all_domains']})
       setOpenDialog(false);
       toast.success(`Domain added`, { position: 'bottom-right' });
     },

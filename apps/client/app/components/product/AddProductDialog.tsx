@@ -46,7 +46,9 @@ export default function AddProductDialog({ openDialog, setOpenDialog }: Props) {
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({  queryKey: ["get_products"] });
+      queryClient.invalidateQueries({
+        queryKey: ['get_products', 'get_all_products'],
+      });
       setOpenDialog(false);
       toast.success(`product added`, { position: 'bottom-right' });
     },

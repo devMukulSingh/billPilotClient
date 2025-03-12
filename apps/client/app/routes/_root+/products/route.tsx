@@ -80,7 +80,7 @@ function Header() {
 function ProductsTable() {
   const { userId } = useAuth();
   const [searchParams] = useSearchParams();
-  const page = searchParams.get('page');
+  const page = searchParams.get('page') || 1;
   const limit = 10;
   const { data } = useQuery<any, any, TApiResponse<TProduct>>({
     queryKey: ['get_products'],

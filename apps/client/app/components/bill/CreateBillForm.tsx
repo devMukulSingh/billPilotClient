@@ -90,9 +90,11 @@ export default function CreateBillForm({}: Props) {
   function onSubmit(data: TCreateBillFormValues) {
     mutate({
       ...data,
+      date:data.date.toISOString(),
       totalAmount,
     });
   }
+
   return (
     <>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -141,7 +143,7 @@ export default function CreateBillForm({}: Props) {
                   gap-y-5
         "
                 >
-                  <ItemName form={form} index={index} />
+                  <ItemName form={form}  index={index} />
                   <ItemQuantity form={form} index={index} />
                   <ItemRate form={form} index={index} />
                   <ItemAmount form={form} index={index} />

@@ -27,7 +27,7 @@ export default function Bills({}: Props) {
     queryKey: ['get_bills'],
     queryFn: async () => {
       return (
-        await axios.get(`${BASE_URL_SERVER}/${userId}/bill/get-all-bills`, {
+        await axios.get(`${BASE_URL_SERVER}/${userId}/bill/get-bills`, {
           params: { page, limit },
         })
       ).data;

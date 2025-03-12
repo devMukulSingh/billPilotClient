@@ -28,7 +28,7 @@ import { TApiResponse } from '~/lib/types/apiResponse.types';
 
 export default function ProductName({ form, index }: TForm) {
   const { userId } = useAuth();
-  const { data } = useQuery<any, any, TApiResponse<TProduct>>({
+  const { data } = useQuery<any, any, TProduct[]>({
     queryKey: ['get_all_products'],
     queryFn: async () => {
       return (
@@ -45,7 +45,7 @@ export default function ProductName({ form, index }: TForm) {
     field: ControllerRenderProps<TCreateBillFormValues>;
   }) {
     field.onChange(selectedValue);
-    const rate = data?.data.find((item) => item.id === selectedValue)?.rate;
+    const rate = data?.find((item) => item.id === selectedValue)?.rate;
     if (!rate) {
       console.error('Rate is undefined');
       return toast.error('Something went wrong, please contact the developer.');
@@ -78,7 +78,7 @@ export default function ProductName({ form, index }: TForm) {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {data?.data.map((item, index) => (
+                {data?.map((item, index) => (
                   <SelectItem value={item.id} key={index}>
                     {item.name}
                   </SelectItem>
