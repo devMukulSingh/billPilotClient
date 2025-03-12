@@ -52,7 +52,7 @@ export default function EditdistributorDialog({
     mutationKey: ['update_distributor'],
     mutationFn: async (data) => {
       return await axios.put(
-        `${BASE_URL_SERVER}/${userId}/distributor/put-distributor/${distributor.id}`,
+        `${BASE_URL_SERVER}/${userId}/distributor/${distributor.id}`,
         data
       );
     },

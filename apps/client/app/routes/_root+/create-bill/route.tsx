@@ -1,5 +1,5 @@
-import {  PlusCircle } from 'lucide-react';
-import CreateBillForm from '~/components/createBillForm/CreateBillForm';
+import { PlusCircle } from 'lucide-react';
+import CreateBillForm from '~/components/bill/CreateBillForm';
 import { Separator } from '~/components/ui/separator';
 
 type Props = {};

@@ -39,7 +39,7 @@ export default function TableActionsDropdown({
     mutationKey: ['delete_bill'],
     mutationFn: async (data) => {
       await axios.delete(
-        `${BASE_URL_SERVER}/${userId}/bill/delete-bill/${data.id}`
+        `${BASE_URL_SERVER}/${userId}/bill/${data.id}`
       );
     },
     onSuccess: () => {

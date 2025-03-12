@@ -16,7 +16,7 @@ import {
   PopoverTrigger,
 } from '~/components/ui/popover';
 
-import { TForm } from '../CreateBillForm';
+import { TForm } from '../bill/CreateBillForm';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 
@@ -49,7 +49,7 @@ export default function DateCreated({ form }: Pick<TForm, 'form'>) {
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
-                className='!whitespace-normal'
+                className="!whitespace-normal"
                 mode="single"
                 selected={field.value}
                 onSelect={field.onChange}

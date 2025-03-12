@@ -41,7 +41,7 @@ export default function AddProductDialog({ openDialog, setOpenDialog }: Props) {
     mutationKey: ['post_product'],
     mutationFn: async (data) => {
       return await axios.post(
-        `${BASE_URL_SERVER}/${userId}/product/post-product`,
+        `${BASE_URL_SERVER}/${userId}/product`,
         data
       );
     },

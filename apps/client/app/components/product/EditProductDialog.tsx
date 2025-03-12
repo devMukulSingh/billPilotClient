@@ -41,7 +41,7 @@ export default function EditProductDialog({ openDialog, setOpenDialog,product }:
     mutationKey: ['put_product'],
     mutationFn: async (data) => {
       return await axios.put(
-        `${BASE_URL_SERVER}/${userId}/product/put-product/${product.id}`,
+        `${BASE_URL_SERVER}/${userId}/product/${product.id}`,
         data
       );
     },

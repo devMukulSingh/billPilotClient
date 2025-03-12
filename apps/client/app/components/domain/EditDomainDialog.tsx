@@ -43,7 +43,7 @@ export default function EditDomainDialog({
     mutationKey: ['put_domain'],
     mutationFn: async (data) => {
       return await axios.put(
-        `${BASE_URL_SERVER}/${userId}/domain/put-domain/${domain.id}`,
+        `${BASE_URL_SERVER}/${userId}/domain/${domain.id}`,
         data
       );
     },

@@ -10,7 +10,7 @@ import { TDropdownOptions } from '~/lib/types/modals.types';
 import { Edit, Trash } from 'lucide-react';
 import { useNavigate } from '@remix-run/react';
 import { ReactNode, useState } from 'react';
-import DeleteDialog from '../bills/DeleteDialog';
+import DeleteDialog from '../bill/DeleteDialog';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL_SERVER } from '~/lib/constants';
@@ -33,7 +33,7 @@ export default function TableActionsDropdown({ children, distributor }: Props) {
     mutationKey: ['delete_distributor'],
     mutationFn: async (data) =>
       await axios.delete(
-        `${BASE_URL_SERVER}/${userId}/distributor/delete-distributor/${data.id}`
+        `${BASE_URL_SERVER}/${userId}/distributor/${data.id}`
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['get_distributors'] });

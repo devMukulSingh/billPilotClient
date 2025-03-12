@@ -51,7 +51,7 @@ export default function AddDistributorDialog({
     mutationKey: ['post_distributor'],
     mutationFn: async (data) => {
       return await axios.post(
-        `${BASE_URL_SERVER}/${userId}/distributor/post-distributor`,
+        `${BASE_URL_SERVER}/${userId}/distributor`,
         data
       );
     },
@@ -81,7 +81,10 @@ export default function AddDistributorDialog({
     >
       <form className="space-y-10">
         <Form {...form}>
-          <DistributorName form={form} isPending={isPending} />
+          <DistributorName
+            form={form}
+            isPending={isPending}
+          />
           <Domain form={form} isPending={isPending} />
         </Form>
         <Button disabled={isPending} type="button" onClick={onSubmit}>

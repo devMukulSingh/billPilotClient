@@ -3,9 +3,9 @@ import { useFieldArray, useForm, UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 import { billSchema } from '~/lib/schema';
 import { Form } from '../ui/form';
-import DistributorName from './formFields/DistributorName';
-import DateCreated from './formFields/Date';
-import IsPaid from './formFields/IsPaid';
+import DistributorName from './formFields/Distributor';
+import DateCreated from '../formFields/Date';
+import IsPaid from '../formFields/IsPaid';
 import { Separator } from '../ui/separator';
 import ItemName from './formFields/ProductName';
 import ItemRate from './formFields/ProductRate';
@@ -45,12 +45,14 @@ export default function CreateBillForm({}: Props) {
     mutationKey: ['post_bill'],
     mutationFn: async (data) => {
       return (
-        await axios.post(`${BASE_URL_SERVER}/${userId}/bill/post-bill`, data)
+        await axios.post(`${BASE_URL_SERVER}/${userId}/bill`, data)
       ).data;
     },
     onSuccess: () => {
       toast.success('Bill added'),
-        queryClient.invalidateQueries({ queryKey: ['get_bills','get_all_bills'] });
+        queryClient.invalidateQueries({
+          queryKey: ['get_bills'],
+        });
     },
   });
   const form = useForm<TCreateBillFormValues>({
@@ -155,7 +157,7 @@ export default function CreateBillForm({}: Props) {
                 </div>
               ))}
               <Button
-                variant={"outline"}
+                variant={'outline'}
                 onClick={handleAddItem}
                 type="button"
                 className="items-center w-fit  "

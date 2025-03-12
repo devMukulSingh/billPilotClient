@@ -1,8 +1,11 @@
 export type TBillItem = {
+  id:string
   product: {
+    id: string
     name: string;
     rate: number;
   }
+  product_id: string
   quantity: number;
   amount: number;
 };
@@ -34,18 +37,11 @@ export type TDistributor = {
 
 export type TBill = {
   id: string;
-  distributor: {
-    name: string
-  },
-  domain: {
-    name: string
-  }
   date: Date;
+  domain: TDomain
+  distributor: TDistributor
   is_paid: boolean;
   bill_items: TBillItem[]
   total_amount: number,
-  domain_id: string,
-  distributor_id: string
-
 };
 

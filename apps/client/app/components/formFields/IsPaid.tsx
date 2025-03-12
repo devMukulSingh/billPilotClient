@@ -6,7 +6,7 @@ import {
   FormControl,
 } from '~/components/ui/form';
 
-import { TForm } from '../CreateBillForm';
+import { TForm } from '../bill/CreateBillForm';
 import { Checkbox } from '~/components/ui/checkbox';
 
 export default function IsPaid({ form }: Pick<TForm, 'form'>) {

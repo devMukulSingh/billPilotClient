@@ -32,7 +32,7 @@ export default function AddDomainDialog({
     mutationKey: ['post_domain'],
     mutationFn: async (data) => {
       return await axios.post(
-        `${BASE_URL_SERVER}/${userId}/domain/post-domain`,
+        `${BASE_URL_SERVER}/${userId}/domain`,
         data
       );
     },

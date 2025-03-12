@@ -44,14 +44,15 @@ export const billSchema = z.object({
   is_paid: z.boolean().default(false),
   bill_items: z
     .object({
+      id:z.string().optional(),
       product : z.object({
         rate:z.coerce.number({required_error:"Rate is required"}),
- 
+        id: z.string({ required_error: 'Item is required', }).trim()
+          .min(1, {
+            message: 'Product  is required',
+          }),
       }),
-      product_id: z.string({ required_error: 'Item is required', }).trim()
-        .min(1, {
-          message: 'Product  is required',
-        }),
+      product_id: z.string({required_error:"Product is required"}),
       quantity: z.coerce.number({
         required_error: 'quantity is required',
         invalid_type_error: 'Only numbers allowed',

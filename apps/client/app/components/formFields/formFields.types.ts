@@ -3,8 +3,8 @@ import { TDistributorFormValues } from "../distributor/AddDistributorDialog";
 import { TDomainFormValues } from "../domain/AddDomainDialog";
 import { TProductFormValues } from "../product/AddProductDialog";
 
-export type DistributorFieldProps = {isPending:boolean} & {
-    form: UseFormReturn<TDistributorFormValues , any, undefined>;
+export type DistributorFieldProps = { isPending: boolean } & {
+    form: UseFormReturn<TDistributorFormValues, any, undefined>;
 };
 
 export type DomainFieldProps = { isPending: boolean } & {
@@ -12,5 +12,10 @@ export type DomainFieldProps = { isPending: boolean } & {
 };
 
 export type ProductFieldProps = { isPending: boolean } & {
-    form: UseFormReturn<TProductFormValues,any,undefined >
+    form: UseFormReturn<TProductFormValues, any, undefined>
 }
+
+// export type TFormFieldProps<TFormValues extends FieldValues> = {
+//     form: UseFormReturn<TFormValues, any, undefined>
+//     isPending: boolean
+// }

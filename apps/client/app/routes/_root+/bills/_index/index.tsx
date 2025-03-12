@@ -1,10 +1,10 @@
 import { format } from 'date-fns';
 import { ChevronDown, ChevronUp, Menu, Package } from 'lucide-react';
 import { DataTable } from '~/components/commons/DataTable';
-import ItemsTable from '~/components/bills/ItemsTable';
+import ItemsTable from '~/components/bill/ItemsTable';
 import { Separator } from '~/components/ui/separator';
 import { useState } from 'react';
-import TableActionsDropdown from '~/components/bills/TableActionsDropdown';
+import TableActionsDropdown from '~/components/bill/TableActionsDropdown';
 import { BASE_URL_SERVER } from '~/lib/constants';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/remix';
