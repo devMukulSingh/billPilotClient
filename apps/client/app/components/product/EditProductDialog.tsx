@@ -47,6 +47,7 @@ export default function EditProductDialog({ openDialog, setOpenDialog,product }:
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['get_products'] });
+      queryClient.invalidateQueries({ queryKey: ['get_all_products'] });
       setOpenDialog(false);
       toast.success(`Product updated`, { position: 'bottom-right' });
     },

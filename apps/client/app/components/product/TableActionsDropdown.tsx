@@ -36,6 +36,7 @@ export default function TableActionsDropdown({ children, product }: Props) {
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['get_products'] });
+      queryClient.invalidateQueries({ queryKey: ['get_all_products'] });
       toast.success('product deleted');
       setIsOpenDeleteDialog(false);
     },

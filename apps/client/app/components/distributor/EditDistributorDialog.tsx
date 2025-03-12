@@ -58,6 +58,7 @@ export default function EditdistributorDialog({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['get_distributors'] });
+      queryClient.invalidateQueries({ queryKey: ['get_all_distributors'] });
       setOpenDialog(false);
       toast.success(`Distributor Updated`, { position: 'bottom-right' });
     },

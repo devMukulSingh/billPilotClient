@@ -49,6 +49,7 @@ export default function EditDomainDialog({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['get_domains'] });
+      queryClient.invalidateQueries({ queryKey: ['get_all_domains'] });
       setOpenDialog(false);
       toast.success(`Domain Updated`, { position: 'bottom-right' });
     },

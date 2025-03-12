@@ -40,7 +40,7 @@ export default function CreateBillForm({}: Props) {
   const { mutate, isPending } = useMutation<
     any,
     any,
-    TCreateBillFormValues & { totalAmount: number }
+    Omit<TCreateBillFormValues,"date"> & { totalAmount: number,date:string }
   >({
     mutationKey: ['post_bill'],
     mutationFn: async (data) => {

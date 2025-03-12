@@ -38,6 +38,7 @@ export default function TableActionsDropdown({ children, domain }: Props) {
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['get_domains'] });
+      queryClient.invalidateQueries({ queryKey: ['get_all_domains'] });
       toast.success('Domain deleted');
       setIsOpenDeleteDialog(false);
     },

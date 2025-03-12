@@ -37,6 +37,7 @@ export default function TableActionsDropdown({ children, distributor }: Props) {
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['get_distributors'] });
+      queryClient.invalidateQueries({ queryKey: ['get_all_distributors'] });
       toast.success('distributor deleted');
       setIsOpenDeleteDialog(false);
     },

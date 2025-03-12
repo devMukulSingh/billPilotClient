@@ -36,6 +36,10 @@ export default function Bills({}: Props) {
 
   const columns: ColumnDef<TBill>[] = [
     {
+      accessorKey: 'distributor.id',
+      header: 'id',
+    },
+    {
       accessorKey: 'distributor.name',
       header: 'Distributor',
     },

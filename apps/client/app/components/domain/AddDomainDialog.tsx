@@ -1,4 +1,4 @@
-import  { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import DialogModal from '../modals/DialogModal';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,22 +22,17 @@ const schema = billSchema.pick({ domain_name: true });
 
 export type TDomainFormValues = z.infer<typeof schema>;
 
-export default function AddDomainDialog({
-  openDialog,
-  setOpenDialog,
-}: Props) {
-  const queryClient = useQueryClient()
-  const { userId } = useAuth()
+export default function AddDomainDialog({ openDialog, setOpenDialog }: Props) {
+  const queryClient = useQueryClient();
+  const { userId } = useAuth();
   const { mutate, isPending } = useMutation<any, any, TDomainFormValues>({
     mutationKey: ['post_domain'],
     mutationFn: async (data) => {
-      return await axios.post(
-        `${BASE_URL_SERVER}/${userId}/domain`,
-        data
-      );
+      return await axios.post(`${BASE_URL_SERVER}/${userId}/domain`, data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey:['get_domains','get_all_domains']})
+      queryClient.invalidateQueries({ queryKey: ['get_domains'] });
+      queryClient.invalidateQueries({ queryKey: ['get_all_domains'] });
       setOpenDialog(false);
       toast.success(`Domain added`, { position: 'bottom-right' });
     },
@@ -45,8 +40,8 @@ export default function AddDomainDialog({
   const form = useForm<TDomainFormValues>({
     resolver: zodResolver(schema),
   });
-  function onSubmit(e:any) {
-    e.stopPropagation()
+  function onSubmit(e: any) {
+    e.stopPropagation();
     const formData = form.getValues();
     mutate(formData);
   }
@@ -58,7 +53,7 @@ export default function AddDomainDialog({
       onClose={() => setOpenDialog(false)}
     >
       <form className="space-y-10">
-        <DomainName form={form} isPending={isPending}/>
+        <DomainName form={form} isPending={isPending} />
         <Button disabled={isPending} type="button" onClick={onSubmit}>
           Submit
         </Button>

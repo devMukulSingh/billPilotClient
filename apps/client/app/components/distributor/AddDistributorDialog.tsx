@@ -56,9 +56,8 @@ export default function AddDistributorDialog({
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['get_distributors','get_all_distributors'],
-      });
+      queryClient.invalidateQueries({queryKey: ['get_distributors']});
+      queryClient.invalidateQueries({ queryKey: ['get_all_distributors'] });
       toast.success(`Distributor added`, { position: 'bottom-right' });
       setOpenDialog(false);
     },
