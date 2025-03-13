@@ -14,6 +14,7 @@ export default function IsPaid({ form }: Pick<TForm, 'form'>) {
     <FormField
       name="is_paid"
       control={form.control}
+      defaultValue={false}
       render={({ field }) => (
         <FormItem className="flex items-end gap-2 border-black">
           <FormLabel>Is Paid</FormLabel>

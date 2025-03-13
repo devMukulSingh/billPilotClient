@@ -24,6 +24,7 @@ import ProductQuantity from '~/components/bill/formFields/ProductQuantity';
 import ProductRate from '~/components/bill/formFields/ProductRate';
 import ProductAmount from '~/components/bill/formFields/ProductAmount';
 import { Button } from '~/components/ui/button';
+import { formatISO, parseISO } from 'date-fns';
 
 type Props = {};
 
@@ -55,25 +56,25 @@ export default function EditBill({}: Props) {
 
 function EditBillForm({}: Props) {
   const { billId } = useParams();
-  const { data } = useQuery<TApiResponse<TBill>>({ queryKey: ['get_bills'] });
+  const { data } = useQuery<TApiResponse<Omit<TBill,"date"> & {date:string}>>({ queryKey: ['get_bills'] });
   const bill = data?.data.find((bill) => bill.id === billId);
-  console.log(bill);
   const editBillSchema = billSchema.omit({
     distributor_name: true,
     domain_name: true,
   });
+  console.log(data);
   const { userId } = useAuth();
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation<
     any,
     any,
-   TCreateBillFormValues & { totalAmount: number }
+   Omit<TCreateBillFormValues,"date"> & {date:string, totalAmount: number }
   >({
     mutationKey: ['put_bill'],
     mutationFn: async (data) => {
       return (
         await axios.put(
-          `${BASE_URL_SERVER}/${userId}/bill/put-bill/${billId}`,
+          `${BASE_URL_SERVER}/${userId}/bill/${billId}`,
           data
         )
       ).data;
@@ -90,7 +91,7 @@ function EditBillForm({}: Props) {
     defaultValues: {
       distributor_id: bill?.distributor.id,
       domain_id: bill?.domain.id,
-      date: bill?.date,
+      date: parseISO(bill?.date || new Date().toISOString()) ,
       is_paid: bill?.is_paid,
       bill_items: bill?.bill_items.map((billItem) => ({
         amount: billItem.amount,
@@ -127,10 +128,10 @@ function EditBillForm({}: Props) {
     .getValues()
     .bill_items.reduce((prev, curr) => prev + curr.amount, 0);
   function onSubmit(data: TCreateBillFormValues) {
-    console.log(data);
     mutate({
       ...data,
       totalAmount,
+      date:data.date.toISOString()
     });
   }
   return (
