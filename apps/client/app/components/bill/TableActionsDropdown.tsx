@@ -43,9 +43,9 @@ export default function TableActionsDropdown({
       );
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['get_bills'] });
       setIsOpenDialog(false)
       toast.success('bill deleted');
-      queryClient.invalidateQueries({ queryKey: ['get_bills'] });
     },
   });
   const dropdownOptions: TDropdownOptions[] = [

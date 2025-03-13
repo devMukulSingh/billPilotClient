@@ -38,8 +38,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         },
       },
       queries: {
-        gcTime: 1, // 24 hours
-        staleTime: 1,
+        gcTime: 24 * 60 * 1000, // 24 hours
+        staleTime: Infinity,
         refetchOnWindowFocus: false,
         retry:false,
         
