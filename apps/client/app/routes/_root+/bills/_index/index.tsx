@@ -44,6 +44,10 @@ export default function Bills({}: Props) {
       header: 'Distributor',
     },
     {
+      accessorKey: 'domain.name',
+      header: 'Domain',
+    },
+    {
       accessorKey: 'expander',
       header: 'Products',
       cell: ({ row }) => (
@@ -59,6 +63,11 @@ export default function Bills({}: Props) {
       ),
     },
     {
+      accessorKey: 'total_amount',
+      header: 'Total amount',
+      cell: ({ row }) => `₹${row.original.total_amount}`,
+    },
+    {
       accessorKey: 'is_paid',
       header: 'Paid',
       cell: ({ row }) => (row.getValue('is_paid') ? 'Yes' : 'No'),
@@ -66,7 +75,7 @@ export default function Bills({}: Props) {
     {
       accessorKey: 'date',
       header: 'Date',
-      cell: ({ row }) => format(row.getValue('date'), 'Pp'),
+      cell: ({ row }) => format(row.getValue('date'), 'dd-MM-yyyy | H:m'),
     },
     {
       id: 'actions',
