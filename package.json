@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "packageManager": "bun@1.1.42",
   "scripts": {
-    "build": "tsc && vite build",
+    "build": "turbo run build",
     "lint": "turbo lint",
     "dev": "dotenv -- turbo run dev",
     "check-types": "turbo run check-types"
