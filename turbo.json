@@ -5,6 +5,15 @@
       "persistent": false
     },
     "build": {
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "dependsOn": ["^build"],
+      "outputs": [
+        "build/**",
+        ".vercel/**",
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**"
+      ],
       "env": [
         "CLERK_PUBLISHABLE_KEY",
         "CLERK_SECRET_KEY",
@@ -12,8 +21,7 @@
         "CLERK_SIGN_UP_URL",
         "CLERK_SIGN_IN_FALLBACK_URL",
         "CLERK_SIGN_UP_FALLBACK_URL"
-      ],
-      "outputs": ["dist/**"]
+      ]
     },
     "client#build": {
       "dependsOn": ["^build"],
@@ -29,6 +37,9 @@
     },
     "lint": {
       "outputs": []
+    },
+    "check-types": {
+      "dependsOn": ["^build", "^check-types"]
     }
   }
 }

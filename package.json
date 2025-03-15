@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc && vite build",
     "lint": "turbo lint",
-    "dev": "dotenv -- turbo run dev"
+    "dev": "dotenv -- turbo run dev",
+    "check-types": "turbo run check-types"
   },
   "workspaces": [
     "apps/*",
