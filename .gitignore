@@ -1,7 +1,7 @@
 node_modules
+build
 
 /.cache
-build
 .turbo
 .env
 
