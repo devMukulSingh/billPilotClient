@@ -5,7 +5,7 @@ node_modules
 .turbo
 .env
 
-
+.vercel
 
 .nx/cache
 .nx/workspace-data
