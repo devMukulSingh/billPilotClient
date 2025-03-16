@@ -37,9 +37,6 @@ export function DataTable<TData, TValue>({
   renderSubComponent,
   totalPages
 }: DataTableProps<TData, TValue>) {
-  // console.log("rerender",data);
-  const [searchParams] = useSearchParams();
-  const page = Number(searchParams.get('page')) || 1;
 
   const table = useReactTable({
     data: data || [],

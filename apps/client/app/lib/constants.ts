@@ -12,3 +12,4 @@ product:{
   quantity: 1,
 };
 
+const arr = [].copyWithin

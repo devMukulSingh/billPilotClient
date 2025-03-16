@@ -12,6 +12,7 @@ import AddProductForm from '~/components/product/AddProductDialog';
 import TableActionsDropdown from '~/components/product/TableActionsDropdown';
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
+import { Skeleton } from '~/components/ui/skeleton';
 import { BASE_URL_SERVER } from '~/lib/constants';
 import { TApiResponse } from '~/lib/types/apiResponse.types';
 import { TProduct } from '~/lib/types/db.types';
@@ -82,7 +83,7 @@ function ProductsTable() {
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page') || 1;
   const limit = 10;
-  const { data } = useQuery<any, any, TApiResponse<TProduct>>({
+  const { data,isFetching,isPending } = useQuery<any, any, TApiResponse<TProduct>>({
     queryKey: ['get_products'],
     queryFn: async () => {
       return (
@@ -122,11 +123,16 @@ function ProductsTable() {
       },
     },
   ];
+      if (isFetching || isPending)
+        return <Skeleton className="w-full h-[25rem]" />;
   return (
+    <>
+
     <DataTable
       renderSubComponent={() => <></>}
       columns={columns}
       data={data?.data}
-    />
+      />
+      </>
   );
 }

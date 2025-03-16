@@ -3,22 +3,24 @@ import { useFieldArray, useForm, UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 import { billSchema } from '~/lib/schema';
 import { Form } from '../ui/form';
-import DistributorName from './formFields/Distributor';
 import DateCreated from '../formFields/Date';
 import IsPaid from '../formFields/IsPaid';
 import { Separator } from '../ui/separator';
-import ItemName from './formFields/ProductName';
-import ItemRate from './formFields/ProductRate';
-import ItemQuantity from './formFields/ProductQuantity';
-import ItemAmount from './formFields/ProductAmount';
+import ProductRate from './formFields/ProductRate';
+import ProductQuantity from './formFields/ProductQuantity';
+import ProductAmount from './formFields/ProductAmount';
 import { Button } from '../ui/button';
 import { PlusCircle, X } from 'lucide-react';
 import { BASE_URL_SERVER, ITEM_INITIAL_VALUES } from '~/lib/constants';
-import Domain from './formFields/Domain';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
+import { lazy, Suspense } from 'react';
+import { Skeleton } from '../ui/skeleton';
+const ProductName = lazy(() => import('./formFields/ProductName'))
+const Distributor  = lazy(() => import('./formFields/Distributor'))
+const Domain = lazy(() => import('./formFields/Domain'))
 
 type Props = {};
 
@@ -115,8 +117,12 @@ export default function CreateBillForm({}: Props) {
               p-5
         "
             >
-              <Domain form={form} />
-              <DistributorName form={form} />
+              <Suspense fallback={<Skeleton className="w-full h-9" />}>
+                <Domain form={form} />
+              </Suspense>
+              <Suspense fallback={<Skeleton className="w-full h-9" />}>
+                <Distributor form={form} />
+              </Suspense>
               <DateCreated form={form} />
               <IsPaid form={form} />
             </div>
@@ -143,10 +149,12 @@ export default function CreateBillForm({}: Props) {
                   gap-y-5
         "
                 >
-                  <ItemName form={form}  index={index} />
-                  <ItemQuantity form={form} index={index} />
-                  <ItemRate form={form} index={index} />
-                  <ItemAmount form={form} index={index} />
+                  <Suspense fallback={<Skeleton className="w-1/2 h-9" />}>
+                    <ProductName form={form} index={index} />
+                  </Suspense>
+                  <ProductQuantity form={form} index={index} />
+                  <ProductRate form={form} index={index} />
+                  <ProductAmount form={form} index={index} />
                   <Button
                     variant={'destructive'}
                     className="rounded-full  size-9 self-end ml-auto"

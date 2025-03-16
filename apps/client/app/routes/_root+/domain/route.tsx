@@ -17,6 +17,7 @@ import { BASE_URL_SERVER } from '~/lib/constants';
 import { TApiResponse } from '~/lib/types/apiResponse.types';
 import { TDomain } from '~/lib/types/db.types';
 import { TDropdownOptions } from '~/lib/types/modals.types';
+import { Skeleton } from '~/components/ui/skeleton';
 
 type Props = {};
 
@@ -122,11 +123,9 @@ function Domains() {
     },
   ];
   const totalPages = Math.ceil((data?.count || 1) / limit);
+    if (isFetching || isPending ) return <Skeleton className="w-full h-[25rem]" />;
   return (
     <>
-      {isFetching || isPending ? (
-        <>loading...</>
-      ) : (
         <DataTable
           className="min-h-[calc(100vh-7rem)]"
           renderSubComponent={() => <></>}
@@ -134,7 +133,6 @@ function Domains() {
           totalPages={totalPages}
           columns={columns}
         />
-      )}
     </>
   );
 }

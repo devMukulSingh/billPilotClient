@@ -11,6 +11,7 @@ import AddDistributorDialog from '~/components/distributor/AddDistributorDialog'
 import TableActionsDropdown from '~/components/distributor/TableActionsDropdown';
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
+import { Skeleton } from '~/components/ui/skeleton';
 import { BASE_URL_SERVER } from '~/lib/constants';
 import { TApiResponse } from '~/lib/types/apiResponse.types';
 import { TDistributor } from '~/lib/types/db.types';
@@ -129,11 +130,11 @@ function Distributor() {
     },
   ];
   const totalPages = Math.ceil((data?.count || 1) / limit);
+      if (isFetching || isPending)
+        return <Skeleton className="w-full h-[25rem]" />;
   return (
     <>
-      {isFetching || isPending ? (
-        <>loading...</>
-      ) : (
+
         <DataTable
           className="min-h-[calc(100vh-7rem)]"
           totalPages={totalPages}
@@ -141,7 +142,6 @@ function Distributor() {
           data={data?.data}
           columns={columns}
         />
-      )}
     </>
   );
 }

@@ -14,7 +14,8 @@
   ],
   "dependencies": {
     "@vercel/remix": "^2.15.3",
-    "dotenv-cli": "^8.0.0"
+    "dotenv-cli": "^8.0.0",
+    "lucide-react": "0.469.0"
   },
   "devDependencies": {
     "turbo": "^2.4.0"
