@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from 'react';
 import DialogModal from '../modals/DialogModal';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { billSchema } from '~/lib/schema';
+import { billSchema } from 'lib/schema';
 import { z } from 'zod';
 import {
   Form,
@@ -17,10 +17,10 @@ import { Button } from '../ui/button';
 import { PlusCircle } from 'lucide-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL_SERVER } from '~/lib/constants';
+import { BASE_URL_SERVER } from 'lib/constants';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
-import { TDistributor, TDomain } from '~/lib/types/db.types';
+import { TDistributor, TDomain } from 'lib/types/db.types';
 import {
   Select,
   SelectContent,
@@ -28,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
-import { TApiResponse } from '~/lib/types/apiResponse.types';
+import { TApiResponse } from 'lib/types/apiResponse.types';
 import DistributorName from '../formFields/DistributorName';
 import Domain from '../formFields/Domain';
 type Props = {

@@ -2,17 +2,17 @@ import { Edit } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useFieldArray, useForm, UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
-import { billSchema } from '~/lib/schema';
+import { billSchema } from 'lib/schema';
 import { PlusCircle, X } from 'lucide-react';
-import { BASE_URL_SERVER, ITEM_INITIAL_VALUES } from '~/lib/constants';
+import { BASE_URL_SERVER, ITEM_INITIAL_VALUES } from 'lib/constants';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
 import { TCreateBillFormValues } from '~/components/bill/CreateBillForm';
 import { useParams } from '@remix-run/react';
-import { TApiResponse } from '~/lib/types/apiResponse.types';
-import { TBill } from '~/lib/types/db.types';
+import { TApiResponse } from 'lib/types/apiResponse.types';
+import { TBill } from 'lib/types/db.types';
 import { Separator } from '~/components/ui/separator';
 import { Form } from '~/components/ui/form';
 import Domain from '~/components/bill/formFields/Domain';
@@ -56,7 +56,9 @@ export default function EditBill({}: Props) {
 
 function EditBillForm({}: Props) {
   const { billId } = useParams();
-  const { data } = useQuery<TApiResponse<Omit<TBill,"date"> & {date:string}>>({ queryKey: ['get_bills'] });
+  const { data } = useQuery<
+    TApiResponse<Omit<TBill, 'date'> & { date: string }>
+  >({ queryKey: ['get_bills'] });
   const bill = data?.data.find((bill) => bill.id === billId);
   const editBillSchema = billSchema.omit({
     distributor_name: true,
@@ -68,15 +70,12 @@ function EditBillForm({}: Props) {
   const { mutate, isPending } = useMutation<
     any,
     any,
-   Omit<TCreateBillFormValues,"date"> & {date:string, totalAmount: number }
+    Omit<TCreateBillFormValues, 'date'> & { date: string; totalAmount: number }
   >({
     mutationKey: ['put_bill'],
     mutationFn: async (data) => {
       return (
-        await axios.put(
-          `${BASE_URL_SERVER}/${userId}/bill/${billId}`,
-          data
-        )
+        await axios.put(`${BASE_URL_SERVER}/${userId}/bill/${billId}`, data)
       ).data;
     },
     onSuccess: () => {
@@ -91,7 +90,7 @@ function EditBillForm({}: Props) {
     defaultValues: {
       distributor_id: bill?.distributor.id,
       domain_id: bill?.domain.id,
-      date: parseISO(bill?.date || new Date().toISOString()) ,
+      date: parseISO(bill?.date || new Date().toISOString()),
       is_paid: bill?.is_paid,
       bill_items: bill?.bill_items.map((billItem) => ({
         amount: billItem.amount,
@@ -131,7 +130,7 @@ function EditBillForm({}: Props) {
     mutate({
       ...data,
       totalAmount,
-      date:data.date.toISOString()
+      date: data.date.toISOString(),
     });
   }
   return (

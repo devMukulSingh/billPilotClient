@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useFieldArray, useForm, UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
-import { billSchema } from '~/lib/schema';
+import { billSchema } from 'lib/schema';
 import { Form } from '../ui/form';
 import DateCreated from '../formFields/Date';
 import IsPaid from '../formFields/IsPaid';
@@ -11,16 +11,16 @@ import ProductQuantity from './formFields/ProductQuantity';
 import ProductAmount from './formFields/ProductAmount';
 import { Button } from '../ui/button';
 import { PlusCircle, X } from 'lucide-react';
-import { BASE_URL_SERVER, ITEM_INITIAL_VALUES } from '~/lib/constants';
+import { BASE_URL_SERVER, ITEM_INITIAL_VALUES } from 'lib/constants';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
 import { lazy, Suspense } from 'react';
 import { Skeleton } from '../ui/skeleton';
-const ProductName = lazy(() => import('./formFields/ProductName'))
-const Distributor  = lazy(() => import('./formFields/Distributor'))
-const Domain = lazy(() => import('./formFields/Domain'))
+const ProductName = lazy(() => import('./formFields/ProductName'));
+const Distributor = lazy(() => import('./formFields/Distributor'));
+const Domain = lazy(() => import('./formFields/Domain'));
 
 type Props = {};
 
@@ -42,13 +42,11 @@ export default function CreateBillForm({}: Props) {
   const { mutate, isPending } = useMutation<
     any,
     any,
-    Omit<TCreateBillFormValues,"date"> & { totalAmount: number,date:string }
+    Omit<TCreateBillFormValues, 'date'> & { totalAmount: number; date: string }
   >({
     mutationKey: ['post_bill'],
     mutationFn: async (data) => {
-      return (
-        await axios.post(`${BASE_URL_SERVER}/${userId}/bill`, data)
-      ).data;
+      return (await axios.post(`${BASE_URL_SERVER}/${userId}/bill`, data)).data;
     },
     onSuccess: () => {
       toast.success('Bill added'),
@@ -92,7 +90,7 @@ export default function CreateBillForm({}: Props) {
   function onSubmit(data: TCreateBillFormValues) {
     mutate({
       ...data,
-      date:data.date.toISOString(),
+      date: data.date.toISOString(),
       totalAmount,
     });
   }

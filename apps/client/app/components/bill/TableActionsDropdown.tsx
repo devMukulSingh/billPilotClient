@@ -5,15 +5,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
-import { cn } from '~/lib/utils';
-import { TDopdownModalProps, TDropdownOptions } from '~/lib/types/modals.types';
+import { cn } from 'lib/utils';
+import { TDopdownModalProps, TDropdownOptions } from 'lib/types/modals.types';
 import { Edit, Trash } from 'lucide-react';
 import { useNavigate } from '@remix-run/react';
 import { Dispatch, ReactNode, SetStateAction } from 'react';
-import { TBill } from '~/lib/types/db.types';
+import { TBill } from 'lib/types/db.types';
 import DeleteDialog from './DeleteDialog';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { BASE_URL_SERVER } from '~/lib/constants';
+import { BASE_URL_SERVER } from 'lib/constants';
 import axios from 'axios';
 import { useAuth } from '@clerk/remix';
 import toast from 'react-hot-toast';
@@ -30,7 +30,6 @@ export default function TableActionsDropdown({
   bill,
   isOpenDialog,
   setIsOpenDialog,
-
 }: Props) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -38,13 +37,11 @@ export default function TableActionsDropdown({
   const { isPending, mutate } = useMutation<unknown, unknown, { id: string }>({
     mutationKey: ['delete_bill'],
     mutationFn: async (data) => {
-      await axios.delete(
-        `${BASE_URL_SERVER}/${userId}/bill/${data.id}`
-      );
+      await axios.delete(`${BASE_URL_SERVER}/${userId}/bill/${data.id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['get_bills'] });
-      setIsOpenDialog(false)
+      setIsOpenDialog(false);
       toast.success('bill deleted');
     },
   });

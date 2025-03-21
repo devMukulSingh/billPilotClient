@@ -5,15 +5,18 @@ import ItemsTable from '~/components/bill/ItemsTable';
 import { Separator } from '~/components/ui/separator';
 import { useState } from 'react';
 import TableActionsDropdown from '~/components/bill/TableActionsDropdown';
-import { BASE_URL_SERVER } from '~/lib/constants';
-import { useQuery,  } from '@tanstack/react-query';
+import { BASE_URL_SERVER } from 'lib/constants';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@clerk/remix';
 import { ColumnDef } from '@tanstack/react-table';
 import axios from 'axios';
-import { TBill } from '~/lib/types/db.types';
-import { TApiResponse } from '~/lib/types/apiResponse.types';
+import { TBill } from 'lib/types/db.types';
+import { TApiResponse } from 'lib/types/apiResponse.types';
 import { useSearchParams } from '@remix-run/react';
 import { Skeleton } from '~/components/ui/skeleton';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from 'redux/hooks/hook';
+import { setBills } from 'redux/reducers/rootReducer';
 
 type Props = {};
 
@@ -53,8 +56,12 @@ export default function Bills({}: Props) {
 }
 
 function BillsTable() {
+  const response = useAppSelector((state) => state.rootReducer.bills);
+  const dispatch = useDispatch();
   const [isOpenDialog, setIsOpenDialog] = useState(false);
   const [searchParams] = useSearchParams();
+  const startDate = searchParams.get('startDate');
+  const endDate = searchParams.get('endDate');
   const page = Number(searchParams.get('page')) || 1;
   const limit = 10;
   const { userId } = useAuth();
@@ -62,14 +69,22 @@ function BillsTable() {
   const { data, isFetching, isPending } = useQuery<TApiResponse<TBill>>({
     queryKey: ['get_bills'],
     queryFn: async () => {
-      return (
-        await axios.get(`${BASE_URL_SERVER}/${userId}/bill/get-bills`, {
+      const { data } = await axios.get(
+        `${BASE_URL_SERVER}/${userId}/bill/get-bills`,
+        {
           params: { page, limit },
-        })
-      ).data;
+        }
+      );
+
+      dispatch(setBills(data));
+      return data
     },
   });
-  const totalPages = Math.ceil((data?.count || 1) / limit);
+  // const { data:searchedBills, refetch } = useQuery({
+  //   queryKey: ['get_searched_bills',page,limit,startDate,endDate],
+  // });
+
+  const totalPages = Math.ceil((response?.count || 1) / limit);
 
   const columns: ColumnDef<TBill>[] = [
     {
@@ -136,7 +151,7 @@ function BillsTable() {
     <DataTable
       className="min-h-[calc(100vh-12rem)]"
       columns={columns}
-      data={data?.data || []}
+      data={response.data || []}
       totalPages={totalPages}
       renderSubComponent={ItemsTable}
     />

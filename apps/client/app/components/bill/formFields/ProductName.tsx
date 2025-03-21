@@ -15,16 +15,16 @@ import {
 } from '~/components/ui/select';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL_SERVER } from '~/lib/constants';
+import { BASE_URL_SERVER } from 'lib/constants';
 import { useAuth } from '@clerk/remix';
-import { TProduct } from '~/lib/types/db.types';
+import { TProduct } from 'lib/types/db.types';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import AddProductDialog from '../../product/AddProductDialog';
 import { useState } from 'react';
 import { ControllerRenderProps } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { TApiResponse } from '~/lib/types/apiResponse.types';
+import { TApiResponse } from 'lib/types/apiResponse.types';
 
 export default function ProductName({ form, index }: TForm) {
   const { userId } = useAuth();

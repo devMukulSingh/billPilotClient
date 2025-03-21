@@ -16,15 +16,15 @@ import { Button } from '../ui/button';
 import { PlusCircle } from 'lucide-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL_SERVER } from '~/lib/constants';
+import { BASE_URL_SERVER } from 'lib/constants';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
-import { TProduct } from '~/lib/types/db.types';
+import { TProduct } from 'lib/types/db.types';
 
 type Props = {
   openDialog: boolean;
   setOpenDialog: Dispatch<SetStateAction<boolean>>;
-  product : TProduct
+  product: TProduct;
 };
 
 const schema = z.object({
@@ -34,7 +34,11 @@ const schema = z.object({
 
 type TformValues = z.infer<typeof schema>;
 
-export default function EditProductDialog({ openDialog, setOpenDialog,product }: Props) {
+export default function EditProductDialog({
+  openDialog,
+  setOpenDialog,
+  product,
+}: Props) {
   const queryClient = useQueryClient();
   const { userId } = useAuth();
   const { mutate, isPending } = useMutation<any, any, TformValues>({
@@ -55,9 +59,9 @@ export default function EditProductDialog({ openDialog, setOpenDialog,product }:
   const form = useForm<TformValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-        name:product.name,
-        rate:product.rate
-    }
+      name: product.name,
+      rate: product.rate,
+    },
   });
   function onSubmit() {
     form.handleSubmit((data) => mutate(data))();

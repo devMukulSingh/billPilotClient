@@ -7,8 +7,8 @@ import {
 } from '~/components/ui/dropdown-menu';
 import { ReactNode } from 'react';
 import { LucideIcon } from 'lucide-react';
-import { cn } from '~/lib/utils';
-import { TDopdownModalProps } from '~/lib/types/modals.types';
+import { cn } from 'lib/utils';
+import { TDopdownModalProps } from 'lib/types/modals.types';
 
 export default function DropdownModal({
   children,
@@ -16,7 +16,6 @@ export default function DropdownModal({
 }: TDopdownModalProps) {
   return (
     <>
-
       <DropdownMenu>
         <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
         <DropdownMenuContent className="">

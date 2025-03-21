@@ -17,12 +17,12 @@ import { Button } from '~/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import AddDomainForm from '../../domain/AddDomainDialog';
-import { TDomain } from '~/lib/types/db.types';
+import { TDomain } from 'lib/types/db.types';
 import { useAuth } from '@clerk/remix';
 import { useQuery } from '@tanstack/react-query';
-import { BASE_URL_SERVER } from '~/lib/constants';
+import { BASE_URL_SERVER } from 'lib/constants';
 import axios from 'axios';
-import { TApiResponse } from '~/lib/types/apiResponse.types';
+import { TApiResponse } from 'lib/types/apiResponse.types';
 
 export default function Domain({ form }: Pick<TForm, 'form'>) {
   const { userId } = useAuth();
@@ -44,7 +44,10 @@ export default function Domain({ form }: Pick<TForm, 'form'>) {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Domain</FormLabel>
-            <Select defaultValue={field.value} onValueChange={(val) => field.onChange(val)}>
+            <Select
+              defaultValue={field.value}
+              onValueChange={(val) => field.onChange(val)}
+            >
               <FormControl>
                 <SelectTrigger className="bg-white">
                   <SelectValue placeholder="Select Domain" />

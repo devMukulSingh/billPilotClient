@@ -1,4 +1,4 @@
-import { TDialogModalProps } from '~/lib/types/modals.types';
+import { TDialogModalProps } from 'lib/types/modals.types';
 import {
   Dialog,
   DialogContent,
@@ -14,7 +14,7 @@ const DialogModal = ({
   description = '',
   dialogContentClassName,
   innerDivClassName,
-  titleIcon
+  titleIcon,
 }: TDialogModalProps) => {
   const onChange = () => {
     if (open) onClose();

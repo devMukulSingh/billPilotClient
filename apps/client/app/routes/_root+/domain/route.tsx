@@ -13,10 +13,10 @@ import TableActionsDropdown from '~/components/domain/TableActionsDropdown';
 import DropdownModal from '~/components/modals/DopdownModal';
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
-import { BASE_URL_SERVER } from '~/lib/constants';
-import { TApiResponse } from '~/lib/types/apiResponse.types';
-import { TDomain } from '~/lib/types/db.types';
-import { TDropdownOptions } from '~/lib/types/modals.types';
+import { BASE_URL_SERVER } from 'lib/constants';
+import { TApiResponse } from 'lib/types/apiResponse.types';
+import { TDomain } from 'lib/types/db.types';
+import { TDropdownOptions } from 'lib/types/modals.types';
 import { Skeleton } from '~/components/ui/skeleton';
 
 type Props = {};
@@ -123,16 +123,16 @@ function Domains() {
     },
   ];
   const totalPages = Math.ceil((data?.count || 1) / limit);
-    if (isFetching || isPending ) return <Skeleton className="w-full h-[25rem]" />;
+  if (isFetching || isPending) return <Skeleton className="w-full h-[25rem]" />;
   return (
     <>
-        <DataTable
-          className="min-h-[calc(100vh-7rem)]"
-          renderSubComponent={() => <></>}
-          data={data?.data}
-          totalPages={totalPages}
-          columns={columns}
-        />
+      <DataTable
+        className="min-h-[calc(100vh-7rem)]"
+        renderSubComponent={() => <></>}
+        data={data?.data}
+        totalPages={totalPages}
+        columns={columns}
+      />
     </>
   );
 }

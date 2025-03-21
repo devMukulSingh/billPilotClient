@@ -18,15 +18,14 @@ import {
   TableRow,
 } from '~/components/ui/table';
 import { Button } from '../ui/button';
-import { cn } from '~/lib/utils';
+import { cn } from 'lib/utils';
 import { useSearchParams } from '@remix-run/react';
-
 
 interface DataTableProps<TData, TValue> {
   className?: string;
   columns: ColumnDef<TData, TValue>[];
   data: TData[] | undefined;
-  totalPages?:number
+  totalPages?: number;
   renderSubComponent: (props: { row: Row<TData> }) => React.ReactElement;
 }
 
@@ -35,9 +34,8 @@ export function DataTable<TData, TValue>({
   data,
   className,
   renderSubComponent,
-  totalPages
+  totalPages,
 }: DataTableProps<TData, TValue>) {
-
   const table = useReactTable({
     data: data || [],
     columns,
@@ -55,12 +53,7 @@ export function DataTable<TData, TValue>({
     },
   });
   return (
-    <div
-      className={cn(
-        className,
-        `px-5 rounded-md flex flex-col  gap-5 `
-      )}
-    >
+    <div className={cn(className, `px-5 rounded-md flex flex-col  gap-5 `)}>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -115,10 +108,9 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      {
-        totalPages  &&
+      {totalPages && (
         <PaginationButtons totalPages={totalPages} table={table} />
-      }
+      )}
     </div>
   );
 }
@@ -128,7 +120,7 @@ function PaginationButtons<TData>({
   totalPages,
 }: {
   table: TTable<TData>;
-  totalPages:number
+  totalPages: number;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = Number(searchParams.get('page')) || 1;

@@ -16,7 +16,7 @@ import { Button } from '../ui/button';
 import { PlusCircle } from 'lucide-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL_SERVER } from '~/lib/constants';
+import { BASE_URL_SERVER } from 'lib/constants';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
 import ProductName from '../formFields/ProductName';
@@ -28,9 +28,9 @@ type Props = {
 };
 
 const schema = z.object({
-    name:z.string(),
-    rate:z.coerce.number()
-})
+  name: z.string(),
+  rate: z.coerce.number(),
+});
 
 export type TProductFormValues = z.infer<typeof schema>;
 
@@ -40,14 +40,11 @@ export default function AddProductDialog({ openDialog, setOpenDialog }: Props) {
   const { mutate, isPending } = useMutation<any, any, TProductFormValues>({
     mutationKey: ['post_product'],
     mutationFn: async (data) => {
-      return await axios.post(
-        `${BASE_URL_SERVER}/${userId}/product`,
-        data
-      );
+      return await axios.post(`${BASE_URL_SERVER}/${userId}/product`, data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['get_products']});
-      queryClient.invalidateQueries({ queryKey: [ 'get_all_products'] });
+      queryClient.invalidateQueries({ queryKey: ['get_products'] });
+      queryClient.invalidateQueries({ queryKey: ['get_all_products'] });
       setOpenDialog(false);
       toast.success(`product added`, { position: 'bottom-right' });
     },

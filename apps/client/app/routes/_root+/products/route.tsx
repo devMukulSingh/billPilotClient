@@ -13,9 +13,10 @@ import TableActionsDropdown from '~/components/product/TableActionsDropdown';
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
 import { Skeleton } from '~/components/ui/skeleton';
-import { BASE_URL_SERVER } from '~/lib/constants';
-import { TApiResponse } from '~/lib/types/apiResponse.types';
-import { TProduct } from '~/lib/types/db.types';
+import { BASE_URL_SERVER } from 'lib/constants';
+import { TApiResponse } from 'lib/types/apiResponse.types';
+import { TProduct } from 'lib/types/db.types';
+// import SearchBar from '~/components/commons/SearchBar';
 
 export default function ProductsRoute() {
   return (
@@ -51,28 +52,37 @@ function Header() {
       <header
         className="
         flex 
-        items-center
-        justify-between
-        gap-2 
+        flex-col
+        gap-5
       "
       >
+        {/* <SearchBar /> */}
         <div
-          className="      
+          className="        
+            flex 
+            items-center
+            justify-between
+            gap-2 
+        "
+        >
+          <div
+            className="      
           items-center
           flex 
           gap-2 
           "
-        >
-          <ShoppingBag />
-          <h1 className="text-2xl sm:text-3xl font-semibold">
-            Manage Products
-          </h1>
-        </div>
+          >
+            <ShoppingBag />
+            <h1 className="text-2xl sm:text-3xl font-semibold">
+              Manage Products
+            </h1>
+          </div>
 
-        <Button onClick={() => setOpenDialog(true)} variant={'outline'}>
-          <PlusCircle />
-          Add Product
-        </Button>
+          <Button onClick={() => setOpenDialog(true)} variant={'outline'}>
+            <PlusCircle />
+            Add Product
+          </Button>
+        </div>
       </header>
     </>
   );
@@ -83,7 +93,11 @@ function ProductsTable() {
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page') || 1;
   const limit = 10;
-  const { data,isFetching,isPending } = useQuery<any, any, TApiResponse<TProduct>>({
+  const { data, isFetching, isPending } = useQuery<
+    any,
+    any,
+    TApiResponse<TProduct>
+  >({
     queryKey: ['get_products'],
     queryFn: async () => {
       return (
@@ -123,16 +137,14 @@ function ProductsTable() {
       },
     },
   ];
-      if (isFetching || isPending)
-        return <Skeleton className="w-full h-[25rem]" />;
+  if (isFetching || isPending) return <Skeleton className="w-full h-[25rem]" />;
   return (
     <>
-
-    <DataTable
-      renderSubComponent={() => <></>}
-      columns={columns}
-      data={data?.data}
+      <DataTable
+        renderSubComponent={() => <></>}
+        columns={columns}
+        data={data?.data}
       />
-      </>
+    </>
   );
 }

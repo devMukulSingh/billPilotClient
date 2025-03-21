@@ -5,18 +5,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
-import { cn } from '~/lib/utils';
-import { TDropdownOptions } from '~/lib/types/modals.types';
+import { cn } from 'lib/utils';
+import { TDropdownOptions } from 'lib/types/modals.types';
 import { Edit, Trash } from 'lucide-react';
 import { useNavigate } from '@remix-run/react';
 import { ReactNode, useState } from 'react';
 import DeleteDialog from '../bill/DeleteDialog';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL_SERVER } from '~/lib/constants';
+import { BASE_URL_SERVER } from 'lib/constants';
 import { useAuth } from '@clerk/remix';
 import EditDistributorDialog from './EditDistributorDialog';
-import { TDistributor } from '~/lib/types/db.types';
+import { TDistributor } from 'lib/types/db.types';
 import toast from 'react-hot-toast';
 
 type Props = {
@@ -32,9 +32,7 @@ export default function TableActionsDropdown({ children, distributor }: Props) {
   const { mutate, isPending } = useMutation<unknown, unknown, { id: string }>({
     mutationKey: ['delete_distributor'],
     mutationFn: async (data) =>
-      await axios.delete(
-        `${BASE_URL_SERVER}/${userId}/distributor/${data.id}`
-      ),
+      await axios.delete(`${BASE_URL_SERVER}/${userId}/distributor/${data.id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['get_distributors'] });
       queryClient.invalidateQueries({ queryKey: ['get_all_distributors'] });
