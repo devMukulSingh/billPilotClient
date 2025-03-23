@@ -1,6 +1,6 @@
 import { useAuth } from '@clerk/remix';
 import { useSearchParams } from '@remix-run/react';
-import { useQuery } from '@tanstack/react-query';
+import { skipToken, useQuery } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import axios from 'axios';
 import { format } from 'date-fns';
@@ -92,22 +92,26 @@ function Header() {
 
 function ProductsTable() {
   const { userId } = useAuth();
-  const products = useAppSelector((state) => state.rootReducer.products);
   const [searchParams] = useSearchParams();
+  const query = searchParams.get('query');
+  const products = useAppSelector((state) => state.rootReducer.products);
   const page = searchParams.get('page') || 1;
   const limit = 10;
   const dispatch = useDispatch();
   const { isFetching, isPending } = useQuery<any, any, TApiResponse<TProduct>>({
     queryKey: ['get_products'],
-    queryFn: async () => {
-      const { data } = await axios.get(
-        `${BASE_URL_SERVER}/${userId}/product/get-products`,
-        {
-          params: { page, limit },
+    queryFn: !query
+      ? async () => {
+          const { data } = await axios.get(
+            `${BASE_URL_SERVER}/${userId}/product/get-products`,
+            {
+              params: { page, limit },
+            }
+          );
+          dispatch(setProducts(data));
+          return data;
         }
-      );
-      dispatch(setProducts(data));
-    },
+      : skipToken,
   });
 
   const columns: ColumnDef<TProduct>[] = [

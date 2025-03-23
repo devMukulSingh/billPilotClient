@@ -1,5 +1,10 @@
 import { Search, X } from 'lucide-react';
-import React, { ChangeEvent, KeyboardEvent, MouseEventHandler, useState } from 'react';
+import React, {
+  ChangeEvent,
+  KeyboardEvent,
+  MouseEventHandler,
+  useState,
+} from 'react';
 import { Input } from '../ui/input';
 import { useLocation, useSearchParams } from '@remix-run/react';
 import { Button } from '../ui/button';
@@ -14,16 +19,24 @@ import { setProducts } from 'redux/reducers/rootReducer';
 import { useDispatch } from 'react-redux';
 import { TInitialState } from 'redux/types/types';
 import { UnknownAction } from '@reduxjs/toolkit';
+import toast from 'react-hot-toast';
 
 type Props = {
-  handleSearch: (e: KeyboardEvent<HTMLInputElement>) => Promise<void>;
+  // handleSearch: (e: KeyboardEvent<HTMLInputElement>) => Promise<void>;
   handleClearSearch: () => void;
 };
 
-export default function SearchBar({
-  handleClearSearch,
-  handleSearch,
-}: Props) {
+export default function SearchBar({handleClearSearch}: Props) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  async function handleSearch(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key !== 'Enter') return;
+    const query = (e.target as HTMLInputElement).value.trim();
+    if (query === '') return;
+    const params = new URLSearchParams();
+    params.set(`query`, query);
+    setSearchParams(params);
+  }
+
   const [inputValue, setInputValue] = useState('');
   function handleClearInput() {
     if (inputValue !== '') setInputValue('');

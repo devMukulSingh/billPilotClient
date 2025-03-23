@@ -1,6 +1,6 @@
 import { useAuth } from '@clerk/remix';
 import { useSearchParams } from '@remix-run/react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import axios from 'axios';
 import { format } from 'date-fns';
@@ -18,6 +18,9 @@ import { TApiResponse } from 'lib/types/apiResponse.types';
 import { TDomain } from 'lib/types/db.types';
 import { TDropdownOptions } from 'lib/types/modals.types';
 import { Skeleton } from '~/components/ui/skeleton';
+import { useAppSelector } from 'redux/hooks/hook';
+import { setDomains } from 'redux/reducers/rootReducer';
+import { useDispatch } from 'react-redux';
 
 type Props = {};
 
@@ -82,18 +85,25 @@ function Header() {
 }
 
 function Domains() {
+  const dispatch = useDispatch();
+  const domains = useAppSelector((state) => state.rootReducer.domains);
   const [searchParams] = useSearchParams();
+  const query = searchParams.get('query');
   const page = searchParams.get('page') || '1';
   const limit = 10;
   const { userId } = useAuth();
+  // const { isFetching:isFetchingSearchedDomains } = useQuery({ queryKey: [`get_searched_domains/${query}`] });
   const { data, isFetching, isPending } = useQuery<TApiResponse<TDomain>>({
     queryKey: ['get_domains', page],
     queryFn: async () => {
-      return (
-        await axios.get(`${BASE_URL_SERVER}/${userId}/domain/get-domains`, {
+      const { data } = await axios.get(
+        `${BASE_URL_SERVER}/${userId}/domain/get-domains`,
+        {
           params: { page, limit },
-        })
-      ).data;
+        }
+      );
+      dispatch(setDomains(data));
+      return data;
     },
   });
 
@@ -123,13 +133,14 @@ function Domains() {
     },
   ];
   const totalPages = Math.ceil((data?.count || 1) / limit);
-  if (isFetching || isPending) return <Skeleton className="w-full h-[25rem]" />;
+  if (isFetching || isPending)
+    return <Skeleton className="w-full h-[25rem]" />;
   return (
     <>
       <DataTable
         className="min-h-[calc(100vh-7rem)]"
         renderSubComponent={() => <></>}
-        data={data?.data}
+        data={domains?.data}
         totalPages={totalPages}
         columns={columns}
       />
