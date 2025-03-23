@@ -16,7 +16,10 @@ import { Skeleton } from '~/components/ui/skeleton';
 import { BASE_URL_SERVER } from 'lib/constants';
 import { TApiResponse } from 'lib/types/apiResponse.types';
 import { TProduct } from 'lib/types/db.types';
-// import SearchBar from '~/components/commons/SearchBar';
+import SearchBar from '~/components/commons/SearchBar';
+import { setProducts } from 'redux/reducers/rootReducer';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from 'redux/hooks/hook';
 
 export default function ProductsRoute() {
   return (
@@ -56,7 +59,6 @@ function Header() {
         gap-5
       "
       >
-        {/* <SearchBar /> */}
         <div
           className="        
             flex 
@@ -90,23 +92,24 @@ function Header() {
 
 function ProductsTable() {
   const { userId } = useAuth();
+  const products = useAppSelector((state) => state.rootReducer.products);
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page') || 1;
   const limit = 10;
-  const { data, isFetching, isPending } = useQuery<
-    any,
-    any,
-    TApiResponse<TProduct>
-  >({
+  const dispatch = useDispatch();
+  const { isFetching, isPending } = useQuery<any, any, TApiResponse<TProduct>>({
     queryKey: ['get_products'],
     queryFn: async () => {
-      return (
-        await axios.get(`${BASE_URL_SERVER}/${userId}/product/get-products`, {
+      const { data } = await axios.get(
+        `${BASE_URL_SERVER}/${userId}/product/get-products`,
+        {
           params: { page, limit },
-        })
-      ).data;
+        }
+      );
+      dispatch(setProducts(data));
     },
   });
+
   const columns: ColumnDef<TProduct>[] = [
     {
       accessorKey: 'id',
@@ -137,13 +140,16 @@ function ProductsTable() {
       },
     },
   ];
+  const totalPages = Math.ceil((products?.count || 1) / limit);
   if (isFetching || isPending) return <Skeleton className="w-full h-[25rem]" />;
   return (
     <>
       <DataTable
+        className="min-h-[calc(100vh-11rem)]"
         renderSubComponent={() => <></>}
         columns={columns}
-        data={data?.data}
+        data={products?.data}
+        totalPages={totalPages}
       />
     </>
   );

@@ -1,6 +1,7 @@
 import { TApiResponse } from "lib/types/apiResponse.types"
-import { TBill, TDistributor, TDomain } from "lib/types/db.types"
+import { TBill, TDistributor, TDomain, TProduct } from "lib/types/db.types"
 
 export type TInitialState = {
-    bills : TApiResponse<TBill>
+    bills : TApiResponse<TBill>,
+    products : TApiResponse<TProduct>,
 }

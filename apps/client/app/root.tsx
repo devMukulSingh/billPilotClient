@@ -15,6 +15,7 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import { Provider } from 'react-redux';
 import { store } from 'redux/store';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 export const links: LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   {
@@ -40,8 +41,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         },
       },
       queries: {
-        gcTime: 1, // 24 hours
-        staleTime: 1,
+        gcTime: 1000 * 60, // 24 hours
+        staleTime: 1000 * 60,
         refetchOnWindowFocus: false,
         retry: false,
       },
@@ -65,6 +66,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             persistOptions={{ persister }}
             client={queryClient}
           >
+            <ReactQueryDevtools initialIsOpen={false} />
             {children}
           </PersistQueryClientProvider>
         </Provider>
