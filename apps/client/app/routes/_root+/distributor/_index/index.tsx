@@ -15,6 +15,9 @@ import { Skeleton } from '~/components/ui/skeleton';
 import { BASE_URL_SERVER } from 'lib/constants';
 import { TApiResponse } from 'lib/types/apiResponse.types';
 import { TDistributor } from 'lib/types/db.types';
+import { setDistributors } from 'redux/reducers/rootReducer';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from 'redux/hooks/hook';
 
 type Props = {};
 
@@ -82,21 +85,23 @@ function Header() {
 }
 
 function Distributor() {
+  const distributors = useAppSelector( state => state.rootReducer.distributors);
+  const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page') || '1';
   const limit = 10;
   const { userId } = useAuth();
-  const { data, isFetching, isPending } = useQuery<TApiResponse<TDistributor>>({
+  const {  isFetching, isPending } = useQuery<TApiResponse<TDistributor>>({
     queryKey: ['get_distributors', page],
     queryFn: async () => {
-      return (
-        await axios.get(
-          `${BASE_URL_SERVER}/${userId}/distributor/get-distributors`,
-          {
-            params: { page, limit },
-          }
-        )
-      ).data;
+      const { data } = await axios.get(
+        `${BASE_URL_SERVER}/${userId}/distributor/get-distributors`,
+        {
+          params: { page, limit },
+        }
+      );
+      dispatch(setDistributors(data));
+      return data;
     },
   });
 
@@ -129,7 +134,7 @@ function Distributor() {
       },
     },
   ];
-  const totalPages = Math.ceil((data?.count || 1) / limit);
+  const totalPages = Math.ceil((distributors?.count || 1) / limit);
   if (isFetching || isPending) return <Skeleton className="w-full h-[25rem]" />;
   return (
     <>
@@ -137,7 +142,7 @@ function Distributor() {
         className="min-h-[calc(100vh-7rem)]"
         totalPages={totalPages}
         renderSubComponent={() => <></>}
-        data={data?.data}
+        data={distributors?.data}
         columns={columns}
       />
     </>

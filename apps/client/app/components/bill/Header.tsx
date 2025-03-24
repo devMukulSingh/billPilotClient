@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { DateRangePicker } from './DateRangePicker';
 import { Button } from '../ui/button';
 import { useQuery } from '@tanstack/react-query';
@@ -48,29 +48,31 @@ export default function Header({}: Props) {
       h-16
       px-5 
       bg-slate-300
+      gap-5
      "
     >
       <div
         className="
         items-center
-        gap-2
-        w-auto 
-        md:w-1/3 
+      
         border 
         bg-white
         rounded-lg
         sticky
         top-0
-        px-2
         flex 
+        justify-between
       "
       >
-        <Search />
         <DateRangePicker />
-        <Button disabled={ isFetching} onClick={handleSearch} variant={'ghost'}>
+        <Button disabled={isFetching} onClick={handleSearch} variant={'ghost'}>
+          <Search />
           Search
         </Button>
       </div>
+        <Button disabled={isFetching} onClick={handleSearch} >
+          Clear Search
+        </Button>
     </div>
   );
 }
