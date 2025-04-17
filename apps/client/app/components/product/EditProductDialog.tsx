@@ -106,7 +106,7 @@ export default function EditProductDialog({
           />
         </Form>
         <Button disabled={isPending} type="button" onClick={onSubmit}>
-          Create
+          Submit
         </Button>
       </form>
     </DialogModal>

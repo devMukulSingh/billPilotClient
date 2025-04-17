@@ -98,18 +98,20 @@ export default function CreateBillForm({}: Props) {
   return (
     <>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className=" flex max-h-[85vh]  border-black  flex-col gap-5 px-5 pb-20 overflow-auto">
+        <div
+          className=" flex max-h-[85vh]    lg:w-2/3 
+              w-full    border-black  flex-col gap-5 px-5 pb-20 overflow-auto"
+        >
           <Form {...form}>
             <div
               className="
-              lg:w-3/4 
-              w-full 
+           
               grid 
               border-2 
               lg:grid-cols-3 
               md:grid-cols-2 
               grid-cols-1 
-              gap-x-2 
+              gap-x-4 
               gap-y-5
               border-white
               p-5
@@ -121,8 +123,8 @@ export default function CreateBillForm({}: Props) {
               <Suspense fallback={<Skeleton className="w-full h-9" />}>
                 <Distributor form={form} />
               </Suspense>
-              <DateCreated form={form} />
               <IsPaid form={form} />
+              <DateCreated form={form} />
             </div>
             <div
               className="
@@ -131,7 +133,7 @@ export default function CreateBillForm({}: Props) {
               flex-col
               gap-3
               p-5
-              lg:w-2/3 
+          
               border-white
         "
             >

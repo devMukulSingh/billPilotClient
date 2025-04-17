@@ -45,7 +45,7 @@ export default function Navbar({}: Props) {
           <UserButton />
         </SignedIn>
         <SignedOut>
-          <Button onClick={() => openSignIn()}>Login</Button>
+          <Button onClick={() => openSignIn() } >Login</Button>
           <Button
             className="text-black"
             variant={'outline'}

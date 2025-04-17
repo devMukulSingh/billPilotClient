@@ -24,7 +24,6 @@ import AddProductDialog from '../../product/AddProductDialog';
 import { useState } from 'react';
 import { ControllerRenderProps } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { TApiResponse } from 'lib/types/apiResponse.types';
 
 export default function ProductName({ form, index }: TForm) {
   const { userId } = useAuth();
