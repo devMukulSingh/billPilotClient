@@ -59,7 +59,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="max-h-screen  overflow-hidden">
+      <body className="">
         <Toaster />
         <Provider store={store}>
           <PersistQueryClientProvider

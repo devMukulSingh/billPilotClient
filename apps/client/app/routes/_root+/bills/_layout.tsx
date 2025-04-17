@@ -1,11 +1,13 @@
 import { Outlet } from '@remix-run/react';
+import { useEffect } from 'react';
 import BillsHeader from '~/components/bill/Header';
 
 export default function BillLayout() {
+
   return (
     <div className=" bg-slate-200">
       <BillsHeader />
-      <Outlet />
+      <Outlet />   
     </div>
   );
 }

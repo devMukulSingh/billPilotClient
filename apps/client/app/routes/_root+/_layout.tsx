@@ -15,7 +15,7 @@ export const loader: LoaderFunction = async (args) => {
 
 export default function RootLayout({}: Props) {
   return (
-    <div className="flex max-h-screen ">
+    <div className="flex max-h-screen  overflow-hidden ">
       <Sidebar />
       <div
         className="     
@@ -25,7 +25,6 @@ export default function RootLayout({}: Props) {
 
       "
       >
-
         <Outlet />
       </div>
     </div>

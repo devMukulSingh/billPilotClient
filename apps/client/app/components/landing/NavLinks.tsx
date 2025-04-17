@@ -6,16 +6,16 @@ export default function NavLinks({}: Props) {
     const location = useLocation()
     const navlinks = [
       {
-        title: 'HOME',
+        title: 'Home',
         isActive: location.pathname === '/home',
       },
       {
-        title: 'FEATURES',
+        title: 'Features',
         isActive: location.pathname === '/features',
 
       },
       {
-        title: 'CONTACT',
+        title: 'Contact',
         isActive: location.pathname === '/contact',
       },
     ];
@@ -24,7 +24,7 @@ export default function NavLinks({}: Props) {
         {
             navlinks.map( (nav,index) => (
                <h1 
-               className='cursor-pointer font-medium' 
+               className='cursor-pointer font-medium text-lg sm:text-xl' 
                key={index}>{nav.title}</h1>
             ))
         }
