@@ -14,9 +14,9 @@ import DropdownModal from '~/components/modals/DopdownModal';
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
 import { BASE_URL_SERVER } from 'lib/constants';
-import { TApiResponse } from 'lib/types/apiResponse.types';
-import { TDomain } from 'lib/types/db.types';
-import { TDropdownOptions } from 'lib/types/modals.types';
+import { TApiResponse } from 'types/apiResponse.types';
+import { TDomain } from 'types/db.types';
+import { TDropdownOptions } from 'types/modals.types';
 import { Skeleton } from '~/components/ui/skeleton';
 import { useAppSelector } from 'redux/hooks/hook';
 import { setDomains } from 'redux/reducers/rootReducer';
@@ -133,8 +133,7 @@ function Domains() {
     },
   ];
   const totalPages = Math.ceil((data?.count || 1) / limit);
-  if (isFetching || isPending)
-    return <Skeleton className="w-full h-[25rem]" />;
+  if (isFetching || isPending) return <Skeleton className="w-full h-[25rem]" />;
   return (
     <>
       <DataTable

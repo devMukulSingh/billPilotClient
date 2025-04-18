@@ -3,11 +3,11 @@ import { Outlet, useSearchParams } from '@remix-run/react';
 import { skipToken, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL_SERVER } from 'lib/constants';
-import { TApiResponse } from 'lib/types/apiResponse.types';
+import { TApiResponse } from 'types/apiResponse.types';
 import toast from 'react-hot-toast';
-import {  setDistributors } from 'redux/reducers/rootReducer';
+import { setDistributors } from 'redux/reducers/rootReducer';
 import SearchBar from '~/components/commons/SearchBar';
-import { TDistributor } from 'lib/types/db.types';
+import { TDistributor } from 'types/db.types';
 import { useDispatch } from 'react-redux';
 
 export default function DistributorLayout() {

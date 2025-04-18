@@ -16,6 +16,9 @@ import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persist
 import { Provider } from 'react-redux';
 import { store } from 'redux/store';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { ApiProvider } from '@reduxjs/toolkit/query/react';
+import { splitApi } from 'redux/api';
+
 export const links: LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   {
@@ -41,8 +44,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         },
       },
       queries: {
-        gcTime: 1000 * 60, // 24 hours
-        staleTime: 1000 * 60,
+        gcTime: 24 * 60 * 1000, // 24 hours //time until which, data is stored in cache
+        staleTime: 24 * 60 * 1000, // time until data is considered stale, stale means to refetch
         refetchOnWindowFocus: false,
         retry: false,
       },
@@ -62,13 +65,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body className="">
         <Toaster />
         <Provider store={store}>
-          <PersistQueryClientProvider
-            persistOptions={{ persister }}
-            client={queryClient}
-          >
-            <ReactQueryDevtools initialIsOpen={false} />
-            {children}
-          </PersistQueryClientProvider>
+            <PersistQueryClientProvider
+              persistOptions={{ persister }}
+              client={queryClient}
+            >
+              <ReactQueryDevtools initialIsOpen={false} />
+              {children}
+            </PersistQueryClientProvider>
         </Provider>
         <ScrollRestoration />
         <Scripts />

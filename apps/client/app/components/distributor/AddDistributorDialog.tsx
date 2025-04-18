@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from '../ui/select';
 import { useAuth } from '@clerk/remix';
-import { TDomain } from 'lib/types/db.types';
+import { TDomain } from 'types/db.types';
 import DistributorName from '../formFields/DistributorName';
 import Domain from '../formFields/Domain';
 

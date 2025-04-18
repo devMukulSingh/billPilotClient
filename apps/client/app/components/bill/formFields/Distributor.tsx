@@ -21,8 +21,8 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL_SERVER } from 'lib/constants';
 import { useAuth } from '@clerk/remix';
-import { TDistributor } from 'lib/types/db.types';
-import { TApiResponse } from 'lib/types/apiResponse.types';
+import { TDistributor } from 'types/db.types';
+import { TApiResponse } from 'types/apiResponse.types';
 
 export default function DistributorName({ form }: Pick<TForm, 'form'>) {
   const { userId } = useAuth();

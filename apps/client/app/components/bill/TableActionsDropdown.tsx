@@ -6,11 +6,10 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
 import { cn } from 'lib/utils';
-import { TDopdownModalProps, TDropdownOptions } from 'lib/types/modals.types';
+import { TDopdownModalProps, TDropdownOptions } from 'types/modals.types';
 import { Edit, Trash } from 'lucide-react';
 import { useNavigate } from '@remix-run/react';
 import { Dispatch, ReactNode, SetStateAction } from 'react';
-import { TBill } from 'lib/types/db.types';
 import DeleteDialog from './DeleteDialog';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { BASE_URL_SERVER } from 'lib/constants';

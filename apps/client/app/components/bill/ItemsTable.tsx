@@ -1,7 +1,7 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { DataTable } from '../commons/DataTable';
-import { TBill } from 'lib/types/db.types';
-import { TBillItem } from 'lib/types/db.types';
+import { TBill } from 'types/db.types';
+import { TBillItem } from 'types/db.types';
 
 type Props = {
   row: Row<TBill>;

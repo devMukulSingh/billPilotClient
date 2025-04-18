@@ -1,4 +1,4 @@
-import { TDialogModalProps } from 'lib/types/modals.types';
+import { TDialogModalProps } from 'types/modals.types';
 import {
   Dialog,
   DialogContent,

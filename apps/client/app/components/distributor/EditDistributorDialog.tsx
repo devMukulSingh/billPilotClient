@@ -20,7 +20,7 @@ import axios from 'axios';
 import { BASE_URL_SERVER } from 'lib/constants';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
-import { TDistributor, TDomain } from 'lib/types/db.types';
+import { TDistributor, TDomain } from 'types/db.types';
 import {
   Select,
   SelectContent,
@@ -28,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
-import { TApiResponse } from 'lib/types/apiResponse.types';
+import { TApiResponse } from 'types/apiResponse.types';
 import DistributorName from '../formFields/DistributorName';
 import Domain from '../formFields/Domain';
 type Props = {

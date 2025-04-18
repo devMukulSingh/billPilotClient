@@ -10,6 +10,7 @@ export const loader: LoaderFunction = async (args) => {
   if (!userId) {
     return redirect('/sign-in');
   }
+  if(typeof window!=='undefined') localStorage.setItem('userId',JSON.stringify(userId));
   return {};
 };
 

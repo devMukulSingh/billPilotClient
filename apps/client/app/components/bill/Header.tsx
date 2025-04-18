@@ -6,26 +6,26 @@ import { BASE_URL_SERVER } from 'lib/constants';
 import { useAuth } from '@clerk/remix';
 import axios from 'axios';
 import { useSearchParams } from '@remix-run/react';
-import { TApiResponse } from 'lib/types/apiResponse.types';
-import { TBill } from 'lib/types/db.types';
+import { TApiResponse } from 'types/apiResponse.types';
+import { TBill } from 'types/db.types';
 import { setBills } from 'redux/reducers/rootReducer';
 import { useDispatch } from 'react-redux';
 
 type Props = {};
 
 export default function Header({}: Props) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { userId } = useAuth();
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page') || 1;
   const limit = 10;
   const startDate = searchParams.get('startDate');
   const endDate = searchParams.get('endDate');
-  const {  isFetching, isPending, refetch } = useQuery<TApiResponse<TBill>>({
+  const { isFetching, isPending, refetch } = useQuery<TApiResponse<TBill>>({
     queryKey: ['get_searched_bills'],
     enabled: false,
     queryFn: async () => {
-      const {data} = await axios.get(`${BASE_URL_SERVER}/${userId}/bill`, {
+      const { data } = await axios.get(`${BASE_URL_SERVER}/${userId}/bill`, {
         params: {
           page,
           limit,
@@ -33,8 +33,8 @@ export default function Header({}: Props) {
           endDate,
         },
       });
-      dispatch(setBills(data))
-      return data
+      dispatch(setBills(data));
+      return data;
     },
   });
   function handleSearch() {
@@ -70,9 +70,9 @@ export default function Header({}: Props) {
           Search
         </Button>
       </div>
-        <Button disabled={isFetching} onClick={handleSearch} >
-          Clear Search
-        </Button>
+      <Button disabled={isFetching} onClick={handleSearch}>
+        Clear Search
+      </Button>
     </div>
   );
 }

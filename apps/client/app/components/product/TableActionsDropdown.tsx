@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
 import { cn } from 'lib/utils';
-import { TDropdownOptions } from 'lib/types/modals.types';
+import { TDropdownOptions } from 'types/modals.types';
 import { Edit, Trash } from 'lucide-react';
 import { ReactNode, useState } from 'react';
 import DeleteDialog from '../bill/DeleteDialog';
@@ -14,7 +14,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL_SERVER } from 'lib/constants';
 import { useAuth } from '@clerk/remix';
-import { TProduct } from 'lib/types/db.types';
+import { TProduct } from 'types/db.types';
 import toast from 'react-hot-toast';
 import EditProductDialog from './EditProductDialog';
 

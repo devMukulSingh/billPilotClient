@@ -156,6 +156,7 @@ export default function CreateBillForm({}: Props) {
                   <ProductRate form={form} index={index} />
                   <ProductAmount form={form} index={index} />
                   <Button
+                    type='button'
                     variant={'destructive'}
                     className="rounded-full  size-9 self-end ml-auto"
                     disabled={controlledFields.length === 1}

@@ -14,7 +14,7 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { TApiResponse } from 'lib/types/apiResponse.types';
+import { TApiResponse } from 'types/apiResponse.types';
 import { setProducts } from 'redux/reducers/rootReducer';
 import { useDispatch } from 'react-redux';
 import { TInitialState } from 'redux/types/types';
@@ -26,7 +26,7 @@ type Props = {
   handleClearSearch: () => void;
 };
 
-export default function SearchBar({handleClearSearch}: Props) {
+export default function SearchBar({ handleClearSearch }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
   async function handleSearch(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key !== 'Enter') return;

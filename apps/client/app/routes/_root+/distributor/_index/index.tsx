@@ -13,8 +13,8 @@ import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
 import { Skeleton } from '~/components/ui/skeleton';
 import { BASE_URL_SERVER } from 'lib/constants';
-import { TApiResponse } from 'lib/types/apiResponse.types';
-import { TDistributor } from 'lib/types/db.types';
+import { TApiResponse } from 'types/apiResponse.types';
+import { TDistributor } from 'types/db.types';
 import { setDistributors } from 'redux/reducers/rootReducer';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from 'redux/hooks/hook';
@@ -85,13 +85,15 @@ function Header() {
 }
 
 function Distributor() {
-  const distributors = useAppSelector( state => state.rootReducer.distributors);
+  const distributors = useAppSelector(
+    (state) => state.rootReducer.distributors
+  );
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page') || '1';
   const limit = 10;
   const { userId } = useAuth();
-  const {  isFetching, isPending } = useQuery<TApiResponse<TDistributor>>({
+  const { isFetching, isPending } = useQuery<TApiResponse<TDistributor>>({
     queryKey: ['get_distributors', page],
     queryFn: async () => {
       const { data } = await axios.get(

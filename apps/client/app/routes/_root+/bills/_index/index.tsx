@@ -10,8 +10,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@clerk/remix';
 import { ColumnDef } from '@tanstack/react-table';
 import axios from 'axios';
-import { TBill } from 'lib/types/db.types';
-import { TApiResponse } from 'lib/types/apiResponse.types';
+import { TBill } from 'types/db.types';
+import { TApiResponse } from 'types/apiResponse.types';
 import { useSearchParams } from '@remix-run/react';
 import { Skeleton } from '~/components/ui/skeleton';
 import { useDispatch } from 'react-redux';
@@ -77,7 +77,7 @@ function BillsTable() {
       );
 
       dispatch(setBills(data));
-      return data
+      return data;
     },
   });
   // const { data:searchedBills, refetch } = useQuery({

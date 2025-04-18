@@ -15,11 +15,11 @@ import {
   SelectValue,
 } from '../ui/select';
 import { DistributorFieldProps } from './formFields.types';
-import { TDomain } from 'lib/types/db.types';
+import { TDomain } from 'types/db.types';
 import { useQuery } from '@tanstack/react-query';
 import { BASE_URL_SERVER } from 'lib/constants';
 import { useAuth } from '@clerk/remix';
-import { TApiResponse } from 'lib/types/apiResponse.types';
+import { TApiResponse } from 'types/apiResponse.types';
 
 export default function Domain({ form, isPending }: DistributorFieldProps) {
   const { userId } = useAuth();

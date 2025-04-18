@@ -19,7 +19,7 @@ import axios from 'axios';
 import { BASE_URL_SERVER } from 'lib/constants';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
-import { TDomain } from 'lib/types/db.types';
+import { TDomain } from 'types/db.types';
 import DomainName from '../formFields/DomainName';
 
 type Props = {
