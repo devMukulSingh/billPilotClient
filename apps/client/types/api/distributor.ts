@@ -1,3 +1,5 @@
+import { TDistributorFormValues } from "~/components/distributor/AddDistributorDialog"
+
 export type TDistributor = {
     id: string,
     domain: {
@@ -8,5 +10,6 @@ export type TDistributor = {
     updated_at: string,
     name: string,
     user_id: string,
-
 }
+
+export type TPostDistributorArg = TDistributorFormValues & {userId:string | null | undefined}

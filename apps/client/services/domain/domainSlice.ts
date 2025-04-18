@@ -47,7 +47,7 @@ const domainSlice = splitApi.injectEndpoints({
         }),
         putDomain: build.mutation<{}, TDomainFormValues & TBaseMutationArgs>({
             query: (arg) => ({
-                url: `${arg.userId}/domain`,
+                url: `${arg.userId}/domain/${arg.id}`,
                 method: "PUT",
                 body: arg
             }),
@@ -55,7 +55,7 @@ const domainSlice = splitApi.injectEndpoints({
         }),
         deleteDomain: build.mutation<{}, TBaseMutationArgs>({
             query: (arg) => ({
-                url: `${arg.userId}/domain`,
+                url: `${arg.userId}/domain/${arg.id}`,
                 method: "DELETE",
                 body: arg
             }),

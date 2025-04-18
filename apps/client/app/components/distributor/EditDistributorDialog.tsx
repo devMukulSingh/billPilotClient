@@ -20,7 +20,6 @@ import axios from 'axios';
 import { BASE_URL_SERVER } from 'lib/constants';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
-import { TDistributor, TDomain } from 'types/db.types';
 import {
   Select,
   SelectContent,
@@ -31,6 +30,8 @@ import {
 import { TApiResponse } from 'types/apiResponse.types';
 import DistributorName from '../formFields/DistributorName';
 import Domain from '../formFields/Domain';
+import { usePutDistributorMutation } from 'services/distributor/distributorApiSlice';
+import { TDistributor } from 'types/api/distributor';
 type Props = {
   openDialog: boolean;
   setOpenDialog: Dispatch<SetStateAction<boolean>>;
@@ -46,23 +47,9 @@ export default function EditdistributorDialog({
   setOpenDialog,
   distributor,
 }: Props) {
-  const queryClient = useQueryClient();
   const { userId } = useAuth();
-  const { mutate, isPending } = useMutation<any, any, TformValues>({
-    mutationKey: ['update_distributor'],
-    mutationFn: async (data) => {
-      return await axios.put(
-        `${BASE_URL_SERVER}/${userId}/distributor/${distributor.id}`,
-        data
-      );
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['get_distributors'] });
-      queryClient.invalidateQueries({ queryKey: ['get_all_distributors'] });
-      setOpenDialog(false);
-      toast.success(`Distributor Updated`, { position: 'bottom-right' });
-    },
-  });
+  const [trigger, { isLoading }] = usePutDistributorMutation();
+
   const form = useForm<TformValues>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -70,10 +57,19 @@ export default function EditdistributorDialog({
       domain_id: distributor.domain.id,
     },
   });
-  function onSubmit(e: any) {
+  async function onSubmit(e: any) {
     e.stopPropagation();
-    const formData = form.getValues();
-    mutate(formData);
+    try {
+      await trigger({
+        ...form.getValues(),
+        userId,
+        id:distributor.id
+      }).unwrap();
+      setOpenDialog(false);
+    } catch (e) {
+      console.log(e);
+      toast.error('Error editing distributor, please contact the developer');
+    }
   }
   return (
     <DialogModal
@@ -84,13 +80,29 @@ export default function EditdistributorDialog({
     >
       <form className="space-y-10">
         <Form {...form}>
-          <DistributorName form={form} isPending={isPending} />
-          <Domain form={form} isPending={isPending} />
+          <DistributorName form={form} isPending={isLoading} />
+          <Domain form={form} isPending={isLoading} />
         </Form>
-        <Button disabled={isPending} type="button" onClick={onSubmit}>
+        <Button disabled={isLoading} type="button" onClick={onSubmit}>
           Submit
         </Button>
       </form>
     </DialogModal>
   );
 }
+
+  // const { mutate, isPending } = useMutation<any, any, TformValues>({
+  //   mutationKey: ['update_distributor'],
+  //   mutationFn: async (data) => {
+  //     return await axios.put(
+  //       `${BASE_URL_SERVER}/${userId}/distributor/${distributor.id}`,
+  //       data
+  //     );
+  //   },
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ['get_distributors'] });
+  //     queryClient.invalidateQueries({ queryKey: ['get_all_distributors'] });
+  //     setOpenDialog(false);
+  //     toast.success(`Distributor Updated`, { position: 'bottom-right' });
+  //   },
+  // });
