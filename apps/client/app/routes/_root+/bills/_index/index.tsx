@@ -10,13 +10,14 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@clerk/remix';
 import { ColumnDef } from '@tanstack/react-table';
 import axios from 'axios';
-import { TBill } from 'types/db.types';
 import { TApiResponse } from 'types/apiResponse.types';
 import { useSearchParams } from '@remix-run/react';
 import { Skeleton } from '~/components/ui/skeleton';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from 'redux/hooks/hook';
 import { setBills } from 'redux/reducers/rootReducer';
+import { useGetBillsQuery } from 'services/bill/billApiSlice';
+import { TBill } from 'types/api/bills';
 
 type Props = {};
 
@@ -56,7 +57,6 @@ export default function Bills({}: Props) {
 }
 
 function BillsTable() {
-  const response = useAppSelector((state) => state.rootReducer.bills);
   const dispatch = useDispatch();
   const [isOpenDialog, setIsOpenDialog] = useState(false);
   const [searchParams] = useSearchParams();
@@ -65,26 +65,32 @@ function BillsTable() {
   const page = Number(searchParams.get('page')) || 1;
   const limit = 10;
   const { userId } = useAuth();
+  const { data, isFetching, isLoading } = useGetBillsQuery({
+    limit,
+    page,
+    userId
 
-  const { data, isFetching, isPending } = useQuery<TApiResponse<TBill>>({
-    queryKey: ['get_bills'],
-    queryFn: async () => {
-      const { data } = await axios.get(
-        `${BASE_URL_SERVER}/${userId}/bill/get-bills`,
-        {
-          params: { page, limit },
-        }
-      );
+  })
+  // const { data, isFetching, isPending } = useQuery<TApiResponse<TBill>>({
+  //   queryKey: ['get_bills'],
+  //   queryFn: async () => {
+  //     const { data } = await axios.get(
+  //       `${BASE_URL_SERVER}/${userId}/bill/get-bills`,
+  //       {
+  //         params: { page, limit },
+  //       }
+  //     );
 
-      dispatch(setBills(data));
-      return data;
-    },
-  });
+  //     dispatch(setBills(data));
+  //     return data;
+  //   },
+  // });
+
   // const { data:searchedBills, refetch } = useQuery({
   //   queryKey: ['get_searched_bills',page,limit,startDate,endDate],
   // });
 
-  const totalPages = Math.ceil((response?.count || 1) / limit);
+  const totalPages = Math.ceil((data?.count || 1) / limit);
 
   const columns: ColumnDef<TBill>[] = [
     {
@@ -127,7 +133,7 @@ function BillsTable() {
     {
       accessorKey: 'date',
       header: 'Date',
-      cell: ({ row }) => format(row.getValue('date'), 'dd-MM-yyyy | H:m'),
+      cell: ({ row }) => format(row.getValue('date'), 'dd-MM-yyyy'),
     },
     {
       id: 'actions',
@@ -146,12 +152,12 @@ function BillsTable() {
     },
   ];
 
-  if (isFetching || isPending) return <Skeleton className="w-full h-[25rem]" />;
+  if (isFetching || isLoading) return <Skeleton className="w-full h-[25rem]" />;
   return (
     <DataTable
       className="min-h-[calc(100vh-12rem)]"
       columns={columns}
-      data={response.data || []}
+      data={data?.data || []}
       totalPages={totalPages}
       renderSubComponent={ItemsTable}
     />

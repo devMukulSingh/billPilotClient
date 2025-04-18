@@ -1,7 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TApiResponse } from "types/apiResponse.types";
-import { TBill, TDistributor, TDomain, TProduct } from "types/db.types";
 import { TInitialState } from "redux/types/types";
+import { TBill } from "types/api/bills";
+import { TProduct } from "types/api/product";
+import { TDomain } from "types/api/domain";
+import { TDistributor } from "types/api/distributor";
 
 const initialState: TInitialState = {
     bills: {

@@ -1,6 +1,7 @@
 import { getAuth } from '@clerk/remix/ssr.server';
 import { LoaderFunction } from '@remix-run/node';
 import { Outlet, redirect } from '@remix-run/react';
+import { useEffect } from 'react';
 import Sidebar from '~/components/Sidebar';
 
 type Props = {};
@@ -10,7 +11,6 @@ export const loader: LoaderFunction = async (args) => {
   if (!userId) {
     return redirect('/sign-in');
   }
-  if(typeof window!=='undefined') localStorage.setItem('userId',JSON.stringify(userId));
   return {};
 };
 

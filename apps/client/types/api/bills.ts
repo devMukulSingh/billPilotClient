@@ -24,10 +24,17 @@ export type TBill = {
     total_amount: number,
 };
 
-export type TGetBillsArg = {
-    page:string,
-    limit:string
+export type TBaseMutationArgs = {
+    id:string | undefined,
+    userId:string | null | undefined
 }
 
-export type TCreateBillMutationArg = Omit<TCreateBillFormValues, 'date'> & { totalAmount: number; date: string }
+export type TGetBillsArg = {
+    page:number,
+    limit:number,
+    userId: string | null | undefined
+}
+
+
+export type TCreateBillMutationArg = Omit<TCreateBillFormValues, 'date'> & { totalAmount: number; date: string, userId: string | null | undefined }
 

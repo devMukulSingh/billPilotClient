@@ -16,6 +16,8 @@ import { BASE_URL_SERVER } from 'lib/constants';
 import axios from 'axios';
 import { useAuth } from '@clerk/remix';
 import toast from 'react-hot-toast';
+import { TBill } from 'types/api/bills';
+import { useDeleteBillMutation } from 'services/bill/billApiSlice';
 
 type Props = {
   children: ReactNode;
@@ -31,19 +33,9 @@ export default function TableActionsDropdown({
   setIsOpenDialog,
 }: Props) {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { userId } = useAuth();
-  const { isPending, mutate } = useMutation<unknown, unknown, { id: string }>({
-    mutationKey: ['delete_bill'],
-    mutationFn: async (data) => {
-      await axios.delete(`${BASE_URL_SERVER}/${userId}/bill/${data.id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['get_bills'] });
-      setIsOpenDialog(false);
-      toast.success('bill deleted');
-    },
-  });
+  const [trigger, { isLoading }] = useDeleteBillMutation();
+
   const dropdownOptions: TDropdownOptions[] = [
     {
       label: 'Edit',
@@ -58,12 +50,25 @@ export default function TableActionsDropdown({
       className: '',
     },
   ];
+  async function handleDelete() {
+    try {
+      await trigger({
+        id: bill.id,
+        userId,
+      });
+      toast.success(`Bill deleted`);
+      setIsOpenDialog(false);
+    } catch (e) {
+      toast.error(`Unable to create bill, please contact the developer`);
+      console.log(e);
+    }
+  }
   return (
     <>
       {isOpenDialog && (
         <DeleteDialog
-          disabled={isPending}
-          onDelete={() => mutate({ id: bill.id })}
+          disabled={isLoading}
+          onDelete={handleDelete}
           description="This action can't be undone"
           open={isOpenDialog}
           onClose={() => setIsOpenDialog(false)}
@@ -93,3 +98,15 @@ export default function TableActionsDropdown({
     </>
   );
 }
+
+// const { isLoading, mutate } = useMutation<unknown, unknown, { id: string }>({
+//   mutationKey: ['delete_bill'],
+//   mutationFn: async (data) => {
+//     await axios.delete(`${BASE_URL_SERVER}/${userId}/bill/${data.id}`);
+//   },
+//   onSuccess: () => {
+//     queryClient.invalidateQueries({ queryKey: ['get_bills'] });
+//
+
+//   },
+// });

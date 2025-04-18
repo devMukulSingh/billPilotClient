@@ -18,6 +18,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
 import { lazy, Suspense } from 'react';
 import { Skeleton } from '../ui/skeleton';
+import { useCreateBillMutation } from 'services/bill/billApiSlice';
 const ProductName = lazy(() => import('./formFields/ProductName'));
 const Distributor = lazy(() => import('./formFields/Distributor'));
 const Domain = lazy(() => import('./formFields/Domain'));
@@ -39,22 +40,22 @@ export type TForm = {
 export default function CreateBillForm({}: Props) {
   const { userId } = useAuth();
   const queryClient = useQueryClient();
-  const { mutate, isPending } = useMutation<
-    any,
-    any,
-    Omit<TCreateBillFormValues, 'date'> & { totalAmount: number; date: string }
-  >({
-    mutationKey: ['post_bill'],
-    mutationFn: async (data) => {
-      return (await axios.post(`${BASE_URL_SERVER}/${userId}/bill`, data)).data;
-    },
-    onSuccess: () => {
-      toast.success('Bill added'),
-        queryClient.invalidateQueries({
-          queryKey: ['get_bills'],
-        });
-    },
-  });
+  const [trigger, { isLoading }] = useCreateBillMutation();
+  // const { mutate } = useMutation<
+  //   any,
+  //   any,
+  //   Omit<TCreateBillFormValues, 'date'> & { totalAmount: number; date: string }
+  // >({
+  //   mutationKey: ['post_bill'],
+  //   mutationFn: async (data) => {
+  //     return (await axios.post(`${BASE_URL_SERVER}/${userId}/bill`, data)).data;
+  //   },
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({
+  //       queryKey: ['get_bills'],
+  //     });
+  //   },
+  // });
   const form = useForm<TCreateBillFormValues>({
     resolver: zodResolver(createBillSchema),
     defaultValues: {
@@ -87,12 +88,20 @@ export default function CreateBillForm({}: Props) {
   const totalAmount = form
     .getValues()
     .bill_items.reduce((prev, curr) => prev + curr.amount, 0);
-  function onSubmit(data: TCreateBillFormValues) {
-    mutate({
-      ...data,
-      date: data.date.toISOString(),
-      totalAmount,
-    });
+
+  async function onSubmit(data: TCreateBillFormValues) {
+    try {
+      await trigger({
+        ...data,
+        userId,
+        date: data.date.toISOString(),
+        totalAmount,
+      }).unwrap();
+      toast.success('Bill added');
+    } catch (e) {
+      console.log(e);
+      toast.error('Unable to create bill, please contact the developer');
+    }
   }
 
   return (
@@ -156,7 +165,7 @@ export default function CreateBillForm({}: Props) {
                   <ProductRate form={form} index={index} />
                   <ProductAmount form={form} index={index} />
                   <Button
-                    type='button'
+                    type="button"
                     variant={'destructive'}
                     className="rounded-full  size-9 self-end ml-auto"
                     disabled={controlledFields.length === 1}
@@ -190,7 +199,7 @@ export default function CreateBillForm({}: Props) {
         "
         >
           <div className="w-full md:w-2/3 flex justify-between">
-            <Button disabled={isPending} type="submit">
+            <Button disabled={isLoading} type="submit">
               Submit
             </Button>
             <h1 className="text-xl font-semibold">

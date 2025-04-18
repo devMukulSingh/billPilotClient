@@ -10,9 +10,8 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
 import { TCreateBillFormValues } from '~/components/bill/CreateBillForm';
-import { useParams } from '@remix-run/react';
+import { useParams, useSearchParams } from '@remix-run/react';
 import { TApiResponse } from 'types/apiResponse.types';
-import { TBill } from 'types/db.types';
 import { Separator } from '~/components/ui/separator';
 import { Form } from '~/components/ui/form';
 import Domain from '~/components/bill/formFields/Domain';
@@ -25,6 +24,13 @@ import ProductRate from '~/components/bill/formFields/ProductRate';
 import ProductAmount from '~/components/bill/formFields/ProductAmount';
 import { Button } from '~/components/ui/button';
 import { formatISO, parseISO } from 'date-fns';
+import {
+  useGetBillsQuery,
+  useUpdateBillMutation,
+} from 'services/bill/billApiSlice';
+import { useAppSelector } from 'redux/hooks/hook';
+import { TBill } from 'types/api/bills';
+import { useEffect, useMemo, useState } from 'react';
 
 type Props = {};
 
@@ -55,54 +61,30 @@ export default function EditBill({}: Props) {
 }
 
 function EditBillForm({}: Props) {
+  const [selectedBill, setSelectedBill] = useState<TBill | undefined>(
+    undefined
+  );
+  const [totalAmount, setTotalAmount] = useState(0);
+  const { userId } = useAuth();
+  const [searchParams] = useSearchParams();
+  const page = Number(searchParams.get('page')) || 1;
+  const limit = Number(searchParams.get('limit')) || 10;
   const { billId } = useParams();
-  const { data } = useQuery<
-    TApiResponse<Omit<TBill, 'date'> & { date: string }>
-  >({ queryKey: ['get_bills'] });
-  const bill = data?.data.find((bill) => bill.id === billId);
+  const [trigger, { isLoading }] = useUpdateBillMutation();
+  const { data } = useGetBillsQuery({
+    limit,
+    page,
+    userId,
+  });
+
   const editBillSchema = billSchema.omit({
     distributor_name: true,
     domain_name: true,
   });
-  console.log(data);
-  const { userId } = useAuth();
-  const queryClient = useQueryClient();
-  const { mutate, isPending } = useMutation<
-    any,
-    any,
-    Omit<TCreateBillFormValues, 'date'> & { date: string; totalAmount: number }
-  >({
-    mutationKey: ['put_bill'],
-    mutationFn: async (data) => {
-      return (
-        await axios.put(`${BASE_URL_SERVER}/${userId}/bill/${billId}`, data)
-      ).data;
-    },
-    onSuccess: () => {
-      toast.success('Bill edited'),
-        queryClient.invalidateQueries({
-          queryKey: ['get_bills'],
-        });
-    },
-  });
+
   const form = useForm<TCreateBillFormValues>({
     resolver: zodResolver(editBillSchema),
-    defaultValues: {
-      distributor_id: bill?.distributor.id,
-      domain_id: bill?.domain.id,
-      date: parseISO(bill?.date || new Date().toISOString()),
-      is_paid: bill?.is_paid,
-      bill_items: bill?.bill_items.map((billItem) => ({
-        amount: billItem.amount,
-        quantity: billItem.quantity,
-        product_id: billItem.product.id,
-        id: billItem.id,
-        product: {
-          id: billItem.product.id,
-          rate: billItem.product.rate,
-        },
-      })),
-    },
+
   });
   const fieldArray = useFieldArray({
     name: 'bill_items',
@@ -123,15 +105,46 @@ function EditBillForm({}: Props) {
   function handleRemoveItem(index: number) {
     fieldArray.remove(index);
   }
-  const totalAmount = form
-    .getValues()
-    .bill_items.reduce((prev, curr) => prev + curr.amount, 0);
-  function onSubmit(data: TCreateBillFormValues) {
-    mutate({
-      ...data,
-      totalAmount,
-      date: data.date.toISOString(),
+  useEffect(() => {
+    setTotalAmount(
+      form.getValues().bill_items.reduce((prev, curr) => prev + curr.amount, 0)
+    );
+  }, [form.getValues().bill_items]);
+  useEffect(() => {
+    const selectedBill = data?.data.find((bill) => bill.id === billId);
+    if (!selectedBill) return;
+    console.log(selectedBill);
+    form.reset({
+      distributor_id: selectedBill.distributor.id,
+      domain_id: selectedBill.domain.id,
+      date: selectedBill.date,
+      is_paid: selectedBill.is_paid,
+      bill_items: selectedBill.bill_items.map((billItem) => ({
+        amount: billItem.amount,
+        quantity: billItem.quantity,
+        product_id: billItem.product.id,
+        id: billItem.id,
+        product: {
+          id: billItem.product.id,
+          rate: billItem.product.rate,
+        },
+      })),
     });
+  }, [data]);
+  async function onSubmit(data: TCreateBillFormValues) {
+    try {
+      await trigger({
+        ...data,
+        userId,
+        id: billId,
+        totalAmount,
+        date: data.date.toISOString(),
+      }).unwrap();
+      toast.success('Bill edited');
+    } catch (e) {
+      console.log(e);
+      toast.error(`Unable to edit bill, please contact the developer`);
+    }
   }
   return (
     <>
@@ -219,7 +232,7 @@ function EditBillForm({}: Props) {
         "
         >
           <div className="w-full md:w-2/3 flex justify-between">
-            <Button disabled={isPending} type="submit">
+            <Button disabled={isLoading} type="submit">
               Submit
             </Button>
             <h1 className="text-xl font-semibold">
