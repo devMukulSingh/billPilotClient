@@ -29,6 +29,12 @@ export type TBaseMutationArgs = {
     userId:string | null | undefined
 }
 
+export type TBaseQueryArg = {
+    page: number,
+    limit: number,
+    userId: string | null | undefined
+}
+
 export type TGetBillsArg = {
     page:number,
     limit:number,
@@ -38,3 +44,4 @@ export type TGetBillsArg = {
 
 export type TCreateBillMutationArg = Omit<TCreateBillFormValues, 'date'> & { totalAmount: number; date: string, userId: string | null | undefined }
 
+export type TGetSearchedBillArg = TBaseQueryArg & {startDate:string | null,endDate:string | null}

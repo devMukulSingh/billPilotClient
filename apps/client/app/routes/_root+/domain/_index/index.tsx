@@ -15,12 +15,16 @@ import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
 import { BASE_URL_SERVER } from 'lib/constants';
 import { TApiResponse } from 'types/apiResponse.types';
-import { TDomain } from 'types/db.types';
 import { TDropdownOptions } from 'types/modals.types';
 import { Skeleton } from '~/components/ui/skeleton';
 import { useAppSelector } from 'redux/hooks/hook';
 import { setDomains } from 'redux/reducers/rootReducer';
 import { useDispatch } from 'react-redux';
+import { TDomain } from 'types/api/domain';
+import {
+  useGetDomainsQuery,
+  useGetSearchedDomainsQuery,
+} from 'services/domain/domainSlice';
 
 type Props = {};
 
@@ -85,28 +89,16 @@ function Header() {
 }
 
 function Domains() {
-  const dispatch = useDispatch();
-  const domains = useAppSelector((state) => state.rootReducer.domains);
   const [searchParams] = useSearchParams();
   const query = searchParams.get('query');
-  const page = searchParams.get('page') || '1';
+  const page = Number(searchParams.get('page')) || 1;
   const limit = 10;
   const { userId } = useAuth();
-  // const { isFetching:isFetchingSearchedDomains } = useQuery({ queryKey: [`get_searched_domains/${query}`] });
-  const { data, isFetching, isPending } = useQuery<TApiResponse<TDomain>>({
-    queryKey: ['get_domains', page],
-    queryFn: async () => {
-      const { data } = await axios.get(
-        `${BASE_URL_SERVER}/${userId}/domain/get-domains`,
-        {
-          params: { page, limit },
-        }
-      );
-      dispatch(setDomains(data));
-      return data;
-    },
+  const { data, isFetching, isLoading } = useGetDomainsQuery({
+    limit,
+    page,
+    userId,
   });
-
   const columns: ColumnDef<TDomain>[] = [
     {
       accessorKey: 'id',
@@ -133,16 +125,31 @@ function Domains() {
     },
   ];
   const totalPages = Math.ceil((data?.count || 1) / limit);
-  if (isFetching || isPending) return <Skeleton className="w-full h-[25rem]" />;
+  if (isFetching || isLoading) return <Skeleton className="w-full h-[25rem]" />;
   return (
     <>
       <DataTable
         className="min-h-[calc(100vh-7rem)]"
         renderSubComponent={() => <></>}
-        data={domains?.data}
+        data={data?.data}
         totalPages={totalPages}
         columns={columns}
       />
     </>
   );
 }
+
+  // const { isFetching:isFetchingSearchedDomains } = useQuery({ queryKey: [`get_searched_domains/${query}`] });
+  // const { data, isFetching, isLoading } = useQuery<TApiResponse<TDomain>>({
+  //   queryKey: ['get_domains', page],
+  //   queryFn: async () => {
+  //     const { data } = await axios.get(
+  //       `${BASE_URL_SERVER}/${userId}/domain/get-domains`,
+  //       {
+  //         params: { page, limit },
+  //       }
+  //     );
+  //     dispatch(setDomains(data));
+  //     return data;
+  //   },
+  // });

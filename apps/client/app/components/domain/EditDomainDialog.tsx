@@ -19,8 +19,9 @@ import axios from 'axios';
 import { BASE_URL_SERVER } from 'lib/constants';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
-import { TDomain } from 'types/db.types';
 import DomainName from '../formFields/DomainName';
+import { TDomain } from 'types/api/domain';
+import { usePutDomainMutation } from 'services/domain/domainSlice';
 
 type Props = {
   openDialog: boolean;
@@ -37,33 +38,28 @@ export default function EditDomainDialog({
   setOpenDialog,
   domain,
 }: Props) {
-  const queryClient = useQueryClient();
   const { userId } = useAuth();
-  const { mutate, isPending } = useMutation<any, any, TformValues>({
-    mutationKey: ['put_domain'],
-    mutationFn: async (data) => {
-      return await axios.put(
-        `${BASE_URL_SERVER}/${userId}/domain/${domain.id}`,
-        data
-      );
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['get_domains'] });
-      queryClient.invalidateQueries({ queryKey: ['get_all_domains'] });
-      setOpenDialog(false);
-      toast.success(`Domain Updated`, { position: 'bottom-right' });
-    },
-  });
+  const [trigger, { isLoading }] = usePutDomainMutation();
   const form = useForm<TformValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       domain_name: domain.name,
     },
   });
-  function onSubmit(e: any) {
-    e.stopPropagation();
-    const formData = form.getValues();
-    mutate(formData);
+  async function onSubmit(e: any) {
+    try {
+      e.stopPropagation();
+      await trigger({
+        domain_name: form.getValues().domain_name,
+        userId,
+        id: domain.id,
+      }).unwrap();
+      setOpenDialog(false);
+      toast.success(`Domain Updated`, { position: 'bottom-right' });
+    } catch (e) {
+      console.log(e);
+      toast.error(`Unable to edit domain, please contact the developer`);
+    }
   }
   return (
     <DialogModal
@@ -74,12 +70,28 @@ export default function EditDomainDialog({
     >
       <form className="space-y-10">
         <Form {...form}>
-          <DomainName form={form} isPending={isPending} />
+          <DomainName form={form} isPending={isLoading} />
         </Form>
-        <Button disabled={isPending} type="button" onClick={onSubmit}>
+        <Button disabled={isLoading} type="button" onClick={onSubmit}>
           Submit
         </Button>
       </form>
     </DialogModal>
   );
 }
+
+// const { mutate, isPending } = useMutation<any, any, TformValues>({
+//   mutationKey: ['put_domain'],
+//   mutationFn: async (data) => {
+//     return await axios.put(
+//       `${BASE_URL_SERVER}/${userId}/domain/${domain.id}`,
+//       data
+//     );
+//   },
+//   onSuccess: () => {
+//     queryClient.invalidateQueries({ queryKey: ['get_domains'] });
+//     queryClient.invalidateQueries({ queryKey: ['get_all_domains'] });
+//     setOpenDialog(false);
+//     toast.success(`Domain Updated`, { position: 'bottom-right' });
+//   },
+// });

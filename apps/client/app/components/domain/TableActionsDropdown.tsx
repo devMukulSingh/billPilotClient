@@ -8,17 +8,13 @@ import {
 import { cn } from 'lib/utils';
 import { TDropdownOptions } from 'types/modals.types';
 import { Edit, Trash } from 'lucide-react';
-import { useNavigate } from '@remix-run/react';
 import { ReactNode, useState } from 'react';
 import DeleteDialog from '../bill/DeleteDialog';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL_SERVER } from 'lib/constants';
 import { useAuth } from '@clerk/remix';
 import EditDomainDialog from './EditDomainDialog';
-import { Row } from '@tanstack/react-table';
-import { TDomain } from 'types/db.types';
 import toast from 'react-hot-toast';
+import { useDeleteDomainMutation,  } from 'services/domain/domainSlice';
+import { TDomain } from 'types/api/domain';
 
 type Props = {
   children: ReactNode;
@@ -26,21 +22,24 @@ type Props = {
 };
 
 export default function TableActionsDropdown({ children, domain }: Props) {
-  const queryClient = useQueryClient();
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState(false);
   const [isOpenEditDialog, setIsOpenEditDialog] = useState(false);
   const { userId } = useAuth();
-  const { mutate, isPending } = useMutation<unknown, unknown, { id: string }>({
-    mutationKey: ['delete_domain'],
-    mutationFn: async (data) =>
-      await axios.delete(`${BASE_URL_SERVER}/${userId}/domain/${data.id}`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['get_domains'] });
-      queryClient.invalidateQueries({ queryKey: ['get_all_domains'] });
-      toast.success('Domain deleted');
-      setIsOpenDeleteDialog(false);
-    },
-  });
+  const [trigger,{isLoading}] = useDeleteDomainMutation()
+  async function handleDelete(){
+    try{
+      await trigger({
+        id:domain.id,
+        userId
+      }).unwrap()
+      toast.success('Domain deleted',{position:'bottom-right'})
+    }
+    catch(e){
+      toast.error('Unable to delete domain, please contact the developer')
+      console.log(e);
+    }
+  }
+
   const dropdownOptions: TDropdownOptions[] = [
     {
       label: 'Edit',
@@ -67,9 +66,9 @@ export default function TableActionsDropdown({ children, domain }: Props) {
       }
       {isOpenDeleteDialog && (
         <DeleteDialog
-          disabled={isPending}
+          disabled={isLoading}
           title="Are you sure?"
-          onDelete={() => mutate({ id: domain.id })}
+          onDelete={handleDelete }
           open={isOpenDeleteDialog}
           description="This action cant be undone"
           onClose={() => setIsOpenDeleteDialog(false)}
@@ -98,3 +97,15 @@ export default function TableActionsDropdown({ children, domain }: Props) {
     </>
   );
 }
+
+  // const { mutate, isLoading } = useMutation<unknown, unknown, { id: string }>({
+  //   mutationKey: ['delete_domain'],
+  //   mutationFn: async (data) =>
+  //     await axios.delete(`${BASE_URL_SERVER}/${userId}/domain/${data.id}`),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ['get_domains'] });
+  //     queryClient.invalidateQueries({ queryKey: ['get_all_domains'] });
+  //     toast.success('Domain deleted');
+  //     setIsOpenDeleteDialog(false);
+  //   },
+  // });

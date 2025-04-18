@@ -1,19 +1,29 @@
 import { splitApi } from "redux/api";
-import { TBill, TGetBillsArg, TCreateBillMutationArg, TBaseMutationArgs } from "types/api/bills";
+import { TBill, TGetBillsArg, TCreateBillMutationArg, TBaseMutationArgs, TGetSearchedBillArg } from "types/api/bills";
 import { TApiResponse } from "types/apiResponse.types";
 
 const billApiSlice = splitApi.injectEndpoints({
     endpoints: (build) => ({
         getBills: build.query<TApiResponse<TBill[]>, TGetBillsArg>({
             query: (arg) => ({
-                url: `/${arg.userId}/bill/get-bills`,
+                url: `/${arg.userId}/bill`,
                 params: {
                     page: arg.page,
                     limit: arg.limit
                 },
                 method: "GET"
             }),
-            providesTags: ['bill'],
+            providesTags: ['post_bill', 'delete_bill', 'put_bill'],
+        }),
+        getSearchedBill: build.query<TApiResponse<TBill[]>, TGetSearchedBillArg>({
+            query : (arg) => ({
+                url: `/${arg.userId}/bill/search`,
+                params:{
+                    page: arg.page,
+                    limit: arg.limit
+                },
+                method:"GET"
+            })
         }),
         createBill: build.mutation<{}, TCreateBillMutationArg>({
             query: (arg) => ({
@@ -21,25 +31,27 @@ const billApiSlice = splitApi.injectEndpoints({
                 body: arg,
                 method: "POST"
             }),
+            invalidatesTags: ['post_bill']
         }),
         updateBill: build.mutation<{}, TCreateBillMutationArg & TBaseMutationArgs>({
             query: (arg) => ({
                 url: `/${arg.userId}/bill/${arg.id}`,
                 body: arg,
                 method: "PUT"
-            })
+            }),
+            invalidatesTags: ['put_bill']
         }),
-        deleteBill: build.mutation<{}, TBaseMutationArgs >({
+        deleteBill: build.mutation<{}, TBaseMutationArgs>({
             query: (arg) => ({
                 url: `/${arg.userId}/bill/${arg.id}`,
                 method: "DELETE"
-            })
+            }),
+            invalidatesTags: ['delete_bill']
         })
     }),
     overrideExisting: false,
-
 })
 
 export const {
-    useGetBillsQuery, useCreateBillMutation, useDeleteBillMutation, useUpdateBillMutation
+    useGetBillsQuery, useCreateBillMutation,useGetSearchedBillQuery, useDeleteBillMutation, useUpdateBillMutation
 } = billApiSlice

@@ -1,4 +1,3 @@
-import { TBillItem } from "./db.types";
 
 // export type TBill = {
 //   id: string;

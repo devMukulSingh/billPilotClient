@@ -6,39 +6,33 @@ import { BASE_URL_SERVER } from 'lib/constants';
 import { useAuth } from '@clerk/remix';
 import axios from 'axios';
 import { useSearchParams } from '@remix-run/react';
-import { TApiResponse } from 'types/apiResponse.types';
-import { TBill } from 'types/db.types';
-import { setBills } from 'redux/reducers/rootReducer';
-import { useDispatch } from 'react-redux';
+import { useGetSearchedBillQuery } from 'services/bill/billApiSlice';
+import { TBill } from 'types/api/bills';
+import { useState } from 'react';
 
 type Props = {};
 
 export default function Header({}: Props) {
-  const dispatch = useDispatch();
+  const [skip, setSkip] = useState(true)
   const { userId } = useAuth();
   const [searchParams] = useSearchParams();
-  const page = searchParams.get('page') || 1;
+  const page = Number(searchParams.get('page')) || 1;
   const limit = 10;
   const startDate = searchParams.get('startDate');
   const endDate = searchParams.get('endDate');
-  const { isFetching, isPending, refetch } = useQuery<TApiResponse<TBill>>({
-    queryKey: ['get_searched_bills'],
-    enabled: false,
-    queryFn: async () => {
-      const { data } = await axios.get(`${BASE_URL_SERVER}/${userId}/bill`, {
-        params: {
-          page,
-          limit,
-          startDate,
-          endDate,
-        },
-      });
-      dispatch(setBills(data));
-      return data;
+  const { data, isLoading, isFetching, refetch } = useGetSearchedBillQuery(
+    {
+      page,
+      limit,
+      startDate,
+      endDate,
+      userId,
     },
-  });
+    { skip }
+  );
+
   function handleSearch() {
-    refetch();
+    setSkip(prev => !prev)
   }
   return (
     <div
@@ -54,7 +48,6 @@ export default function Header({}: Props) {
       <div
         className="
         items-center
-      
         border 
         bg-white
         rounded-lg
@@ -65,14 +58,31 @@ export default function Header({}: Props) {
       "
       >
         <DateRangePicker />
-        <Button disabled={isFetching} onClick={handleSearch} variant={'ghost'}>
+        <Button disabled={isLoading || isFetching} onClick={handleSearch} variant={'ghost'}>
           <Search />
           Search
         </Button>
       </div>
-      <Button disabled={isFetching} onClick={handleSearch}>
+      <Button disabled={isLoading || isFetching} onClick={handleSearch}>
         Clear Search
       </Button>
     </div>
   );
 }
+
+  // const { isPending, refetch } = useQuery<TApiResponse<TBill>>({
+  //   queryKey: ['get_searched_bills'],
+  //   enabled: false,
+  //   queryFn: async () => {
+  //     const { data } = await axios.get(`${BASE_URL_SERVER}/${userId}/bill`, {
+  //       params: {
+  //         page,
+  //         limit,
+  //         startDate,
+  //         endDate,
+  //       },
+  //     });
+  //     dispatch(setBills(data));
+  //     return data;
+  //   },
+  // });
