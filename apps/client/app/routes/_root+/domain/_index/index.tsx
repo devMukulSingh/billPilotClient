@@ -5,7 +5,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import axios from 'axios';
 import { format } from 'date-fns';
 import { Edit, Menu, Package, PlusCircle, Trash } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DataTable } from '~/components/commons/DataTable';
 import DeleteDialog from '~/components/bill/DeleteDialog';
 import AddDomainDialog from '~/components/domain/AddDomainDialog';
@@ -99,6 +99,22 @@ function Domains() {
     page,
     userId,
   });
+  const { data: searchedDomains, isFetching: isFetchingSearchedDomains } =
+    useGetSearchedDomainsQuery(
+      {
+        name: query,
+        page,
+        limit,
+        userId,
+      },
+      { skip: query ? false : true }
+    );
+  const [tableData, setTableData] = useState(data);
+
+  useEffect(() => {
+    if (!query && data) setTableData(data);
+    if (query && searchedDomains) setTableData(searchedDomains);
+  }, [query, searchedDomains, data]);
   const columns: ColumnDef<TDomain>[] = [
     {
       accessorKey: 'id',
@@ -124,14 +140,14 @@ function Domains() {
       },
     },
   ];
-  const totalPages = Math.ceil((data?.count || 1) / limit);
+  const totalPages = Math.ceil((tableData?.count || 1) / limit);
   if (isFetching || isLoading) return <Skeleton className="w-full h-[25rem]" />;
   return (
     <>
       <DataTable
         className="min-h-[calc(100vh-7rem)]"
         renderSubComponent={() => <></>}
-        data={data?.data}
+        data={tableData?.data}
         totalPages={totalPages}
         columns={columns}
       />
@@ -139,17 +155,17 @@ function Domains() {
   );
 }
 
-  // const { isFetching:isFetchingSearchedDomains } = useQuery({ queryKey: [`get_searched_domains/${query}`] });
-  // const { data, isFetching, isLoading } = useQuery<TApiResponse<TDomain>>({
-  //   queryKey: ['get_domains', page],
-  //   queryFn: async () => {
-  //     const { data } = await axios.get(
-  //       `${BASE_URL_SERVER}/${userId}/domain/get-domains`,
-  //       {
-  //         params: { page, limit },
-  //       }
-  //     );
-  //     dispatch(setDomains(data));
-  //     return data;
-  //   },
-  // });
+// const { isFetching:isFetchingSearchedDomains } = useQuery({ queryKey: [`get_searched_domains/${query}`] });
+// const { data, isFetching, isLoading } = useQuery<TApiResponse<TDomain>>({
+//   queryKey: ['get_domains', page],
+//   queryFn: async () => {
+//     const { data } = await axios.get(
+//       `${BASE_URL_SERVER}/${userId}/domain/get-domains`,
+//       {
+//         params: { page, limit },
+//       }
+//     );
+//     dispatch(setDomains(data));
+//     return data;
+//   },
+// });

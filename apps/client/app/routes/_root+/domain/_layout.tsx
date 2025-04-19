@@ -13,41 +13,18 @@ import {
   useGetDomainsQuery,
   useGetSearchedDomainsQuery,
 } from 'services/domain/domainSlice';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function DomainLayout() {
-  const [skip, setSkip] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('query');
   const page = Number(searchParams.get('page')) || 1;
   const limit = 10;
   const { userId } = useAuth();
-  const { data, isFetching: isFetchingSearchedDomains } =
-    useGetSearchedDomainsQuery(
-      {
-        name:query,
-        page,
-        limit,
-        userId,
-      },
-      { skip: query ? true : false }
-    );
-  const { data: allProducts } = useGetDomainsQuery({
-    limit,
-    page,
-    userId,
-  });
-  async function handleClearSearch() {
-    if (!searchParams.get(`query`)) return;
-    if (!allProducts) return toast.error(`Domain is undefined`);
-    setSearchParams((prev) => {
-      prev.delete(`query`);
-      return prev;
-    });
-  }
+
   return (
     <>
-      <SearchBar handleClearSearch={handleClearSearch} />
+      <SearchBar />
       <Outlet />
     </>
   );
