@@ -42,6 +42,7 @@ export default function Domain({ form }: Pick<TForm, 'form'>) {
           <FormItem>
             <FormLabel>Domain</FormLabel>
             <Select
+              key={field.value}
               defaultValue={field.value}
               onValueChange={(val) => field.onChange(val)}
             >

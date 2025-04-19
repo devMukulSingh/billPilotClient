@@ -15,14 +15,10 @@ import {
 import { TForm } from '../CreateBillForm';
 import { Button } from '~/components/ui/button';
 import { Plus } from 'lucide-react';
-import { Suspense, useState } from 'react';
+import { useState } from 'react';
 import AddDistributorForm from '../../distributor/AddDistributorDialog';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL_SERVER } from 'lib/constants';
 import { useAuth } from '@clerk/remix';
-import { TApiResponse } from 'types/apiResponse.types';
-import { TDistributor } from 'types/api/distributor';
+
 import { useGetAllDistributorsQuery } from 'services/distributor/distributorApiSlice';
 
 export default function DistributorName({ form }: Pick<TForm, 'form'>) {
@@ -58,9 +54,10 @@ export default function DistributorName({ form }: Pick<TForm, 'form'>) {
           <FormItem>
             <FormLabel>Distributor </FormLabel>
             <Select
+              key={field.value}
+              defaultValue={field.value}
               onOpenChange={() => openSelect && setOpenSelect(false)}
               open={openSelect}
-              defaultValue={field.value}
               onValueChange={field.onChange}
             >
               <FormControl>

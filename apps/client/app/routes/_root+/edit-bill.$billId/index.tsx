@@ -31,6 +31,8 @@ import {
 import { useAppSelector } from 'redux/hooks/hook';
 import { TBill } from 'types/api/bills';
 import { useEffect, useMemo, useState } from 'react';
+import { useGetAllDomainsQuery } from 'services/domain/domainSlice';
+import { useGetAllDistributorsQuery } from 'services/distributor/distributorApiSlice';
 
 type Props = {};
 
@@ -70,6 +72,7 @@ function EditBillForm({}: Props) {
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 10;
   const { billId } = useParams();
+
   const [trigger, { isLoading }] = useUpdateBillMutation();
   const { data } = useGetBillsQuery({
     limit,
@@ -110,9 +113,10 @@ function EditBillForm({}: Props) {
     );
   }, [form.getValues().bill_items]);
   useEffect(() => {
+    //setting default values for the form
+    if (!data) return;
     const selectedBill = data?.data.find((bill) => bill.id === billId);
     if (!selectedBill) return;
-    console.log(selectedBill);
     form.reset({
       distributor_id: selectedBill.distributor.id,
       domain_id: selectedBill.domain.id,
