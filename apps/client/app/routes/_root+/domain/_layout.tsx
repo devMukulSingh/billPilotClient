@@ -6,7 +6,6 @@ import { BASE_URL_SERVER } from 'lib/constants';
 import { TApiResponse } from 'types/apiResponse.types';
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
-import { setDomains } from 'redux/reducers/rootReducer';
 import SearchBar from '~/components/commons/SearchBar';
 import { TDomain } from 'types/api/domain';
 import {

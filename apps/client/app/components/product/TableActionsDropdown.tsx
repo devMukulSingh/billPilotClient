@@ -10,11 +10,11 @@ import { TDropdownOptions } from 'types/modals.types';
 import { Edit, Trash } from 'lucide-react';
 import { ReactNode, useState } from 'react';
 import DeleteDialog from '../bill/DeleteDialog';
-import {  useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/remix';
 import toast from 'react-hot-toast';
 import EditProductDialog from './EditProductDialog';
-import { useDeleteProductMutation } from 'services/product/productAPiSlice';
+import { useDeleteProductMutation } from 'services/product/productApiSlice';
 import { TProduct } from 'types/api/product';
 
 type Props = {
@@ -51,7 +51,7 @@ export default function TableActionsDropdown({ children, product }: Props) {
       toast.success('product deleted');
       setIsOpenDeleteDialog(false);
     } catch (e: any) {
-      if (e.data) toast.error(e.data.error);
+      if (e?.data) toast.error(e.data.error);
       else console.log(e);
     }
   }
@@ -97,14 +97,14 @@ export default function TableActionsDropdown({ children, product }: Props) {
     </>
   );
 }
-  // const { mutate, isLoading } = useMutation<unknown, unknown, { id: string }>({
-  //   mutationKey: ['delete_product'],
-  //   mutationFn: async (data) =>
-  //     await axios.delete(`${BASE_URL_SERVER}/${userId}/product/${data.id}`),
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ['get_products'] });
-  //     queryClient.invalidateQueries({ queryKey: ['get_all_products'] });
-  //     toast.success('product deleted');
-  //     setIsOpenDeleteDialog(false);
-  //   },
-  // });
+// const { mutate, isLoading } = useMutation<unknown, unknown, { id: string }>({
+//   mutationKey: ['delete_product'],
+//   mutationFn: async (data) =>
+//     await axios.delete(`${BASE_URL_SERVER}/${userId}/product/${data.id}`),
+//   onSuccess: () => {
+//     queryClient.invalidateQueries({ queryKey: ['get_products'] });
+//     queryClient.invalidateQueries({ queryKey: ['get_all_products'] });
+//     toast.success('product deleted');
+//     setIsOpenDeleteDialog(false);
+//   },
+// });

@@ -17,7 +17,7 @@ import { PlusCircle } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
-import { usePutProductMutation } from 'services/product/productAPiSlice';
+import { usePutProductMutation } from 'services/product/productApiSlice';
 import { TProduct } from 'types/api/product';
 
 type Props = {
@@ -54,14 +54,15 @@ export default function EditProductDialog({
         await trigger({
           ...data,
           userId,
-          id:product.id
+          id: product.id,
         }).unwrap();
         setOpenDialog(false);
         toast.success(`Product updated`, { position: 'bottom-right' });
-      } catch (e:any) {
+      } catch (e: any) {
         console.log(e);
-        if (e.data) toast.error(e.data.error);
-        else toast.error('Unable to edit Product, please contact the developer');
+        if (e?.data) toast.error(e.data.error);
+        else
+          toast.error('Unable to edit Product, please contact the developer');
       }
     })();
   }

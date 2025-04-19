@@ -6,10 +6,9 @@ import { BASE_URL_SERVER } from 'lib/constants';
 import { TApiResponse } from 'types/apiResponse.types';
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
-import { setProducts } from 'redux/reducers/rootReducer';
 import SearchBar from '~/components/commons/SearchBar';
 import { TProduct } from 'types/api/product';
-import { useGetAllProductsQuery } from 'services/product/productAPiSlice';
+import { useGetAllProductsQuery } from 'services/product/productApiSlice';
 import { useState } from 'react';
 
 export default function ProductLayout() {
@@ -18,8 +17,6 @@ export default function ProductLayout() {
   const page = searchParams.get('page') || 1;
   const limit = 10;
   const { userId } = useAuth();
-
-
 
   return (
     <>

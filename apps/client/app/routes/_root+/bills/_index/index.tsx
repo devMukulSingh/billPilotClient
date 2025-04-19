@@ -135,7 +135,7 @@ function BillsTable() {
     },
   ];
   useEffect(() => {
-    if (data && (!endDate && !startDate)) dispatch(setBills(data));
+    if (data && !endDate && !startDate) dispatch(setBills(data));
   }, [data]);
   if (isFetching || isLoading) return <Skeleton className="w-full h-[25rem]" />;
   return (

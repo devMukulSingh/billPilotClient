@@ -65,13 +65,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body className="">
         <Toaster />
         <Provider store={store}>
-            <PersistQueryClientProvider
-              persistOptions={{ persister }}
-              client={queryClient}
-            >
-              <ReactQueryDevtools initialIsOpen={false} />
-              {children}
-            </PersistQueryClientProvider>
+          <PersistQueryClientProvider
+            persistOptions={{ persister }}
+            client={queryClient}
+          >
+            <ReactQueryDevtools initialIsOpen={false} />
+            {children}
+          </PersistQueryClientProvider>
         </Provider>
         <ScrollRestoration />
         <Scripts />

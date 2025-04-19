@@ -37,18 +37,18 @@ export default function AddDistributorDialog({
   });
   function onSubmit() {
     form.handleSubmit(async (data) => {
-      try{
-
+      try {
         await trigger({
           ...data,
           userId,
         }).unwrap();
         toast.success(`Distributor added`, { position: 'bottom-right' });
         setOpenDialog(false);
-      }
-      catch(e){
+      } catch (e) {
         console.log(e);
-        toast.error(`Unable to create distributor, please contact the developer`)
+        toast.error(
+          `Unable to create distributor, please contact the developer`
+        );
       }
     })();
   }

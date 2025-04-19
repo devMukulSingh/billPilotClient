@@ -11,7 +11,10 @@ import {
 import { Input } from '../ui/input';
 import { DistributorFieldProps } from './formFields.types';
 
-export default function DistributorName({ form, isPending }: DistributorFieldProps) {
+export default function DistributorName({
+  form,
+  isPending,
+}: DistributorFieldProps) {
   return (
     <FormField
       disabled={isPending}

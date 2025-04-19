@@ -1,9 +1,7 @@
-import { TBaseQueryArg } from "./bills"
+import { TBaseQueryArg } from './bills';
 
 export type TDomain = {
-    id: string,
-    name: string,
-    created_at: string,
-}
-
-
+  id: string;
+  name: string;
+  created_at: string;
+};

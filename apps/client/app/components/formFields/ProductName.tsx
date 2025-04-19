@@ -9,7 +9,7 @@ import {
 import { Input } from '../ui/input';
 import { ProductFieldProps } from './formFields.types';
 
-export default function ProductName({form,isPending}: ProductFieldProps) {
+export default function ProductName({ form, isPending }: ProductFieldProps) {
   return (
     <FormField
       disabled={isPending}

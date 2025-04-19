@@ -11,7 +11,7 @@ import { ProductFieldProps } from './formFields.types';
 
 type Props = {};
 
-export default function ProductRate({form,isPending}: ProductFieldProps) {
+export default function ProductRate({ form, isPending }: ProductFieldProps) {
   return (
     <FormField
       disabled={isPending}

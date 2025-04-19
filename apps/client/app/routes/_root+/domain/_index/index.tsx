@@ -18,7 +18,6 @@ import { TApiResponse } from 'types/apiResponse.types';
 import { TDropdownOptions } from 'types/modals.types';
 import { Skeleton } from '~/components/ui/skeleton';
 import { useAppSelector } from 'redux/hooks/hook';
-import { setDomains } from 'redux/reducers/rootReducer';
 import { useDispatch } from 'react-redux';
 import { TDomain } from 'types/api/domain';
 import {

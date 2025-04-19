@@ -6,10 +6,10 @@ type Props = {};
 
 export default function LandingLayout({}: Props) {
   return (
-    <div className='md:p-10'>
+    <div className="md:p-10">
       <Navbar />
       <Outlet />
-      <LandingFooter/>
+      <LandingFooter />
     </div>
   );
 }

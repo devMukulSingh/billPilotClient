@@ -1,4 +1,3 @@
-
 // export type TBill = {
 //   id: string;
 //   distributorName: string;
@@ -6,4 +5,3 @@
 //   isPaid: boolean;
 //   bill_items:TBillItem[]
 // };
-

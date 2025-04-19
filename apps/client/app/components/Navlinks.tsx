@@ -1,5 +1,11 @@
 import { Link, useLocation } from '@remix-run/react';
-import { Package, Plus, PlusCircle, ScrollText, ShoppingBagIcon } from 'lucide-react';
+import {
+  Package,
+  Plus,
+  PlusCircle,
+  ScrollText,
+  ShoppingBagIcon,
+} from 'lucide-react';
 
 type Props = {};
 
@@ -55,8 +61,8 @@ export default function Navlinks({}: Props) {
           key={index}
         >
           {/* <div className=''> */}
-            <navlink.icon />
-            <h1 className="md:block hidden">{navlink.title}</h1>
+          <navlink.icon />
+          <h1 className="md:block hidden">{navlink.title}</h1>
           {/* </div> */}
         </Link>
       ))}

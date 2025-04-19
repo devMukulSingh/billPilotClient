@@ -14,11 +14,13 @@ import { Separator } from '~/components/ui/separator';
 import { Skeleton } from '~/components/ui/skeleton';
 import { BASE_URL_SERVER } from 'lib/constants';
 import { TApiResponse } from 'types/apiResponse.types';
-import { setDistributors } from 'redux/reducers/rootReducer';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from 'redux/hooks/hook';
 import { TDistributor } from 'types/api/distributor';
-import { useGetDistributorsQuery, useGetSearchedDistributorsQuery } from 'services/distributor/distributorApiSlice';
+import {
+  useGetDistributorsQuery,
+  useGetSearchedDistributorsQuery,
+} from 'services/distributor/distributorApiSlice';
 
 type Props = {};
 

@@ -34,7 +34,7 @@ export default function AddDomainDialog({ openDialog, setOpenDialog }: Props) {
         userId,
       }).unwrap();
       setOpenDialog(false);
-      toast.success(`Domain created`)
+      toast.success(`Domain created`);
     } catch (e) {
       console.log(e);
       toast.error(`Unable to create domain, please contact the developer`);

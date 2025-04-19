@@ -17,24 +17,21 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL_SERVER } from 'lib/constants';
 import { useAuth } from '@clerk/remix';
-import { TProduct } from 'types/db.types';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import AddProductDialog from '../../product/AddProductDialog';
 import { useState } from 'react';
 import { ControllerRenderProps } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { TProduct } from 'types/api/product';
+import { useGetAllProductsQuery } from 'services/product/productApiSlice';
 
 export default function ProductName({ form, index }: TForm) {
   const { userId } = useAuth();
-  const { data } = useQuery<any, any, TProduct[]>({
-    queryKey: ['get_all_products'],
-    queryFn: async () => {
-      return (
-        await axios.get(`${BASE_URL_SERVER}/${userId}/product/get-all-products`)
-      ).data;
-    },
+  const { data } = useGetAllProductsQuery({
+    userId,
   });
+
   const [openDialog, setOpenDialog] = useState(false);
   function onSelect({
     field,
@@ -99,3 +96,11 @@ export default function ProductName({ form, index }: TForm) {
     </>
   );
 }
+// const { data } = useQuery<any, any, TProduct[]>({
+//   queryKey: ['get_all_products'],
+//   queryFn: async () => {
+//     return (
+//       await axios.get(`${BASE_URL_SERVER}/${userId}/product/get-all-products`)
+//     ).data;
+//   },
+// });

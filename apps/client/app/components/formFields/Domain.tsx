@@ -15,21 +15,18 @@ import {
   SelectValue,
 } from '../ui/select';
 import { DistributorFieldProps } from './formFields.types';
-import { TDomain } from 'types/db.types';
+
 import { useQuery } from '@tanstack/react-query';
 import { BASE_URL_SERVER } from 'lib/constants';
 import { useAuth } from '@clerk/remix';
 import { TApiResponse } from 'types/apiResponse.types';
+import { TDomain } from 'types/api/domain';
+import { useGetAllDomainsQuery } from 'services/domain/domainSlice';
 
 export default function Domain({ form, isPending }: DistributorFieldProps) {
   const { userId } = useAuth();
-  const { data } = useQuery<unknown, unknown, TApiResponse<TDomain>>({
-    queryKey: ['get_all_domains'],
-    queryFn: async () => {
-      return (
-        await axios.get(`${BASE_URL_SERVER}/${userId}/domain/get-all-domains`)
-      ).data;
-    },
+  const { data } = useGetAllDomainsQuery({
+    userId,
   });
   return (
     <FormField
@@ -45,7 +42,7 @@ export default function Domain({ form, isPending }: DistributorFieldProps) {
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {data?.data?.map((domain, index) => (
+              {data?.map((domain, index) => (
                 <SelectItem key={index} value={domain.id}>
                   {domain.name}
                 </SelectItem>

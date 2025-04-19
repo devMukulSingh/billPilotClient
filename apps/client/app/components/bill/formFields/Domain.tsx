@@ -23,19 +23,14 @@ import { BASE_URL_SERVER } from 'lib/constants';
 import axios from 'axios';
 import { TApiResponse } from 'types/apiResponse.types';
 import { TDomain } from 'types/api/domain';
+import { useGetAllDomainsQuery } from 'services/domain/domainSlice';
 
 export default function Domain({ form }: Pick<TForm, 'form'>) {
   const { userId } = useAuth();
-  const { data } = useQuery<any, any, TApiResponse<TDomain[]>>({
-    queryKey: ['get_all_domains'],
-    queryFn: async () => {
-      return (
-        await axios.get(`${BASE_URL_SERVER}/${userId}/domain/get-all-domains`)
-      ).data;
-    },
+  const { data } = useGetAllDomainsQuery({
+    userId,
   });
-  console.log(data);
-  
+
   const [openDialog, setOpenDialog] = useState(false);
   return (
     <>
@@ -56,7 +51,7 @@ export default function Domain({ form }: Pick<TForm, 'form'>) {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {data?.data?.map((domain, index) => (
+                {data?.map((domain, index) => (
                   <SelectItem key={index} value={domain.id}>
                     {domain.name}
                   </SelectItem>
@@ -78,3 +73,13 @@ export default function Domain({ form }: Pick<TForm, 'form'>) {
     </>
   );
 }
+
+// const { data } = useQuery<any, any, TApiResponse<TDomain[]>>({
+//   queryKey: ['get_all_domains'],
+//   queryFn: async () => {
+//     return (
+//       await axios.get(`${BASE_URL_SERVER}/${userId}/domain/get-all-domains`)
+//     ).data;
+//   },
+// });
+// console.log(data);

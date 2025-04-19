@@ -8,9 +8,9 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
-type Props = {}
+type Props = {};
 
-export default function DomainName({form,isPending}: DomainFieldProps) {
+export default function DomainName({ form, isPending }: DomainFieldProps) {
   return (
     <Form {...form}>
       <FormField

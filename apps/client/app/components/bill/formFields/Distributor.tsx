@@ -21,21 +21,25 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL_SERVER } from 'lib/constants';
 import { useAuth } from '@clerk/remix';
-import { TDistributor } from 'types/db.types';
 import { TApiResponse } from 'types/apiResponse.types';
+import { TDistributor } from 'types/api/distributor';
+import { useGetAllDistributorsQuery } from 'services/distributor/distributorApiSlice';
 
 export default function DistributorName({ form }: Pick<TForm, 'form'>) {
   const { userId } = useAuth();
-  const { data } = useQuery<any, any, TDistributor[]>({
-    queryKey: ['get_all_distributors'],
-    queryFn: async () => {
-      return (
-        await axios.get(
-          `${BASE_URL_SERVER}/${userId}/distributor/get-all-distributors`
-        )
-      ).data;
-    },
+  const { data } = useGetAllDistributorsQuery({
+    userId,
   });
+  // const { data } = useQuery<any, any, TDistributor[]>({
+  //   queryKey: ['get_all_distributors'],
+  //   queryFn: async () => {
+  //     return (
+  //       await axios.get(
+  //         `${BASE_URL_SERVER}/${userId}/distributor/get-all-distributors`
+  //       )
+  //     ).data;
+  //   },
+  // });
 
   const [openDialog, setOpenDialog] = useState(false);
   const [openSelect, setOpenSelect] = useState(false);

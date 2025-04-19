@@ -11,12 +11,11 @@ type Props = {
   // setInputValue: (value: string) => void;
 };
 
-export default function SearchBar({
-  // onClearSearch,
-  // onClearInput,
-  // inputValue,
-  // setInputValue,
-}: Props) {
+export default function SearchBar({}: // onClearSearch,
+// onClearInput,
+// inputValue,
+// setInputValue,
+Props) {
   const [inputValue, setInputValue] = useState('');
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('query');

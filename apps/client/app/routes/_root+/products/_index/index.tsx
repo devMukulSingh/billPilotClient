@@ -16,14 +16,13 @@ import { Skeleton } from '~/components/ui/skeleton';
 import { BASE_URL_SERVER } from 'lib/constants';
 import { TApiResponse } from 'types/apiResponse.types';
 import SearchBar from '~/components/commons/SearchBar';
-import { setProducts } from 'redux/reducers/rootReducer';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from 'redux/hooks/hook';
 import { TProduct } from 'types/api/product';
 import {
   useGetProductsQuery,
   useGetSearchedProductsQuery,
-} from 'services/product/productAPiSlice';
+} from 'services/product/productApiSlice';
 
 export default function ProductsRoute() {
   return (
@@ -155,9 +154,12 @@ function ProductsTable() {
   useEffect(() => {
     if (!query && data) setTableData(data);
     if (query && searchedProducts) setTableData(searchedProducts);
-  }, [query, searchedProducts,data]);
+  }, [query, searchedProducts, data]);
 
-  const totalPages = useMemo(() => Math.ceil((tableData?.count || 1) / limit),[tableData]) ;
+  const totalPages = useMemo(
+    () => Math.ceil((tableData?.count || 1) / limit),
+    [tableData]
+  );
 
   if (isFetching || isLoading) return <Skeleton className="w-full h-[25rem]" />;
   return (
@@ -171,10 +173,10 @@ function ProductsTable() {
       />
     </>
   );
-}  
+}
 // useEffect(() => {
-  //   if (data && !query) setTableData(data);
-  // }, [data]);
+//   if (data && !query) setTableData(data);
+// }, [data]);
 
 // const { isFetching, isPending } = useQuery<any, any, TApiResponse<TProduct>>({
 //   queryKey: ['get_products'],

@@ -21,9 +21,12 @@ export function DateRangePicker({
   });
   const [searchParams, setSearchParams] = useSearchParams();
   function handleDateSelect(date: DateRange | undefined) {
-    setDate(date)
+    setDate(date);
     if (!date?.from || !date?.to) return;
-    setSearchParams({startDate:date.from.toISOString(),endDate:date.to.toISOString()});
+    setSearchParams({
+      startDate: date.from.toISOString(),
+      endDate: date.to.toISOString(),
+    });
   }
   return (
     <div className={cn('grid gap-2', className)}>

@@ -63,7 +63,7 @@ export default function EditdistributorDialog({
       await trigger({
         ...form.getValues(),
         userId,
-        id:distributor.id
+        id: distributor.id,
       }).unwrap();
       setOpenDialog(false);
     } catch (e) {
@@ -91,18 +91,18 @@ export default function EditdistributorDialog({
   );
 }
 
-  // const { mutate, isPending } = useMutation<any, any, TformValues>({
-  //   mutationKey: ['update_distributor'],
-  //   mutationFn: async (data) => {
-  //     return await axios.put(
-  //       `${BASE_URL_SERVER}/${userId}/distributor/${distributor.id}`,
-  //       data
-  //     );
-  //   },
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ['get_distributors'] });
-  //     queryClient.invalidateQueries({ queryKey: ['get_all_distributors'] });
-  //     setOpenDialog(false);
-  //     toast.success(`Distributor Updated`, { position: 'bottom-right' });
-  //   },
-  // });
+// const { mutate, isPending } = useMutation<any, any, TformValues>({
+//   mutationKey: ['update_distributor'],
+//   mutationFn: async (data) => {
+//     return await axios.put(
+//       `${BASE_URL_SERVER}/${userId}/distributor/${distributor.id}`,
+//       data
+//     );
+//   },
+//   onSuccess: () => {
+//     queryClient.invalidateQueries({ queryKey: ['get_distributors'] });
+//     queryClient.invalidateQueries({ queryKey: ['get_all_distributors'] });
+//     setOpenDialog(false);
+//     toast.success(`Distributor Updated`, { position: 'bottom-right' });
+//   },
+// });

@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 export const billSchema = z.object({
-
   distributor_id: z
     .string({
       required_error: 'Distributor Id is required',
@@ -44,12 +43,12 @@ export const billSchema = z.object({
   is_paid: z.boolean().default(false),
   bill_items: z
     .object({
-      id:z.string().optional(),
-      product : z.object({
-        rate:z.coerce.number({required_error:"Rate is required"}),
-        id: z.string().optional()
+      id: z.string().optional(),
+      product: z.object({
+        rate: z.coerce.number({ required_error: 'Rate is required' }),
+        id: z.string().optional(),
       }),
-      product_id: z.string({required_error:"Product is required"}),
+      product_id: z.string({ required_error: 'Product is required' }),
       quantity: z.coerce.number({
         required_error: 'quantity is required',
         invalid_type_error: 'Only numbers allowed',
@@ -61,7 +60,6 @@ export const billSchema = z.object({
     })
     .array()
     .min(1, { message: 'Atleast one product is required' }),
-
 });
 
 // rate: z.coerce.number({

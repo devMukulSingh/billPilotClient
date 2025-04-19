@@ -38,7 +38,9 @@ export default function LandingFooter({}: Props) {
           </div>
         </div>
       </div>
-      <h1 className="mt-auto text-sm text-center">@Copyright BillPilot 2025. All rights reserved</h1>
+      <h1 className="mt-auto text-sm text-center">
+        @Copyright BillPilot 2025. All rights reserved
+      </h1>
     </div>
   );
 }

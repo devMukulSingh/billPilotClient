@@ -20,7 +20,7 @@ export type TDialogModalProps = {
   dialogContentClassName?: string;
   innerDivClassName?: string;
   description?: string;
-  titleIcon?:LucideIcon
+  titleIcon?: LucideIcon;
   // modal : boolean
   // innerDivRef : HTMLDivElement |null
 };

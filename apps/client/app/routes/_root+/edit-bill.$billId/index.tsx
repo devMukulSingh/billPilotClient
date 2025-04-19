@@ -84,7 +84,6 @@ function EditBillForm({}: Props) {
 
   const form = useForm<TCreateBillFormValues>({
     resolver: zodResolver(editBillSchema),
-
   });
   const fieldArray = useFieldArray({
     name: 'bill_items',

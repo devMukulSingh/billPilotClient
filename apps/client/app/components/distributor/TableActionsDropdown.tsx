@@ -16,8 +16,9 @@ import axios from 'axios';
 import { BASE_URL_SERVER } from 'lib/constants';
 import { useAuth } from '@clerk/remix';
 import EditDistributorDialog from './EditDistributorDialog';
-import { TDistributor } from 'types/db.types';
 import toast from 'react-hot-toast';
+import { TDistributor } from 'types/api/distributor';
+import { useDeleteDistributorMutation } from 'services/distributor/distributorApiSlice';
 
 type Props = {
   children: ReactNode;
@@ -25,21 +26,11 @@ type Props = {
 };
 
 export default function TableActionsDropdown({ children, distributor }: Props) {
-  const queryClient = useQueryClient();
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState(false);
   const [isOpenEditDialog, setIsOpenEditDialog] = useState(false);
   const { userId } = useAuth();
-  const { mutate, isPending } = useMutation<unknown, unknown, { id: string }>({
-    mutationKey: ['delete_distributor'],
-    mutationFn: async (data) =>
-      await axios.delete(`${BASE_URL_SERVER}/${userId}/distributor/${data.id}`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['get_distributors'] });
-      queryClient.invalidateQueries({ queryKey: ['get_all_distributors'] });
-      toast.success('distributor deleted');
-      setIsOpenDeleteDialog(false);
-    },
-  });
+  const [trigger, { isLoading }] = useDeleteDistributorMutation();
+
   const dropdownOptions: TDropdownOptions[] = [
     {
       label: 'Edit',
@@ -54,7 +45,19 @@ export default function TableActionsDropdown({ children, distributor }: Props) {
       className: '',
     },
   ];
-
+  async function handleDelete() {
+    try {
+      await trigger({
+        id: distributor.id,
+        userId,
+      }).unwrap();
+      toast.success('distributor deleted');
+      setIsOpenDeleteDialog(false);
+    } catch (e: any) {
+      if (e?.data) toast.error(e.data.error);
+      else toast.error('Unable to delete, please contact the developer');
+    }
+  }
   return (
     <>
       {
@@ -66,9 +69,9 @@ export default function TableActionsDropdown({ children, distributor }: Props) {
       }
       {isOpenDeleteDialog && (
         <DeleteDialog
-          disabled={isPending}
+          disabled={isLoading}
           title="Are you sure?"
-          onDelete={() => mutate({ id: distributor.id })}
+          onDelete={handleDelete}
           open={isOpenDeleteDialog}
           description="This action cant be undone"
           onClose={() => setIsOpenDeleteDialog(false)}
@@ -97,3 +100,15 @@ export default function TableActionsDropdown({ children, distributor }: Props) {
     </>
   );
 }
+
+// const { mutate, isLoading } = useMutation<unknown, unknown, { id: string }>({
+//   mutationKey: ['delete_distributor'],
+//   mutationFn: async (data) =>
+//     await axios.delete(`${BASE_URL_SERVER}/${userId}/distributor/${data.id}`),
+//   onSuccess: () => {
+//     queryClient.invalidateQueries({ queryKey: ['get_distributors'] });
+//     queryClient.invalidateQueries({ queryKey: ['get_all_distributors'] });
+//     toast.success('distributor deleted');
+//     setIsOpenDeleteDialog(false);
+//   },
+// });

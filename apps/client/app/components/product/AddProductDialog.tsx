@@ -3,26 +3,16 @@ import DialogModal from '../modals/DialogModal';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../ui/form';
+import { Form } from '../ui/form';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { PlusCircle } from 'lucide-react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL_SERVER } from 'lib/constants';
+
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
 import ProductName from '../formFields/ProductName';
 import ProductRate from '../formFields/ProductRate';
-import { useCreateBillMutation } from 'services/bill/billApiSlice';
-import { usePostProductMutation } from 'services/product/productAPiSlice';
+import { usePostProductMutation } from 'services/product/productApiSlice';
 
 type Props = {
   openDialog: boolean;
@@ -53,8 +43,9 @@ export default function AddProductDialog({ openDialog, setOpenDialog }: Props) {
         toast.success(`product added`, { position: 'bottom-right' });
       } catch (e: any) {
         console.log(e);
-        if (e.data) toast.error(e.data.error)
-        else toast.error(`Unable to create product, please contact the developer`);
+        if (e.data) toast.error(e.data.error);
+        else
+          toast.error(`Unable to create product, please contact the developer`);
       }
     })();
   }

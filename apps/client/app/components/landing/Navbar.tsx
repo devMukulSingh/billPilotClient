@@ -14,7 +14,7 @@ type Props = {};
 
 export default function Navbar({}: Props) {
   const { openSignIn, openSignUp } = useClerk();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <div
       className="
@@ -45,7 +45,7 @@ export default function Navbar({}: Props) {
           <UserButton />
         </SignedIn>
         <SignedOut>
-          <Button onClick={() => openSignIn() } >Login</Button>
+          <Button onClick={() => openSignIn()}>Login</Button>
           <Button
             className="text-black"
             variant={'outline'}

@@ -6,7 +6,9 @@
     "build": "turbo run build",
     "lint": "turbo lint",
     "dev": "dotenv -- turbo run dev",
-    "check-types": "turbo run check-types"
+    "format": "cd apps/client && bunx prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "cd apps/client && bunx tsc --noEmit",
+    "prepare": "husky"
   },
   "workspaces": [
     "apps/*",
@@ -19,6 +21,7 @@
     "react-icons": "^5.5.0"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
     "turbo": "^2.4.0"
   },
   "engines": {

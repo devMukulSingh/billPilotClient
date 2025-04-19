@@ -2,7 +2,6 @@ import { useAuth } from '@clerk/remix';
 import { Outlet, useSearchParams } from '@remix-run/react';
 import SearchBar from '~/components/commons/SearchBar';
 
-
 export default function DistributorLayout() {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('query');
@@ -10,10 +9,9 @@ export default function DistributorLayout() {
   const limit = 10;
   const { userId } = useAuth();
 
-
   return (
     <>
-      <SearchBar  />
+      <SearchBar />
       <Outlet />
     </>
   );

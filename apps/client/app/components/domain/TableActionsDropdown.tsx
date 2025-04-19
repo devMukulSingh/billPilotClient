@@ -13,7 +13,7 @@ import DeleteDialog from '../bill/DeleteDialog';
 import { useAuth } from '@clerk/remix';
 import EditDomainDialog from './EditDomainDialog';
 import toast from 'react-hot-toast';
-import { useDeleteDomainMutation,  } from 'services/domain/domainSlice';
+import { useDeleteDomainMutation } from 'services/domain/domainSlice';
 import { TDomain } from 'types/api/domain';
 
 type Props = {
@@ -25,17 +25,16 @@ export default function TableActionsDropdown({ children, domain }: Props) {
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState(false);
   const [isOpenEditDialog, setIsOpenEditDialog] = useState(false);
   const { userId } = useAuth();
-  const [trigger,{isLoading}] = useDeleteDomainMutation()
-  async function handleDelete(){
-    try{
+  const [trigger, { isLoading }] = useDeleteDomainMutation();
+  async function handleDelete() {
+    try {
       await trigger({
-        id:domain.id,
-        userId
-      }).unwrap()
-      toast.success('Domain deleted',{position:'bottom-right'})
-    }
-    catch(e){
-      toast.error('Unable to delete domain, please contact the developer')
+        id: domain.id,
+        userId,
+      }).unwrap();
+      toast.success('Domain deleted', { position: 'bottom-right' });
+    } catch (e) {
+      toast.error('Unable to delete domain, please contact the developer');
       console.log(e);
     }
   }
@@ -68,7 +67,7 @@ export default function TableActionsDropdown({ children, domain }: Props) {
         <DeleteDialog
           disabled={isLoading}
           title="Are you sure?"
-          onDelete={handleDelete }
+          onDelete={handleDelete}
           open={isOpenDeleteDialog}
           description="This action cant be undone"
           onClose={() => setIsOpenDeleteDialog(false)}
@@ -98,14 +97,14 @@ export default function TableActionsDropdown({ children, domain }: Props) {
   );
 }
 
-  // const { mutate, isLoading } = useMutation<unknown, unknown, { id: string }>({
-  //   mutationKey: ['delete_domain'],
-  //   mutationFn: async (data) =>
-  //     await axios.delete(`${BASE_URL_SERVER}/${userId}/domain/${data.id}`),
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ['get_domains'] });
-  //     queryClient.invalidateQueries({ queryKey: ['get_all_domains'] });
-  //     toast.success('Domain deleted');
-  //     setIsOpenDeleteDialog(false);
-  //   },
-  // });
+// const { mutate, isLoading } = useMutation<unknown, unknown, { id: string }>({
+//   mutationKey: ['delete_domain'],
+//   mutationFn: async (data) =>
+//     await axios.delete(`${BASE_URL_SERVER}/${userId}/domain/${data.id}`),
+//   onSuccess: () => {
+//     queryClient.invalidateQueries({ queryKey: ['get_domains'] });
+//     queryClient.invalidateQueries({ queryKey: ['get_all_domains'] });
+//     toast.success('Domain deleted');
+//     setIsOpenDeleteDialog(false);
+//   },
+// });

@@ -38,8 +38,14 @@ function BillsHeader() {
     page,
     userId,
   });
-  const [trigger, { isFetching:isFetchingSearch, isLoading:isLoadingSearch, data: searchedBills }] =
-    useLazyGetSearchedBillQuery();
+  const [
+    trigger,
+    {
+      isFetching: isFetchingSearch,
+      isLoading: isLoadingSearch,
+      data: searchedBills,
+    },
+  ] = useLazyGetSearchedBillQuery();
 
   async function handleClearSearch() {
     if (!searchParams.get(`endDate`) && !searchParams.get(`startDate`)) return;
@@ -48,7 +54,7 @@ function BillsHeader() {
       prev.delete(`endDate`);
       return prev;
     });
-    if(data)dispatch(setBills(data));
+    if (data) dispatch(setBills(data));
   }
 
   function handleSearch() {
@@ -98,7 +104,9 @@ function BillsHeader() {
         </Button>
       </div>
       <Button
-        disabled={isLoadingSearch || isFetchingSearch || (!startDate && !endDate)}
+        disabled={
+          isLoadingSearch || isFetchingSearch || (!startDate && !endDate)
+        }
         onClick={handleClearSearch}
       >
         Clear Search

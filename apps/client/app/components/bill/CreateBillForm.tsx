@@ -39,7 +39,6 @@ export type TForm = {
 
 export default function CreateBillForm({}: Props) {
   const { userId } = useAuth();
-  const queryClient = useQueryClient();
   const [trigger, { isLoading }] = useCreateBillMutation();
   // const { mutate } = useMutation<
   //   any,

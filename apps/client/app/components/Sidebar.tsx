@@ -36,7 +36,7 @@ export default function Sidebar({}: Props) {
       "
       >
         <Link className="md:block hidden" to={'/'}>
-         <Logo/>
+          <Logo />
         </Link>
         <UserButton />
         {/* <h1>Welcome MK!</h1> */}
