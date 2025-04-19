@@ -2,7 +2,7 @@ import { splitApi } from "redux/api";
 import { TBill, TGetBillsArg, TCreateBillMutationArg, TBaseMutationArgs, TGetSearchedBillArg } from "types/api/bills";
 import { TApiResponse } from "types/apiResponse.types";
 
-const billApiSlice = splitApi.injectEndpoints({
+export const billApiSlice = splitApi.injectEndpoints({
     endpoints: (build) => ({
         getBills: build.query<TApiResponse<TBill[]>, TGetBillsArg>({
             query: (arg) => ({
@@ -20,7 +20,9 @@ const billApiSlice = splitApi.injectEndpoints({
                 url: `/${arg.userId}/bill/search`,
                 params:{
                     page: arg.page,
-                    limit: arg.limit
+                    limit: arg.limit,
+                    startDate:arg.startDate,
+                    endDate:arg.endDate
                 },
                 method:"GET"
             })
@@ -53,5 +55,11 @@ const billApiSlice = splitApi.injectEndpoints({
 })
 
 export const {
-    useGetBillsQuery, useCreateBillMutation,useGetSearchedBillQuery, useDeleteBillMutation, useUpdateBillMutation
+    useLazyGetSearchedBillQuery,
+    useGetBillsQuery, 
+    useCreateBillMutation,
+    useGetSearchedBillQuery, 
+    useDeleteBillMutation, 
+    useUpdateBillMutation
+    
 } = billApiSlice
