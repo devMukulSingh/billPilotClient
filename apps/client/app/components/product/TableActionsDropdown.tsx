@@ -10,13 +10,12 @@ import { TDropdownOptions } from 'types/modals.types';
 import { Edit, Trash } from 'lucide-react';
 import { ReactNode, useState } from 'react';
 import DeleteDialog from '../bill/DeleteDialog';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL_SERVER } from 'lib/constants';
+import {  useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/remix';
-import { TProduct } from 'types/db.types';
 import toast from 'react-hot-toast';
 import EditProductDialog from './EditProductDialog';
+import { useDeleteProductMutation } from 'services/product/productAPiSlice';
+import { TProduct } from 'types/api/product';
 
 type Props = {
   children: ReactNode;
@@ -24,21 +23,11 @@ type Props = {
 };
 
 export default function TableActionsDropdown({ children, product }: Props) {
-  const queryClient = useQueryClient();
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState(false);
   const [isOpenEditDialog, setIsOpenEditDialog] = useState(false);
   const { userId } = useAuth();
-  const { mutate, isPending } = useMutation<unknown, unknown, { id: string }>({
-    mutationKey: ['delete_product'],
-    mutationFn: async (data) =>
-      await axios.delete(`${BASE_URL_SERVER}/${userId}/product/${data.id}`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['get_products'] });
-      queryClient.invalidateQueries({ queryKey: ['get_all_products'] });
-      toast.success('product deleted');
-      setIsOpenDeleteDialog(false);
-    },
-  });
+  const [trigger, { isLoading }] = useDeleteProductMutation();
+
   const dropdownOptions: TDropdownOptions[] = [
     {
       label: 'Edit',
@@ -53,7 +42,19 @@ export default function TableActionsDropdown({ children, product }: Props) {
       className: '',
     },
   ];
-
+  async function handleDelete() {
+    try {
+      await trigger({
+        id: product.id,
+        userId,
+      }).unwrap();
+      toast.success('product deleted');
+      setIsOpenDeleteDialog(false);
+    } catch (e: any) {
+      if (e.data) toast.error(e.data.error);
+      else console.log(e);
+    }
+  }
   return (
     <>
       {
@@ -65,9 +66,9 @@ export default function TableActionsDropdown({ children, product }: Props) {
       }
       {isOpenDeleteDialog && (
         <DeleteDialog
-          disabled={isPending}
+          disabled={isLoading}
           title="Are you sure?"
-          onDelete={() => mutate({ id: product.id })}
+          onDelete={handleDelete}
           open={isOpenDeleteDialog}
           description="This action cant be undone"
           onClose={() => setIsOpenDeleteDialog(false)}
@@ -96,3 +97,14 @@ export default function TableActionsDropdown({ children, product }: Props) {
     </>
   );
 }
+  // const { mutate, isLoading } = useMutation<unknown, unknown, { id: string }>({
+  //   mutationKey: ['delete_product'],
+  //   mutationFn: async (data) =>
+  //     await axios.delete(`${BASE_URL_SERVER}/${userId}/product/${data.id}`),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ['get_products'] });
+  //     queryClient.invalidateQueries({ queryKey: ['get_all_products'] });
+  //     toast.success('product deleted');
+  //     setIsOpenDeleteDialog(false);
+  //   },
+  // });

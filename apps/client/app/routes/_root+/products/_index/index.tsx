@@ -15,11 +15,12 @@ import { Separator } from '~/components/ui/separator';
 import { Skeleton } from '~/components/ui/skeleton';
 import { BASE_URL_SERVER } from 'lib/constants';
 import { TApiResponse } from 'types/apiResponse.types';
-import { TProduct } from 'types/db.types';
 import SearchBar from '~/components/commons/SearchBar';
 import { setProducts } from 'redux/reducers/rootReducer';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from 'redux/hooks/hook';
+import { TProduct } from 'types/api/product';
+import { useGetProductsQuery } from 'services/product/productAPiSlice';
 
 export default function ProductsRoute() {
   return (
@@ -94,24 +95,12 @@ function ProductsTable() {
   const { userId } = useAuth();
   const [searchParams] = useSearchParams();
   const query = searchParams.get('query');
-  const products = useAppSelector((state) => state.rootReducer.products);
-  const page = searchParams.get('page') || 1;
+  const page = Number(searchParams.get('page')) || 1;
   const limit = 10;
-  const dispatch = useDispatch();
-  const { isFetching, isPending } = useQuery<any, any, TApiResponse<TProduct>>({
-    queryKey: ['get_products'],
-    queryFn: !query
-      ? async () => {
-          const { data } = await axios.get(
-            `${BASE_URL_SERVER}/${userId}/product/get-products`,
-            {
-              params: { page, limit },
-            }
-          );
-          dispatch(setProducts(data));
-          return data;
-        }
-      : skipToken,
+  const { isFetching, isLoading,data } = useGetProductsQuery({
+    page,
+    limit,
+    userId
   });
 
   const columns: ColumnDef<TProduct>[] = [
@@ -144,17 +133,33 @@ function ProductsTable() {
       },
     },
   ];
-  const totalPages = Math.ceil((products?.count || 1) / limit);
-  if (isFetching || isPending) return <Skeleton className="w-full h-[25rem]" />;
+  const totalPages = Math.ceil((data?.count || 1) / limit);
+  if (isFetching || isLoading) return <Skeleton className="w-full h-[25rem]" />;
   return (
     <>
       <DataTable
         className="min-h-[calc(100vh-11rem)]"
         renderSubComponent={() => <></>}
         columns={columns}
-        data={products?.data}
+        data={data?.data}
         totalPages={totalPages}
       />
     </>
   );
 }
+
+  // const { isFetching, isPending } = useQuery<any, any, TApiResponse<TProduct>>({
+  //   queryKey: ['get_products'],
+  //   queryFn: !query
+  //     ? async () => {
+  //         const { data } = await axios.get(
+  //           `${BASE_URL_SERVER}/${userId}/product/get-products`,
+  //           {
+  //             params: { page, limit },
+  //           }
+  //         );
+  //         dispatch(setProducts(data));
+  //         return data;
+  //       }
+  //     : skipToken,
+  // });

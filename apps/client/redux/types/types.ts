@@ -6,5 +6,4 @@ export type TInitialState = {
     products: TApiResponse<TProduct>,
     domains: TApiResponse<TDomain>,
     distributors: TApiResponse<TDistributor>,
-
 }

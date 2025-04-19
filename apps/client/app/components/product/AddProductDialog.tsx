@@ -21,6 +21,8 @@ import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
 import ProductName from '../formFields/ProductName';
 import ProductRate from '../formFields/ProductRate';
+import { useCreateBillMutation } from 'services/bill/billApiSlice';
+import { usePostProductMutation } from 'services/product/productAPiSlice';
 
 type Props = {
   openDialog: boolean;
@@ -35,25 +37,26 @@ const schema = z.object({
 export type TProductFormValues = z.infer<typeof schema>;
 
 export default function AddProductDialog({ openDialog, setOpenDialog }: Props) {
-  const queryClient = useQueryClient();
   const { userId } = useAuth();
-  const { mutate, isPending } = useMutation<any, any, TProductFormValues>({
-    mutationKey: ['post_product'],
-    mutationFn: async (data) => {
-      return await axios.post(`${BASE_URL_SERVER}/${userId}/product`, data);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['get_products'] });
-      queryClient.invalidateQueries({ queryKey: ['get_all_products'] });
-      setOpenDialog(false);
-      toast.success(`product added`, { position: 'bottom-right' });
-    },
-  });
+  const [trigger, { isLoading }] = usePostProductMutation();
   const form = useForm<TProductFormValues>({
     resolver: zodResolver(schema),
   });
   function onSubmit() {
-    form.handleSubmit((data) => mutate(data))();
+    form.handleSubmit(async (data) => {
+      try {
+        await trigger({
+          ...data,
+          userId,
+        }).unwrap();
+        setOpenDialog(false);
+        toast.success(`product added`, { position: 'bottom-right' });
+      } catch (e: any) {
+        console.log(e);
+        if (e.data) toast.error(e.data.error)
+        else toast.error(`Unable to create product, please contact the developer`);
+      }
+    })();
   }
   return (
     <DialogModal
@@ -65,13 +68,26 @@ export default function AddProductDialog({ openDialog, setOpenDialog }: Props) {
     >
       <form className="space-y-5">
         <Form {...form}>
-          <ProductName form={form} isPending={isPending} />
-          <ProductRate form={form} isPending={isPending} />
+          <ProductName form={form} isPending={isLoading} />
+          <ProductRate form={form} isPending={isLoading} />
         </Form>
-        <Button disabled={isPending} type="button" onClick={onSubmit}>
+        <Button disabled={isLoading} type="button" onClick={onSubmit}>
           Create
         </Button>
       </form>
     </DialogModal>
   );
 }
+
+// const { mutate, isPending } = useMutation<any, any, TProductFormValues>({
+//   mutationKey: ['post_product'],
+//   mutationFn: async (data) => {
+//     return await axios.post(`${BASE_URL_SERVER}/${userId}/product`, data);
+//   },
+//   onSuccess: () => {
+//     queryClient.invalidateQueries({ queryKey: ['get_products'] });
+//     queryClient.invalidateQueries({ queryKey: ['get_all_products'] });
+//     setOpenDialog(false);
+//     toast.success(`product added`, { position: 'bottom-right' });
+//   },
+// });

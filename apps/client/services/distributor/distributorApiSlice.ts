@@ -29,7 +29,6 @@ const distributorApiSlice = splitApi.injectEndpoints({
                 url: `/${arg.userId}/distributor/search`,
                 method: "GET"
             }),
-            providesTags: ['delete_distributor', 'put_distributor', 'post_distributor'],
         }),
         postDistributor: build.mutation<{}, TPostDistributorArg>({
             query: (arg) => ({

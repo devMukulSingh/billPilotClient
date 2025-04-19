@@ -14,12 +14,11 @@ import {
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { PlusCircle } from 'lucide-react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL_SERVER } from 'lib/constants';
+import { useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/remix';
-import { TProduct } from 'types/db.types';
+import { usePutProductMutation } from 'services/product/productAPiSlice';
+import { TProduct } from 'types/api/product';
 
 type Props = {
   openDialog: boolean;
@@ -39,23 +38,9 @@ export default function EditProductDialog({
   setOpenDialog,
   product,
 }: Props) {
-  const queryClient = useQueryClient();
   const { userId } = useAuth();
-  const { mutate, isPending } = useMutation<any, any, TformValues>({
-    mutationKey: ['put_product'],
-    mutationFn: async (data) => {
-      return await axios.put(
-        `${BASE_URL_SERVER}/${userId}/product/${product.id}`,
-        data
-      );
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['get_products'] });
-      queryClient.invalidateQueries({ queryKey: ['get_all_products'] });
-      setOpenDialog(false);
-      toast.success(`Product updated`, { position: 'bottom-right' });
-    },
-  });
+  const [trigger, { isLoading }] = usePutProductMutation();
+
   const form = useForm<TformValues>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -64,7 +49,21 @@ export default function EditProductDialog({
     },
   });
   function onSubmit() {
-    form.handleSubmit((data) => mutate(data))();
+    form.handleSubmit(async (data) => {
+      try {
+        await trigger({
+          ...data,
+          userId,
+          id:product.id
+        }).unwrap();
+        setOpenDialog(false);
+        toast.success(`Product updated`, { position: 'bottom-right' });
+      } catch (e:any) {
+        console.log(e);
+        if (e.data) toast.error(e.data.error);
+        else toast.error('Unable to edit Product, please contact the developer');
+      }
+    })();
   }
   return (
     <DialogModal
@@ -77,7 +76,7 @@ export default function EditProductDialog({
       <form className="space-y-5">
         <Form {...form}>
           <FormField
-            disabled={isPending}
+            disabled={isLoading}
             name="name"
             control={form.control}
             render={({ field }) => (
@@ -91,7 +90,7 @@ export default function EditProductDialog({
             )}
           />
           <FormField
-            disabled={isPending}
+            disabled={isLoading}
             name="rate"
             control={form.control}
             render={({ field }) => (
@@ -105,10 +104,26 @@ export default function EditProductDialog({
             )}
           />
         </Form>
-        <Button disabled={isPending} type="button" onClick={onSubmit}>
+        <Button disabled={isLoading} type="button" onClick={onSubmit}>
           Submit
         </Button>
       </form>
     </DialogModal>
   );
 }
+
+// const { mutate, isLoading } = useMutation<any, any, TformValues>({
+//   mutationKey: ['put_product'],
+//   mutationFn: async (data) => {
+//     return await axios.put(
+//       `${BASE_URL_SERVER}/${userId}/product/${product.id}`,
+//       data
+//     );
+//   },
+//   onSuccess: () => {
+//     queryClient.invalidateQueries({ queryKey: ['get_products'] });
+//     queryClient.invalidateQueries({ queryKey: ['get_all_products'] });
+// setOpenDialog(false);
+// toast.success(`Product updated`, { position: 'bottom-right' });
+//   },
+// });
