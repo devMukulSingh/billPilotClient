@@ -5,7 +5,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import axios from 'axios';
 import { format } from 'date-fns';
 import { Menu, PlusCircle, ShoppingBag } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DataTable } from '~/components/commons/DataTable';
 import AddProductDialog from '~/components/product/AddProductDialog';
 import AddProductForm from '~/components/product/AddProductDialog';
@@ -20,7 +20,10 @@ import { setProducts } from 'redux/reducers/rootReducer';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from 'redux/hooks/hook';
 import { TProduct } from 'types/api/product';
-import { useGetProductsQuery } from 'services/product/productAPiSlice';
+import {
+  useGetProductsQuery,
+  useGetSearchedProductsQuery,
+} from 'services/product/productAPiSlice';
 
 export default function ProductsRoute() {
   return (
@@ -97,12 +100,27 @@ function ProductsTable() {
   const query = searchParams.get('query');
   const page = Number(searchParams.get('page')) || 1;
   const limit = 10;
-  const { isFetching, isLoading,data } = useGetProductsQuery({
+  const { isFetching, isLoading, data } = useGetProductsQuery({
     page,
     limit,
-    userId
+    userId,
   });
-
+  const [tableData, setTableData] = useState(data);
+  const {
+    isFetching: isFetchingSearched,
+    isLoading: isLoadingSearched,
+    data: searchedProducts,
+  } = useGetSearchedProductsQuery(
+    {
+      page,
+      limit,
+      userId,
+      name: query,
+    },
+    {
+      skip: query ? false : true,
+    }
+  );
   const columns: ColumnDef<TProduct>[] = [
     {
       accessorKey: 'id',
@@ -133,7 +151,14 @@ function ProductsTable() {
       },
     },
   ];
-  const totalPages = Math.ceil((data?.count || 1) / limit);
+
+  useEffect(() => {
+    if (!query && data) setTableData(data);
+    if (query && searchedProducts) setTableData(searchedProducts);
+  }, [query, searchedProducts,data]);
+
+  const totalPages = useMemo(() => Math.ceil((tableData?.count || 1) / limit),[tableData]) ;
+
   if (isFetching || isLoading) return <Skeleton className="w-full h-[25rem]" />;
   return (
     <>
@@ -141,25 +166,28 @@ function ProductsTable() {
         className="min-h-[calc(100vh-11rem)]"
         renderSubComponent={() => <></>}
         columns={columns}
-        data={data?.data}
+        data={tableData?.data}
         totalPages={totalPages}
       />
     </>
   );
-}
+}  
+// useEffect(() => {
+  //   if (data && !query) setTableData(data);
+  // }, [data]);
 
-  // const { isFetching, isPending } = useQuery<any, any, TApiResponse<TProduct>>({
-  //   queryKey: ['get_products'],
-  //   queryFn: !query
-  //     ? async () => {
-  //         const { data } = await axios.get(
-  //           `${BASE_URL_SERVER}/${userId}/product/get-products`,
-  //           {
-  //             params: { page, limit },
-  //           }
-  //         );
-  //         dispatch(setProducts(data));
-  //         return data;
-  //       }
-  //     : skipToken,
-  // });
+// const { isFetching, isPending } = useQuery<any, any, TApiResponse<TProduct>>({
+//   queryKey: ['get_products'],
+//   queryFn: !query
+//     ? async () => {
+//         const { data } = await axios.get(
+//           `${BASE_URL_SERVER}/${userId}/product/get-products`,
+//           {
+//             params: { page, limit },
+//           }
+//         );
+//         dispatch(setProducts(data));
+//         return data;
+//       }
+//     : skipToken,
+// });

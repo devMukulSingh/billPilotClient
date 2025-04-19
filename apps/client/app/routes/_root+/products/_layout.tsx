@@ -10,31 +10,20 @@ import { setProducts } from 'redux/reducers/rootReducer';
 import SearchBar from '~/components/commons/SearchBar';
 import { TProduct } from 'types/api/product';
 import { useGetAllProductsQuery } from 'services/product/productAPiSlice';
+import { useState } from 'react';
 
 export default function ProductLayout() {
-  const queryClient = useQueryClient();
-  const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('query');
   const page = searchParams.get('page') || 1;
   const limit = 10;
   const { userId } = useAuth();
 
-  const { data: allProducts } = useGetAllProductsQuery({
-    userId,
-  });
 
-  async function handleClearSearch() {
-    if (!searchParams.get(`query`)) return;
-    if (!allProducts) return toast.error(`Products are undefined`);
-    setSearchParams((prev) => {
-      prev.delete(`query`);
-      return prev;
-    });
-  }
+
   return (
     <>
-      <SearchBar handleClearSearch={handleClearSearch} />
+      <SearchBar />
       <Outlet />
     </>
   );

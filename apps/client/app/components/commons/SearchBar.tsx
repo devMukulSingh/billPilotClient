@@ -1,33 +1,25 @@
 import { Search, X } from 'lucide-react';
-import React, {
-  ChangeEvent,
-  KeyboardEvent,
-  MouseEventHandler,
-  useState,
-} from 'react';
 import { Input } from '../ui/input';
-import { useLocation, useSearchParams } from '@remix-run/react';
+import { useSearchParams } from '@remix-run/react';
 import { Button } from '../ui/button';
-import {
-  QueryObserverResult,
-  RefetchOptions,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { TApiResponse } from 'types/apiResponse.types';
-import { setProducts } from 'redux/reducers/rootReducer';
-import { useDispatch } from 'react-redux';
-import { TInitialState } from 'redux/types/types';
-import { UnknownAction } from '@reduxjs/toolkit';
-import toast from 'react-hot-toast';
+import { useState } from 'react';
 
 type Props = {
-  // handleSearch: (e: KeyboardEvent<HTMLInputElement>) => Promise<void>;
-  handleClearSearch: () => void;
+  // onClearSearch: () => void;
+  // onClearInput: () => void;
+  // inputValue: string;
+  // setInputValue: (value: string) => void;
 };
 
-export default function SearchBar({ handleClearSearch }: Props) {
+export default function SearchBar({
+  // onClearSearch,
+  // onClearInput,
+  // inputValue,
+  // setInputValue,
+}: Props) {
+  const [inputValue, setInputValue] = useState('');
   const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('query');
   async function handleSearch(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key !== 'Enter') return;
     const query = (e.target as HTMLInputElement).value.trim();
@@ -36,11 +28,18 @@ export default function SearchBar({ handleClearSearch }: Props) {
     params.set(`query`, query);
     setSearchParams(params);
   }
-
-  const [inputValue, setInputValue] = useState('');
+  async function handleClearSearch() {
+    if (!searchParams.get(`query`)) return;
+    setSearchParams((prev) => {
+      prev.delete(`query`);
+      return prev;
+    });
+    setInputValue('');
+  }
   function handleClearInput() {
     if (inputValue !== '') setInputValue('');
   }
+
   return (
     <div className="bg-slate-300 flex gap-2 items-center w-full h-16 px-5">
       <div
@@ -72,7 +71,9 @@ export default function SearchBar({ handleClearSearch }: Props) {
         />
         <X className="cursor-pointer" onClick={handleClearInput} />
       </div>
-      <Button onClick={handleClearSearch}>Clear Search</Button>
+      <Button disabled={query ? false : true} onClick={handleClearSearch}>
+        Clear Search
+      </Button>
     </div>
   );
 }
