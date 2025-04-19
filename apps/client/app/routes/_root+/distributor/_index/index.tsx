@@ -5,7 +5,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import axios from 'axios';
 import { format } from 'date-fns';
 import { Edit, Menu, Package, PlusCircle, Trash } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { DataTable } from '~/components/commons/DataTable';
 import AddDistributorDialog from '~/components/distributor/AddDistributorDialog';
 import TableActionsDropdown from '~/components/distributor/TableActionsDropdown';
@@ -18,7 +18,7 @@ import { setDistributors } from 'redux/reducers/rootReducer';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from 'redux/hooks/hook';
 import { TDistributor } from 'types/api/distributor';
-import { useGetDistributorsQuery } from 'services/distributor/distributorApiSlice';
+import { useGetDistributorsQuery, useGetSearchedDistributorsQuery } from 'services/distributor/distributorApiSlice';
 
 type Props = {};
 
@@ -88,6 +88,7 @@ function Header() {
 function Distributor() {
   const [searchParams] = useSearchParams();
   const page = Number(searchParams.get('page')) || 1;
+  const query = searchParams.get('query');
   const limit = 10;
   const { userId } = useAuth();
   const { data, isFetching, isLoading } = useGetDistributorsQuery({
@@ -95,6 +96,16 @@ function Distributor() {
     page,
     userId,
   });
+  const [tableData, setTableData] = useState(data);
+  const { data: searchedDistributors } = useGetSearchedDistributorsQuery(
+    {
+      name: query,
+      page,
+      limit,
+      userId,
+    },
+    { skip: query ? false : true }
+  );
 
   const columns: ColumnDef<TDistributor>[] = [
     {
@@ -125,7 +136,14 @@ function Distributor() {
       },
     },
   ];
-  const totalPages = Math.ceil((data?.count || 1) / limit);
+  const totalPages = useMemo(
+    () => Math.ceil((tableData?.count || 1) / limit),
+    [tableData]
+  );
+  useEffect(() => {
+    if (!query && data) setTableData(data);
+    if (query && searchedDistributors) setTableData(searchedDistributors);
+  }, [query, searchedDistributors, data]);
   if (isFetching || isLoading) return <Skeleton className="w-full h-[25rem]" />;
   return (
     <>
@@ -133,7 +151,7 @@ function Distributor() {
         className="min-h-[calc(100vh-7rem)]"
         totalPages={totalPages}
         renderSubComponent={() => <></>}
-        data={data?.data}
+        data={tableData?.data}
         columns={columns}
       />
     </>

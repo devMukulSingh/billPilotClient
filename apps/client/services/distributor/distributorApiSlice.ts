@@ -27,7 +27,12 @@ const distributorApiSlice = splitApi.injectEndpoints({
         getSearchedDistributors: build.query<TApiResponse<TDistributor[]>, TBaseQueryArg & { name: string | null }>({
             query: (arg) => ({
                 url: `/${arg.userId}/distributor/search`,
-                method: "GET"
+                method: "GET",
+                params: {
+                    page: arg.page,
+                    limit: arg.limit,
+                    name:arg.name
+                },
             }),
         }),
         postDistributor: build.mutation<{}, TPostDistributorArg>({
@@ -38,7 +43,7 @@ const distributorApiSlice = splitApi.injectEndpoints({
             }),
             invalidatesTags: ['post_distributor'],
         }),
-        putDistributor: build.mutation<{}, TPostDistributorArg & {id:string | null }>({
+        putDistributor: build.mutation<{}, TPostDistributorArg & { id: string | null }>({
             query: (arg) => ({
                 url: `/${arg.userId}/distributor/${arg.id}`,
                 method: "PUT",
