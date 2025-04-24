@@ -8,6 +8,7 @@
     "dev": "dotenv -- turbo run dev",
     "format": "cd apps/client && bunx prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "cd apps/client && bunx tsc --noEmit",
+    "check-format":"cd apps/client && bunx prettier --check \"**/*.{ts,tsx,md}\"",
     "prepare": "husky"
   },
   "workspaces": [
